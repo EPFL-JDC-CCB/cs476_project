@@ -165,7 +165,7 @@ module i2cMaster #( parameter CLOCK_FREQUENCY = 12000000,
                    (s_stateMachineReg != IDLE && s_stateMachineReg != SENDSTART && 
                     s_stateMachineReg != SENDSTOP && (s_clockCountReg == 2'd1 || s_clockCountReg == 2'd0)) ? 1'b0 : 1'b1;
   
-  assign sdaDriven = (s_sdaReg = 1'b0);
+  assign sdaDriven = (s_sdaReg == 1'b0);
   assign SCL = s_sclReg;
   
   always @*

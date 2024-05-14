@@ -4,10 +4,10 @@
 // TODO: port naming
 // unsure if I want to commit to renaming all of these wires 
 // according to the convention though
-module or1420SingleCore ( input wire         systemClock,
-                                             systemClockX2,
-                                             pixelClockIn,
-                                             pixelClockInX2,
+module or1420SingleCore ( input wire         systemClock,     // 74.25MHz
+                                             systemClockX2,   // 148.5MHz 
+                                             pixelClockIn,    // 74.25MHz
+                                             pixelClockInX2,  // 148.5MHz 
                                              clock12MHz,
                                              clock50MHz,
                                              systemReset,
@@ -60,7 +60,6 @@ module or1420SingleCore ( input wire         systemClock,
                                              hdmiBlue,
 `endif
                           output wire        SCL,
-                                             camnReset,
                           output             sdaDriven,
                           input              sdaIn,
                           input wire         camPclk,
@@ -283,7 +282,7 @@ module or1420SingleCore ( input wire         systemClock,
    */
   profileCi #(.customId(8'd12)) profiler
              (.start(s_cpu1CiStart),
-              .clock(s_systemClock),
+              .clock(systemClock),
               .reset(s_cpuReset),
               .stall(s_stall),
               .busIdle(s_busIdle),
@@ -319,7 +318,7 @@ module or1420SingleCore ( input wire         systemClock,
   
   ramDmaCi #(.customId(8'd20) ) ramDma
             (.start(s_cpu1CiStart),
-             .clock(s_systemClock),
+             .clock(systemClock),
              .reset(s_cpuReset),
              .valueA(s_cpu1CiDataA),
              .valueB(s_cpu1CiDataB),

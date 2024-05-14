@@ -349,4 +349,4 @@ module sdramController #( parameter [31:0] baseAddress = 32'h00000000,
         end
     end
 endmodule
-`default_nettype 
+`default_nettype wire

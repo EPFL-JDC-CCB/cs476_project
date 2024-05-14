@@ -304,7 +304,6 @@ or1420SingleCore iSOC (
 	.hdmiGreen(hdmiGreen),
 	.hdmiBlue(hdmiBlue),
 	.SCL(SCL),
-	.camnReset(camnReset),
 	.sdaDriven(sdaDriven),
 	.sdaIn(sdaIn),
 	.camPclk(camPclk),
@@ -324,12 +323,12 @@ assign sdramData = sdramDataDriven ? sdramDataOut : 16'hZ;
 assign sdramDataIn = sdramData;
 
 assign spiSiIo0 = spiSiIo0Driven ? spiSiIo0Out : 1'bZ;
-assign spiSiIo0 = spiSoIo1Driven ? spiSoIo1Out : 1'bZ;
+assign spiSoIo1 = spiSoIo1Driven ? spiSoIo1Out : 1'bZ;
 assign spiIo2 = spiIo2Driven ? spiIo2 : 1'bZ;
 assign spiIo3 = spiIo3Driven ? spiIo3 : 1'bZ;
 
 assign spiSiIo0In = spiSiIo0;
-assign spiSiIo0In = spiSiIo0;
+assign spiSoIo1In = spiSoIo1;
 assign spiIo2In = spiIo2;
 assign spiIo3In = spiIo3;
 endmodule
