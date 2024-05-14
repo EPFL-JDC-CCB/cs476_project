@@ -1,0 +1,22 @@
+{
+    "verilog.linting.verilator.includePath": [
+        "${workspaceFolder}/virtualPrototype/modules/bios/verilog/",
+        "${workspaceFolder}/virtualPrototype/modules/bus_arbiter/verilog/",
+        "${workspaceFolder}/virtualPrototype/modules/camera/verilog/",
+        "${workspaceFolder}/virtualPrototype/modules/delay/verilog/",
+        "${workspaceFolder}/virtualPrototype/modules/hdmi_720p/verilog/",
+        "${workspaceFolder}/virtualPrototype/modules/i2c/verilog/",
+        "${workspaceFolder}/virtualPrototype/modules/or1420/verilog/",
+        "${workspaceFolder}/virtualPrototype/modules/sdram/verilog/",
+        "${workspaceFolder}/virtualPrototype/modules/spi/verilog/",
+        "${workspaceFolder}/virtualPrototype/modules/support/verilog/",
+        "${workspaceFolder}/virtualPrototype/modules/swapbyteIse/verilog/",
+        "${workspaceFolder}/virtualPrototype/modules/uart/verilog/",
+        "${workspaceFolder}/virtualPrototype/systems/singleCore/",
+        "${workspaceFolder}/virtualPrototype/systems/singleCore/verilog/grayscaleCi",
+        "${workspaceFolder}/virtualPrototype/systems/singleCore/verilog/profileCi",
+        "${workspaceFolder}/virtualPrototype/systems/singleCore/verilog/ramDmaCi",
+        "${workspaceFolder}/virtualPrototype/systems/singleCore/verilog/rgb565",
+        "${workspaceFolder}/virtualPrototype/systems/singleCore/tb"
+    ]
+}
