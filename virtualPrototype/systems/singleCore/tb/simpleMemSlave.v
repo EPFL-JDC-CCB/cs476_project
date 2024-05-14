@@ -43,6 +43,8 @@ wire [31:0] byteEnables_mask = {{8{byteEnables_r[3]}},
     {8{byteEnables_r[1]}},
     {8{byteEnables_r[0]}}};
 
+wire isMyTransaction = (bus_addrData_i[31:25] == baseAddr[31:25]);
+
 always @(posedge clk_i) begin
     if (rst_i) begin
         memAddr_r <= 0;
@@ -52,7 +54,7 @@ always @(posedge clk_i) begin
         byteEnables_r <= 0;
     end else begin 
         memAddr_r <= go_r ? memAddr_r+1 : (bus_beginTransaction_i ? baseAddr_calc : 32'h0);
-        go_r <= bus_beginTransaction_i ? 1'b1 : (burstSize_r == 0 ? 1'b0 : go_r);
+        go_r <= bus_beginTransaction_i ? isMyTransaction : (burstSize_r == 0 ? 1'b0 : go_r);
         burstSize_r <= bus_beginTransaction_i ? bus_burstSize_i : (burstSize_r - 1);
         byteEnables_r <= bus_beginTransaction_i ? bus_byteEnables_i : byteEnables_r;
         rd_n_wr_r <= bus_beginTransaction_i ? bus_readNWrite_i : rd_n_wr_r;

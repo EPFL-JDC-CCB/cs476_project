@@ -1,10 +1,9 @@
 // 74.25MHz clock
-module tb_harness ( input wire clk );
+module tb_harness ( input wire clk, input wire rst );
 
     ////////////////////////
     // wire declarations //
     //////////////////////
-    reg rst;
     wire RxD;
     wire TxD;
 
@@ -125,13 +124,12 @@ module tb_harness ( input wire clk );
         .biosBypass(0),
         .camData(0)
     );
-
-    ///////////////////
-    // system reset //
-    /////////////////
-    initial begin
-        rst = 1;
-        repeat (3) @(negedge clk);
-        rst = 0;
-    end 
+    
+initial begin
+    if ($test$plusargs("trace") != 0) begin
+        $display("[%0t] Tracing to logs/vlt_dump.vcd...\n", $time);
+        $dumpfile("logs/vlt_dump.vcd");
+        $dumpvars();
+    end
+end
 endmodule

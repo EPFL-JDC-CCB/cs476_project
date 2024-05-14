@@ -1,0 +1,6 @@
+// TODO: just generate this file from the project.files, this is a mess
+// makefile rule to generate this, depend on project.files and use a python script to convert
+
+// This file typically lists flags required by a large project, e.g. include directories
++librescan +libext+.v+.sv+.vh+.svh -y . -y ../verilog -y ../verilog/profileCi/verilog/ -y ../verilog/ramDmaCi/verilog/ -y ../verilog/grayscaleCi/verilog/ -y ../../../modules/bios/verilog -y ../../../modules/bus_arbiter/verilog -y ../../../modules/camera/verilog -y ../../../modules/delay/verilog -y ../../../modules/hdmi_720p/verilog -y ../../../modules/i2c/verilog -y ../../../modules/or1420/verilog -y ../../../modules/sdram/verilog -y ../../../modules/spi/verilog -y ../../../modules/support/verilog -y ../../../modules/swapbyteIse/verilog -y ../../../modules/uart/verilog  ../../../modules/hdmi_720p/verilog/ram4kdp.v ../../../modules/hdmi_720p/verilog/ram2kdp.v ../verilog/grayscaleCi/verilog/rgb565ISE.v ../../../modules/swapbyteIse/verilog/swapByteIse.v ../../../modules/hdmi_720p/font/ami386__8x8.v ../../../modules/bios/verilog/bios1_rom.v
+  ../../../modules/or1420/verilog/regiserFile.v  ../../../modules/or1420/verilog/lutram_32x1.v ../verilog/ramDmaCi/verilog/dualPortSSram.v
