@@ -258,7 +258,7 @@ wire        spiSiIo0In,
 			spiSoIo1In,
 			spiIo2In,
 			spiIo3In;
-or1420SingleCore iSOC (
+or1420SingleCoreSDRAM iSOC (
 	.systemClock(s_systemClock),
 	.systemClockX2(s_systemClockX2),
 	.pixelClockIn(s_pixelClock),

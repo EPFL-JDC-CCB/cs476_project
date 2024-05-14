@@ -1,11 +1,9 @@
 `default_nettype none
 `timescale 1ns/1ns
 
-// TODO: port naming
-// unsure if I want to commit to renaming all of these wires 
-// according to the convention though
+// TODO: definitely rename ALL of the signals in this module
+// refactoring the ram interface out has made it a disaster
 module or1420SingleCore ( input wire         systemClock,     // 74.25MHz
-                                             systemClockX2,   // 148.5MHz 
                                              pixelClockIn,    // 74.25MHz
                                              pixelClockInX2,  // 148.5MHz 
                                              clock12MHz,
@@ -14,18 +12,23 @@ module or1420SingleCore ( input wire         systemClock,     // 74.25MHz
                           input wire         RxD,
                           output wire        TxD,
 
-                          output wire        sdramClk,
-                          output wire        sdramCke,
-                                             sdramCsN,
-                                             sdramRasN,
-                                             sdramCasN,
-                                             sdramWeN,
-                          output wire [1:0]  sdramDqmN,
-                          output wire [12:0] sdramAddr,
-                          output wire [1:0]  sdramBa,
-                          output wire [15:0] sdramDataOut,
-                          output wire        sdramDataDriven,
-                          input wire [15:0]  sdramDataIn,
+                          output wire busError,
+                          output wire beginTransaction,
+                          output wire endTransaction,
+                          output wire [31:0] addressData,
+                          output wire [3:0] byteEnables,
+                          output wire readNotWrite,
+                          output wire dataValid,
+                          output wire busy,
+                          output wire [7:0] burstSize,
+
+                          input wire cpuReset,
+                          input wire ramInitBusy,
+                          input wire ramEndTransaction,
+                          input wire ramDataValid,
+                          input wire ramBusy,
+                          input wire ramBusError,
+                          input wire [31:0] ramAddressData,
 
                           // The spi interface
                           output wire        spiScl,
@@ -72,13 +75,7 @@ module or1420SingleCore ( input wire         systemClock,     // 74.25MHz
   wire        s_busIdle, s_snoopableBurst;
   wire        s_hdmiDone, s_swapByteDone, s_flashDone, s_cpuFreqDone;
   wire [31:0] s_hdmiResult, s_swapByteResult, s_flashResult, s_cpuFreqResult;
-  wire [5:0]  s_memoryDistance = 6'd0;
-  wire        s_busError, s_beginTransaction, s_endTransaction;
-  wire [31:0] s_addressData;
-  wire [3:0]  s_byteEnables;
-  wire        s_readNotWrite, s_dataValid, s_busy;
-  wire [7:0]  s_burstSize;
-
+  
   /*
    * Here we instantiate the UART
    *
@@ -89,63 +86,20 @@ module or1420SingleCore ( input wire         systemClock,     // 74.25MHz
            ( .clock(systemClock),
              .reset(systemReset),
              .irq(s_uartIrq),
-             .beginTransactionIn(s_beginTransaction),
-             .endTransactionIn(s_endTransaction),
-             .readNWriteIn(s_readNotWrite),
-             .dataValidIn(s_dataValid),
-             .busyIn(s_busy),
-             .addressDataIn(s_addressData),
-             .byteEnablesIn(s_byteEnables),
-             .burstSizeIn(s_burstSize),
+             .beginTransactionIn(beginTransaction),
+             .endTransactionIn(endTransaction),
+             .readNWriteIn(readNotWrite),
+             .dataValidIn(dataValid),
+             .busyIn(busy),
+             .addressDataIn(addressData),
+             .byteEnablesIn(byteEnables),
+             .burstSizeIn(burstSize),
              .addressDataOut(s_uartAddressData),
              .endTransactionOut(s_uartEndTransaction),
              .dataValidOut(s_uartDataValid),
              .busErrorOut(s_uartBusError),
              .RxD(RxD),
              .TxD(TxD));
-
-  /*
-   * Here we instantiate the SDRAM controller
-   *
-   */
-  wire        s_sdramInitBusy, s_sdramEndTransaction, s_sdramDataValid;
-  wire        s_sdramBusy, s_sdramBusError;
-  wire [31:0] s_sdramAddressData;
-  wire        s_cpuReset = systemReset | s_sdramInitBusy;
-  
-  sdramController #( .baseAddress(32'h00000000),
-                     .systemClockInHz(`ifdef GECKO5Education 42857143 `else 42428571 `endif)) sdram
-                   ( .clock(systemClock),
-                     .clockX2(systemClockX2),
-                     .reset(systemReset),
-                     .memoryDistanceIn(s_memoryDistance),
-                     .sdramInitBusy(s_sdramInitBusy),
-                     .beginTransactionIn(s_beginTransaction),
-                     .endTransactionIn(s_endTransaction),
-                     .readNotWriteIn(s_readNotWrite),
-                     .dataValidIn(s_dataValid),
-                     .busErrorIn(s_busError),
-                     .busyIn(s_busy),
-                     .addressDataIn(s_addressData),
-                     .byteEnablesIn(s_byteEnables),
-                     .burstSizeIn(s_burstSize),
-                     .endTransactionOut(s_sdramEndTransaction),
-                     .dataValidOut(s_sdramDataValid),
-                     .busyOut(s_sdramBusy),
-                     .busErrorOut(s_sdramBusError),
-                     .addressDataOut(s_sdramAddressData),
-                     .sdramClk(sdramClk),
-                     .sdramCke(sdramCke),
-                     .sdramCsN(sdramCsN),
-                     .sdramRasN(sdramRasN),
-                     .sdramCasN(sdramCasN),
-                     .sdramWeN(sdramWeN),
-                     .sdramDqmN(sdramDqmN),
-                     .sdramAddr(sdramAddr),
-                     .sdramBa(sdramBa),
-                     .sdramDataOut(sdramDataOut),
-                     .sdramDataDriven(sdramDataDriven),
-                     .sdramDataIn(sdramDataIn));
 
   /*
    * Here we instantiate the CPU
@@ -171,22 +125,22 @@ module or1420SingleCore ( input wire         systemClock,     // 74.25MHz
 
   or1420Top #( .NOP_INSTRUCTION(32'h1500FFFF)) cpu1
              (.cpuClock(systemClock),
-              .cpuReset(s_cpuReset),
+              .cpuReset(cpuReset),
               .irq(1'b0),
               .cpuIsStalled(s_stall),
               .iCacheReqBus(s_cpu1IcacheRequestBus),
               .dCacheReqBus(s_cpu1DcacheRequestBus),
               .iCacheBusGrant(s_cpu1IcacheBusAccessGranted),
               .dCacheBusGrant(s_cpu1DcacheBusAccessGranted),
-              .busErrorIn(s_busError),
-              .busyIn(s_busy),
+              .busErrorIn(busError),
+              .busyIn(busy),
               .beginTransActionOut(s_cpu1BeginTransaction),
-              .addressDataIn(s_addressData),
+              .addressDataIn(addressData),
               .addressDataOut(s_cpu1AddressData),
-              .endTransactionIn(s_endTransaction),
+              .endTransactionIn(endTransaction),
               .endTransactionOut(s_cpu1EndTransaction),
               .byteEnablesOut(s_cpu1byteEnables),
-              .dataValidIn(s_dataValid),
+              .dataValidIn(dataValid),
               .dataValidOut(s_cpu1DataValid),
               .readNotWriteOut(s_cpu1ReadNotWrite),
               .burstSizeOut(s_cpu1BurstSize),
@@ -219,7 +173,7 @@ module or1420SingleCore ( input wire         systemClock,     // 74.25MHz
                  .NumberOfProcessors(1),
                  .ReferenceClockFrequencyInHz(50000000) ) cpuFreq
                ( .clock(systemClock),
-                 .reset(s_cpuReset),
+                 .reset(cpuReset),
                  .referenceClock(clock50MHz),
                  .biosBypass(biosBypass),
                  .procFreqId(s_cpuFreqValue) );
@@ -246,7 +200,7 @@ module or1420SingleCore ( input wire         systemClock,     // 74.25MHz
                    .I2C_FREQUENCY(400000),
                    .CUSTOM_ID(8'd5)) i2cm
                   (.clock(systemClock),
-                   .reset(s_cpuReset),
+                   .reset(cpuReset),
                    .ciStart(s_cpu1CiStart),
                    .ciCke(s_cpu1CiCke),
                    .ciN(s_cpu1CiN),
@@ -266,7 +220,7 @@ module or1420SingleCore ( input wire         systemClock,     // 74.25MHz
              .customInstructionId(8'd6) ) delayMicro
             (.clock(systemClock),
              .referenceClock(clock12MHz),
-             .reset(s_cpuReset),
+             .reset(cpuReset),
              .ciStart(s_cpu1CiStart),
              .ciCke(s_cpu1CiCke),
              .ciN(s_cpu1CiN),
@@ -283,7 +237,7 @@ module or1420SingleCore ( input wire         systemClock,     // 74.25MHz
   profileCi #(.customId(8'd12)) profiler
              (.start(s_cpu1CiStart),
               .clock(systemClock),
-              .reset(s_cpuReset),
+              .reset(cpuReset),
               .stall(s_stall),
               .busIdle(s_busIdle),
               .valueA(s_cpu1CiDataA),
@@ -319,7 +273,7 @@ module or1420SingleCore ( input wire         systemClock,     // 74.25MHz
   ramDmaCi #(.customId(8'd20) ) ramDma
             (.start(s_cpu1CiStart),
              .clock(systemClock),
-             .reset(s_cpuReset),
+             .reset(cpuReset),
              .valueA(s_cpu1CiDataA),
              .valueB(s_cpu1CiDataB),
              .ciN(s_cpu1CiN),
@@ -327,11 +281,11 @@ module or1420SingleCore ( input wire         systemClock,     // 74.25MHz
              .result(s_ramDmaResult),
              .requestTransaction(s_ramDmaRequest),
              .transactionGranted(s_ramDmaGranted),
-             .endTransactionIn(s_endTransaction),
-             .dataValidIn(s_dataValid),
-             .busErrorIn(s_busError),
-             .busyIn(s_busy),
-             .addressDataIn(s_addressData),
+             .endTransactionIn(endTransaction),
+             .dataValidIn(dataValid),
+             .busErrorIn(busError),
+             .busyIn(busy),
+             .addressDataIn(addressData),
              .beginTransactionOut(s_ramDmaBeginTransaction),
              .readNotWriteOut(s_ramDmaReadNotWrite),
              .endTransactionOut(s_ramDmaEndTransaction),
@@ -355,7 +309,7 @@ module or1420SingleCore ( input wire         systemClock,     // 74.25MHz
            .clockFrequencyInHz(74250000)) camIf
           (.clock(systemClock),
            .pclk(camPclk),
-           .reset(s_cpuReset),
+           .reset(cpuReset),
            .hsync(camHsync),
            .vsync(camVsync),
            .ciStart(s_cpu1CiStart),
@@ -374,8 +328,8 @@ module or1420SingleCore ( input wire         systemClock,     // 74.25MHz
            .byteEnablesOut(s_camByteEnables),
            .dataValidOut(s_camDataValid),
            .burstSizeOut(s_camBurstSize),
-           .busyIn(s_busy),
-           .busErrorIn(s_busError));
+           .busyIn(busy),
+           .busErrorIn(busError));
 
 
   /*
@@ -413,14 +367,14 @@ module or1420SingleCore ( input wire         systemClock,     // 74.25MHz
             .ci2Result(),
             .requestTransaction(s_hdmiRequestBus),
             .transactionGranted(s_hdmiBusgranted),
-            .beginTransactionIn(s_beginTransaction),
-            .endTransactionIn(s_endTransaction),
-            .readNotWriteIn(s_readNotWrite),
-            .dataValidIn(s_dataValid),
-            .busErrorIn(s_busError),
-            .addressDataIn(s_addressData),
-            .byteEnablesIn(s_byteEnables),
-            .burstSizeIn(s_burstSize),
+            .beginTransactionIn(beginTransaction),
+            .endTransactionIn(endTransaction),
+            .readNotWriteIn(readNotWrite),
+            .dataValidIn(dataValid),
+            .busErrorIn(busError),
+            .addressDataIn(addressData),
+            .byteEnablesIn(byteEnables),
+            .burstSizeIn(burstSize),
             .beginTransactionOut(s_hdmiBeginTransaction),
             .endTransactionOut(s_hdmiEndTransaction),
             .dataValidOut(s_hdmiDataValid),
@@ -477,13 +431,13 @@ module or1420SingleCore ( input wire         systemClock,     // 74.25MHz
             .ciCke(s_cpu1CiCke),
             .ciDone(s_flashDone),
             .ciResult(s_flashResult),
-            .beginTransactionIn(s_beginTransaction),
-            .endTransactionIn(s_endTransaction),
-            .readNotWriteIn(s_readNotWrite),
-            .busErrorIn(s_busError),
-            .addressDataIn(s_addressData),
-            .burstSizeIn(s_burstSize),
-            .byteEnablesIn(s_byteEnables),
+            .beginTransactionIn(beginTransaction),
+            .endTransactionIn(endTransaction),
+            .readNotWriteIn(readNotWrite),
+            .busErrorIn(busError),
+            .addressDataIn(addressData),
+            .burstSizeIn(burstSize),
+            .byteEnablesIn(byteEnables),
             .addressDataOut(s_flashAddressData),
             .endTransactionOut(s_flashEndTransaction),
             .dataValidOut(s_flashDataValid),
@@ -498,14 +452,14 @@ module or1420SingleCore ( input wire         systemClock,     // 74.25MHz
   wire        s_biosBusError, s_biosDataValid, s_biosEndTransaction;
   bios start (.clock(systemClock),
               .reset(systemReset),
-              .addressDataIn(s_addressData),
-              .beginTransactionIn(s_beginTransaction),
-              .endTransactionIn(s_endTransaction),
-              .readNotWriteIn(s_readNotWrite),
-              .busErrorIn(s_busError),
-              .dataValidIn(s_dataValid),
-              .byteEnablesIn(s_byteEnables),
-              .burstSizeIn(s_burstSize),
+              .addressDataIn(addressData),
+              .beginTransactionIn(beginTransaction),
+              .endTransactionIn(endTransaction),
+              .readNotWriteIn(readNotWrite),
+              .busErrorIn(busError),
+              .dataValidIn(dataValid),
+              .byteEnablesIn(byteEnables),
+              .burstSizeIn(burstSize),
               .addressDataOut(s_biosAddressData),
               .busErrorOut(s_biosBusError),
               .dataValidOut(s_biosDataValid),
@@ -540,29 +494,29 @@ module or1420SingleCore ( input wire         systemClock,     // 74.25MHz
                       .endTransactionOut(s_arbEndTransaction),
                       .busIdle(s_busIdle),
                       .snoopableBurst(s_snoopableBurst),
-                      .beginTransactionIn(s_beginTransaction),
-                      .endTransactionIn(s_endTransaction),
-                      .dataValidIn(s_dataValid),
-                      .addressDataIn(s_addressData[31:30]),
-                      .burstSizeIn(s_burstSize));
+                      .beginTransactionIn(beginTransaction),
+                      .endTransactionIn(endTransaction),
+                      .dataValidIn(dataValid),
+                      .addressDataIn(addressData[31:30]),
+                      .burstSizeIn(burstSize));
  
   /*
    *
    * Here we define the bus architecture
    *
    */
- assign s_busError         = s_arbBusError | s_biosBusError | s_uartBusError | s_sdramBusError | s_flashBusError;
- assign s_beginTransaction = s_cpu1BeginTransaction | s_hdmiBeginTransaction | s_camBeginTransaction| s_ramDmaBeginTransaction;
- assign s_endTransaction   = s_cpu1EndTransaction | s_arbEndTransaction | s_biosEndTransaction | s_uartEndTransaction |
-                             s_sdramEndTransaction | s_hdmiEndTransaction | s_flashEndTransaction | s_camEndTransaction | s_ramDmaEndTransaction;
- assign s_addressData      = s_cpu1AddressData | s_biosAddressData | s_uartAddressData | s_sdramAddressData | s_hdmiAddressData |
+ assign busError         = s_arbBusError | s_biosBusError | s_uartBusError | ramBusError | s_flashBusError;
+ assign beginTransaction = s_cpu1BeginTransaction | s_hdmiBeginTransaction | s_camBeginTransaction| s_ramDmaBeginTransaction;
+ assign endTransaction   = s_cpu1EndTransaction | s_arbEndTransaction | s_biosEndTransaction | s_uartEndTransaction |
+                             ramEndTransaction | s_hdmiEndTransaction | s_flashEndTransaction | s_camEndTransaction | s_ramDmaEndTransaction;
+ assign addressData      = s_cpu1AddressData | s_biosAddressData | s_uartAddressData | ramAddressData | s_hdmiAddressData |
                              s_flashAddressData | s_camAddressData | s_ramDmaAddressData;
- assign s_byteEnables      = s_cpu1byteEnables | s_hdmiByteEnables | s_camByteEnables | s_ramDmaByteEnables;
- assign s_readNotWrite     = s_cpu1ReadNotWrite | s_hdmiReadNotWrite | s_ramDmaReadNotWrite;
- assign s_dataValid        = s_cpu1DataValid | s_biosDataValid | s_uartDataValid | s_sdramDataValid | s_hdmiDataValid | 
+ assign byteEnables      = s_cpu1byteEnables | s_hdmiByteEnables | s_camByteEnables | s_ramDmaByteEnables;
+ assign readNotWrite     = s_cpu1ReadNotWrite | s_hdmiReadNotWrite | s_ramDmaReadNotWrite;
+ assign dataValid        = s_cpu1DataValid | s_biosDataValid | s_uartDataValid | ramDataValid | s_hdmiDataValid | 
                              s_flashDataValid | s_camDataValid | s_ramDmaDataValid;
- assign s_busy             = s_sdramBusy;
- assign s_burstSize        = s_cpu1BurstSize | s_hdmiBurstSize | s_camBurstSize | s_ramDmaBurstSize;
+ assign busy             = ramBusy;
+ assign burstSize        = s_cpu1BurstSize | s_hdmiBurstSize | s_camBurstSize | s_ramDmaBurstSize;
  
 endmodule
 
