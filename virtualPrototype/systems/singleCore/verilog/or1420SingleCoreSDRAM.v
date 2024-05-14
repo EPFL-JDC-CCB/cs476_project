@@ -86,7 +86,6 @@ module or1420SingleCoreSDRAM ( input wire    systemClock,     // 74.25MHz
   wire        s_sdramBusy, s_sdramBusError;
   wire [31:0] s_sdramAddressData;
   wire [5:0]  s_memoryDistance = 6'd0;
-  wire        s_cpuReset = systemReset | s_sdramInitBusy;
   
   sdramController #( .baseAddress(32'h00000000),
                      .systemClockInHz(`ifdef GECKO5Education 42857143 `else 42428571 `endif)) sdram
@@ -145,7 +144,6 @@ module or1420SingleCoreSDRAM ( input wire    systemClock,     // 74.25MHz
         .busy(s_busy),
         .burstSize(s_burstSize),
 
-        .cpuReset(s_cpuReset),
         .ramInitBusy(s_sdramInitBusy),
         .ramEndTransaction(s_sdramEndTransaction),
         .ramDataValid(s_sdramDataValid),

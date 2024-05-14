@@ -22,7 +22,6 @@ module or1420SingleCore ( input wire         systemClock,     // 74.25MHz
                           output wire busy,
                           output wire [7:0] burstSize,
 
-                          input wire cpuReset,
                           input wire ramInitBusy,
                           input wire ramEndTransaction,
                           input wire ramDataValid,
@@ -75,6 +74,8 @@ module or1420SingleCore ( input wire         systemClock,     // 74.25MHz
   wire        s_busIdle, s_snoopableBurst;
   wire        s_hdmiDone, s_swapByteDone, s_flashDone, s_cpuFreqDone;
   wire [31:0] s_hdmiResult, s_swapByteResult, s_flashResult, s_cpuFreqResult;
+
+  wire        s_cpuReset = systemReset | ramInitBusy;
   
   /*
    * Here we instantiate the UART
@@ -125,7 +126,7 @@ module or1420SingleCore ( input wire         systemClock,     // 74.25MHz
 
   or1420Top #( .NOP_INSTRUCTION(32'h1500FFFF)) cpu1
              (.cpuClock(systemClock),
-              .cpuReset(cpuReset),
+              .cpuReset(s_cpuReset),
               .irq(1'b0),
               .cpuIsStalled(s_stall),
               .iCacheReqBus(s_cpu1IcacheRequestBus),
@@ -173,7 +174,7 @@ module or1420SingleCore ( input wire         systemClock,     // 74.25MHz
                  .NumberOfProcessors(1),
                  .ReferenceClockFrequencyInHz(50000000) ) cpuFreq
                ( .clock(systemClock),
-                 .reset(cpuReset),
+                 .reset(s_cpuReset),
                  .referenceClock(clock50MHz),
                  .biosBypass(biosBypass),
                  .procFreqId(s_cpuFreqValue) );
@@ -200,7 +201,7 @@ module or1420SingleCore ( input wire         systemClock,     // 74.25MHz
                    .I2C_FREQUENCY(400000),
                    .CUSTOM_ID(8'd5)) i2cm
                   (.clock(systemClock),
-                   .reset(cpuReset),
+                   .reset(s_cpuReset),
                    .ciStart(s_cpu1CiStart),
                    .ciCke(s_cpu1CiCke),
                    .ciN(s_cpu1CiN),
@@ -220,7 +221,7 @@ module or1420SingleCore ( input wire         systemClock,     // 74.25MHz
              .customInstructionId(8'd6) ) delayMicro
             (.clock(systemClock),
              .referenceClock(clock12MHz),
-             .reset(cpuReset),
+             .reset(s_cpuReset),
              .ciStart(s_cpu1CiStart),
              .ciCke(s_cpu1CiCke),
              .ciN(s_cpu1CiN),
@@ -237,7 +238,7 @@ module or1420SingleCore ( input wire         systemClock,     // 74.25MHz
   profileCi #(.customId(8'd12)) profiler
              (.start(s_cpu1CiStart),
               .clock(systemClock),
-              .reset(cpuReset),
+              .reset(s_cpuReset),
               .stall(s_stall),
               .busIdle(s_busIdle),
               .valueA(s_cpu1CiDataA),
@@ -273,7 +274,7 @@ module or1420SingleCore ( input wire         systemClock,     // 74.25MHz
   ramDmaCi #(.customId(8'd20) ) ramDma
             (.start(s_cpu1CiStart),
              .clock(systemClock),
-             .reset(cpuReset),
+             .reset(s_cpuReset),
              .valueA(s_cpu1CiDataA),
              .valueB(s_cpu1CiDataB),
              .ciN(s_cpu1CiN),
@@ -309,7 +310,7 @@ module or1420SingleCore ( input wire         systemClock,     // 74.25MHz
            .clockFrequencyInHz(74250000)) camIf
           (.clock(systemClock),
            .pclk(camPclk),
-           .reset(cpuReset),
+           .reset(s_cpuReset),
            .hsync(camHsync),
            .vsync(camVsync),
            .ciStart(s_cpu1CiStart),

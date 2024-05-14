@@ -12,7 +12,7 @@
         "${workspaceFolder}/virtualPrototype/modules/support/verilog/",
         "${workspaceFolder}/virtualPrototype/modules/swapbyteIse/verilog/",
         "${workspaceFolder}/virtualPrototype/modules/uart/verilog/",
-        "${workspaceFolder}/virtualPrototype/systems/singleCore/",
+        "${workspaceFolder}/virtualPrototype/systems/singleCore/verilog",
         "${workspaceFolder}/virtualPrototype/systems/singleCore/verilog/grayscaleCi",
         "${workspaceFolder}/virtualPrototype/systems/singleCore/verilog/profileCi",
         "${workspaceFolder}/virtualPrototype/systems/singleCore/verilog/ramDmaCi",
