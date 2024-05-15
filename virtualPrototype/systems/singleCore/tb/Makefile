@@ -1,20 +1,16 @@
 ######################################################################
 #
-# DESCRIPTION: Verilator Example: Small Makefile
+# DESCRIPTION: Verilator CMake example usage
 #
-# This calls the object directory makefile.  That allows the objects to
-# be placed in the "current directory" which simplifies the Makefile.
+# This file shows usage of the CMake script.
+# This makefile is here for testing the examples and should
+# generally not be added to a CMake project.
 #
 # This file ONLY is placed under the Creative Commons Public Domain, for
 # any use, without warranty, 2020 by Wilson Snyder.
 # SPDX-License-Identifier: CC0-1.0
 #
 ######################################################################
-# Check for sanity to avoid later confusion
-
-ifneq ($(words $(CURDIR)),1)
- $(error Unsupported: GNU Make cannot build in directories containing spaces, build elsewhere: '$(CURDIR)')
-endif
 
 ######################################################################
 # Set up variables
@@ -22,6 +18,7 @@ endif
 # If $VERILATOR_ROOT isn't in the environment, we assume it is part of a
 # package install, and verilator is in your path. Otherwise find the
 # binary relative to $VERILATOR_ROOT (such as when inside the git sources).
+
 ifeq ($(VERILATOR_ROOT),)
 VERILATOR = verilator
 VERILATOR_COVERAGE = verilator_coverage
@@ -30,67 +27,73 @@ export VERILATOR_ROOT
 VERILATOR = $(VERILATOR_ROOT)/bin/verilator
 VERILATOR_COVERAGE = $(VERILATOR_ROOT)/bin/verilator_coverage
 endif
-
-# Generate C++ in executable form
-VERILATOR_FLAGS += -cc --exe
-# Generate makefile dependencies (not shown as complicates the Makefile)
-#VERILATOR_FLAGS += -MMD
-# Optimize
-VERILATOR_FLAGS += -x-assign fast
-# Warn abount lint issues; may not want this on less solid designs
-VERILATOR_FLAGS += -Wno-lint -Wno-style -Wno-MULTIDRIVEN -Wno-COMBDLY -Wno-TIMESCALEMOD -Wno-UNOPTFLAT
-# Make waveforms
-VERILATOR_FLAGS += --trace
-# Check SystemVerilog assertions
-# VERILATOR_FLAGS += --assert
-# Generate coverage analysis
-# VERILATOR_FLAGS += --coverage
-# Run Verilator in debug mode
-#VERILATOR_FLAGS += --debug
-# Add this trace to get a backtrace in gdb
-#VERILATOR_FLAGS += --gdbbt
-
-TOP = tb_harness
-
-# Input files for Verilator
-VERILATOR_INPUT = $(TOP).v uartdpi.c sim_main.cpp -f input.vc
-
 ######################################################################
-default: run
 
-run:
+# Check if CMake is installed and of correct version
+ifeq ($(shell which cmake),)
+	TARGET := nocmake
+else
+CMAKE_VERSION := $(shell cmake --version | grep -Po '(\d[\.\d]+)')
+CMAKE_MAJOR := $(shell echo $(CMAKE_VERSION) | cut -f1 -d.)
+CMAKE_MINOR := $(shell echo $(CMAKE_VERSION) | cut -f2 -d.)
+CMAKE_GT_3_8 := $(shell [ $(CMAKE_MAJOR) -gt 3 -o \( $(CMAKE_MAJOR) -eq 3 -a $(CMAKE_MINOR) -ge 8 \) ] && echo true)
+ifneq ($(CMAKE_GT_3_8),true)
+TARGET := oldcmake
+else
+
+SYSTEMC_HOME ?= $(shell pwd)/systemc-2.3.4/systemc_install
+SYSTEMC_INCLUDE = $(SYSTEMC_HOME)/include
+export SYSTEMC_INCLUDE
+SYSTEMC_LIBDIR = $(SYSTEMC_HOME)/lib
+export SYSTEMC_LIBDIR
+
+endif
+endif
+
+run: $(SYSTEMC_HOME)
+	@echo
+	@echo "-- Verilator CMake SystemC tracing example"
 
 	@echo
 	@echo "-- VERILATE ----------------"
-	$(VERILATOR) $(VERILATOR_FLAGS) $(VERILATOR_INPUT)
+	mkdir -p build && cd build && cmake ..
 
 	@echo
 	@echo "-- BUILD -------------------"
-# To compile, we can either
-# 1. Pass --build to Verilator by editing VERILATOR_FLAGS above.
-# 2. Or, run the make rules Verilator does:
-#	$(MAKE) -j -C obj_dir -f Vtop.mk
-# 3. Or, call a submakefile where we can override the rules ourselves
-	$(MAKE) -j -C obj_dir -f V$(TOP).mk
+	cmake --build build -j
 
 	@echo
 	@echo "-- RUN ---------------------"
-	@rm -rf logs
 	@mkdir -p logs
-	obj_dir/V$(TOP) +trace
+	build/example +trace
+
+	@echo
+	@echo "-- COVERAGE ----------------"
+	$(VERILATOR_COVERAGE) --annotate logs/annotated logs/coverage.dat
 
 	@echo
 	@echo "-- DONE --------------------"
 	@echo "To see waveforms, open vlt_dump.vcd in a waveform viewer"
 	@echo
 
+clean mostlyclean distclean maintainer-clean:
+	@rm -rf build logs
 
-######################################################################
-# Other targets
+nocmake:
+	@echo
+	@echo "%Skip: CMake has not been found"
+	@echo
 
-show-config:
-	$(VERILATOR) -V
+oldcmake:
+	@echo
+	@echo "%Skip: CMake version is too old (need at least 3.8)"
+	@echo
 
-maintainer-copy::
-clean mostlyclean distclean maintainer-clean::
-	-rm -rf obj_dir logs *.log *.dmp *.vpd coverage.dat core
+$(SYSTEMC_HOME):
+	@rm -rf systemc-2.3.4/
+	@wget https://github.com/accellera-official/systemc/archive/refs/tags/2.3.4.zip -O 2.3.4.zip
+	@unzip 2.3.4.zip
+	@rm 2.3.4.zip
+	@cd systemc-2.3.4 && mkdir build && cd build && cmake -DCMAKE_INSTALL_PREFIX="../systemc_install" .. && cmake --build . -j && cmake --install .
+	@rm -rf build/
+	@echo "SystemC not found, so SystemC 2.3.4 has been installed!"

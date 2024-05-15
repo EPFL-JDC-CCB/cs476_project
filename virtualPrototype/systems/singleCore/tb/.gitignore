@@ -1,2 +1,4 @@
 obj_dir/
 uart0.log
+build/
+systemc-2.3.4/

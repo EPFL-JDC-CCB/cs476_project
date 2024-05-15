@@ -1,9 +1,17 @@
 // 74.25MHz clock
-module tb_harness ( input wire clk, input wire rst );
+module tb_harness ( 
+    input wire clk_7425,
+    input wire clk_1485,
+    input wire clk_12,
+    input wire clk_50,
+    input wire rst
+);
 
     ////////////////////////
     // wire declarations //
     //////////////////////
+    wire sys_clk = clk_7425;
+
     wire RxD;
     wire TxD;
 
@@ -30,7 +38,7 @@ module tb_harness ( input wire clk, input wire rst );
         // real system has 32MB
         .memSize(1024*256)
     ) iMEM (
-    .clk_i(clk),
+    .clk_i(sys_clk),
     .rst_i(rst),
     .bus_addrData_i(s_addressData),
     .bus_byteEnables_i(s_byteEnables),
@@ -54,7 +62,7 @@ module tb_harness ( input wire clk, input wire rst );
         .BAUD(115200),
         .FREQ(74_250_000),
     ) iUART (
-        .clk_i(clk),
+        .clk_i(sys_clk),
         .rst_ni(~rst),
         .active(1'b1),
         .tx_o(RxD),
@@ -65,12 +73,12 @@ module tb_harness ( input wire clk, input wire rst );
     // instantatiate SoC //
     //////////////////////
     or1420SingleCore iSingleCore (
-        .systemClock(clk),
+        .systemClock(sys_clk),
         // none of the other clocks are running for now
-        .pixelClockIn(1'b0),    
-        .pixelClockInX2(1'b0),
-        .clock12MHz(1'b0), 
-        .clock50MHz(1'b0),
+        .pixelClockIn(clk_7425),    
+        .pixelClockInX2(clk_1485),
+        .clock12MHz(clk_12), 
+        .clock50MHz(clk_50),
         .systemReset(rst),
         .RxD(RxD),
         .TxD(TxD),
@@ -125,11 +133,11 @@ module tb_harness ( input wire clk, input wire rst );
         .camData(0)
     );
     
-initial begin
-    if ($test$plusargs("trace") != 0) begin
-        $display("[%0t] Tracing to logs/vlt_dump.vcd...\n", $time);
-        $dumpfile("logs/vlt_dump.vcd");
-        $dumpvars();
-    end
-end
+//initial begin
+//    if ($test$plusargs("trace") != 0) begin
+//        $display("[%0t] Tracing to logs/vlt_dump.vcd...\n", $time);
+//        $dumpfile("logs/vlt_dump.vcd");
+//        $dumpvars();
+//    end
+//end
 endmodule
