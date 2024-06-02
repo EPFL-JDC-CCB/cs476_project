@@ -79,7 +79,7 @@ void helpscreen(int start_line)
   char loop; 
    
   for (loop = start_line ; help_text[loop] != NULL ; loop++)
-    printf( help_text[loop] );
+    puts(help_text[loop] );
 }
 
 int interpret_command_line_options(int argc , char **argv)
@@ -301,7 +301,7 @@ int main(int argc , char **argv)
         if (root->memory_map->info.memory_content[loop] != 0) {
            fprintf( verilog_pointer , "      %d'b" , (bios8k == 1) ? 11 : 10 );
            fprint_bitmap( verilog_pointer , loop , (bios8k == 1) ? 11 : 10 );
-           fprintf( verilog_pointer , " : romData <= 32'h%08X;\n" , (unsigned int)root->memory_map->info.memory_content[loop] );
+           fprintf( verilog_pointer , " : romData = 32'h%08X;\n" , (unsigned int)root->memory_map->info.memory_content[loop] );
            fprintf( rom_pointer , "         WHEN \"" );
            fprint_bitmap( rom_pointer , loop , (bios8k == 1) ? 11 : 10 );
            fprintf( rom_pointer , "\" => data <= X\"%08X\";\n" ,
@@ -310,7 +310,7 @@ int main(int argc , char **argv)
      }
   }
   fclose( memcont );
-  fprintf( verilog_pointer , "      default : romData <= 32'd0;\n");
+  fprintf( verilog_pointer , "      default : romData = 32'd0;\n");
   fprintf( verilog_pointer , "    endcase\n\n");
   fprintf( verilog_pointer , "endmodule\n\n");
   fclose( verilog_pointer );

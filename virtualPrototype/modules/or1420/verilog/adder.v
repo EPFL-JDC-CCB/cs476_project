@@ -24,18 +24,18 @@ module adder ( input wire         flagIn,
   begin
     case (opcode)
       2'b10   : begin
-                  s_oppB          <= {1'b0,operantB};
-                  s_carryIn[32:1] <= {32{1'b0}};
-                  s_carryIn[0]    <= carryIn;
+                  s_oppB          = {1'b0,operantB};
+                  s_carryIn[32:1] = {32{1'b0}};
+                  s_carryIn[0]    = carryIn;
                 end
       2'b11   : begin
-                  s_oppB          <= {1'b0,~operantB};
-                  s_carryIn[32:1] <= {32{1'b0}};
-                  s_carryIn[0]    <= 1'b1;
+                  s_oppB          = {1'b0,~operantB};
+                  s_carryIn[32:1] = {32{1'b0}};
+                  s_carryIn[0]    = 1'b1;
                 end
       default : begin
-                  s_oppB    <= {1'b0,operantB};
-                  s_carryIn <= {33{1'b0}};
+                  s_oppB    = {1'b0,operantB};
+                  s_carryIn = {33{1'b0}};
                 end
     endcase
   end
@@ -43,17 +43,17 @@ module adder ( input wire         flagIn,
   always @*
   begin
     case (flagMode)
-      4'b0000 : flagOut <= s_equal;
-      4'b0001 : flagOut <= ~s_equal;
-      4'b0010 : flagOut <= ~(s_lessUnsigned | s_equal);
-      4'b0011 : flagOut <= ~s_lessUnsigned;
-      4'b0100 : flagOut <= s_lessUnsigned;
-      4'b0101 : flagOut <= s_lessUnsigned | s_equal;
-      4'b1010 : flagOut <= ~(s_lessSigned | s_equal);
-      4'b1011 : flagOut <= ~s_lessSigned;
-      4'b1100 : flagOut <= s_lessSigned;
-      4'b1101 : flagOut <= s_lessSigned | s_equal;
-      default : flagOut <= flagIn;
+      4'b0000 : flagOut = s_equal;
+      4'b0001 : flagOut = ~s_equal;
+      4'b0010 : flagOut = ~(s_lessUnsigned | s_equal);
+      4'b0011 : flagOut = ~s_lessUnsigned;
+      4'b0100 : flagOut = s_lessUnsigned;
+      4'b0101 : flagOut = s_lessUnsigned | s_equal;
+      4'b1010 : flagOut = ~(s_lessSigned | s_equal);
+      4'b1011 : flagOut = ~s_lessSigned;
+      4'b1100 : flagOut = s_lessSigned;
+      4'b1101 : flagOut = s_lessSigned | s_equal;
+      default : flagOut = flagIn;
     endcase
   end
 endmodule

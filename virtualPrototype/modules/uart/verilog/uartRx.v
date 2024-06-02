@@ -54,36 +54,36 @@ module uartRx ( input wire       clock,
   always @*
     case (s_bitCounterSelect)
       3'd0    : begin
-                  s_bitCounterLoadValue <= 4'd7;
-                  s_dataBits            <= {3'd0, s_shiftReg[9:5]};
+                  s_bitCounterLoadValue = 4'd7;
+                  s_dataBits            = {3'd0, s_shiftReg[9:5]};
                 end
       3'd1    : begin
-                  s_bitCounterLoadValue <= 4'd8;
-                  s_dataBits            <= {2'd0, s_shiftReg[9:4]};
+                  s_bitCounterLoadValue = 4'd8;
+                  s_dataBits            = {2'd0, s_shiftReg[9:4]};
                 end
       3'd2    : begin
-                  s_bitCounterLoadValue <= 4'd9;
-                  s_dataBits            <= {1'd0, s_shiftReg[9:3]};
+                  s_bitCounterLoadValue = 4'd9;
+                  s_dataBits            = {1'd0, s_shiftReg[9:3]};
                 end
       3'd3    : begin
-                  s_bitCounterLoadValue <= 4'd10;
-                  s_dataBits            <= s_shiftReg[9:2];
+                  s_bitCounterLoadValue = 4'd10;
+                  s_dataBits            = s_shiftReg[9:2];
                 end
       3'd4    : begin
-                  s_bitCounterLoadValue <= 4'd8;
-                  s_dataBits            <= {3'd0, s_shiftReg[8:4]};
+                  s_bitCounterLoadValue = 4'd8;
+                  s_dataBits            = {3'd0, s_shiftReg[8:4]};
                 end
       3'd5    : begin
-                  s_bitCounterLoadValue <= 4'd9;
-                  s_dataBits            <= {2'd0, s_shiftReg[8:3]};
+                  s_bitCounterLoadValue = 4'd9;
+                  s_dataBits            = {2'd0, s_shiftReg[8:3]};
                 end
       3'd6    : begin
-                  s_bitCounterLoadValue <= 4'd10;
-                  s_dataBits            <= {1'd0, s_shiftReg[8:2]};
+                  s_bitCounterLoadValue = 4'd10;
+                  s_dataBits            = {1'd0, s_shiftReg[8:2]};
                 end
       default : begin
-                  s_bitCounterLoadValue <= 4'd11;
-                  s_dataBits            <= s_shiftReg[8:1];
+                  s_bitCounterLoadValue = 4'd11;
+                  s_dataBits            = s_shiftReg[8:1];
                 end
     endcase
 
@@ -92,10 +92,10 @@ module uartRx ( input wire       clock,
   
   always @*
     case (s_stateMachineReg)
-      IDLE    : s_stateMachineNext <= (s_rxNegEdge == 1'b1) ? INIT : IDLE;
-      INIT    : s_stateMachineNext <= RECEIVE;
-      RECEIVE : s_stateMachineNext <= (s_bitCounterReg == 4'd0) ? WRITE : RECEIVE;
-      default : s_stateMachineNext <= IDLE;
+      IDLE    : s_stateMachineNext = (s_rxNegEdge == 1'b1) ? INIT : IDLE;
+      INIT    : s_stateMachineNext = RECEIVE;
+      RECEIVE : s_stateMachineNext = (s_bitCounterReg == 4'd0) ? WRITE : RECEIVE;
+      default : s_stateMachineNext = IDLE;
     endcase
     
     always @(posedge clock) s_stateMachineReg <= (reset == 1'b1) ? IDLE : s_stateMachineNext;
@@ -122,10 +122,10 @@ module uartRx ( input wire       clock,
   
   always @*
     case (controlReg[1:0])
-      2'd0    : s_isBreak <= s_5BitBreak;
-      2'd1    : s_isBreak <= s_6BitBreak;
-      2'd2    : s_isBreak <= s_7BitBreak;
-      default : s_isBreak <= s_8BitBreak;
+      2'd0    : s_isBreak = s_5BitBreak;
+      2'd1    : s_isBreak = s_6BitBreak;
+      2'd2    : s_isBreak = s_7BitBreak;
+      default : s_isBreak = s_8BitBreak;
     endcase
   
   genvar n;

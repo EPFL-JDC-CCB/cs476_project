@@ -38,14 +38,14 @@ module busArbiter ( input wire         clock,
   
   always @*
     case (s_stateReg)
-      IDLE                : s_stateNext <= (beginTransactionIn == 1'b1) ? INIT_BUS_ERROR : (s_queueEmpty == 1'b0) ? GRANT : IDLE;
-      GRANT               : s_stateNext <= (beginTransactionIn == 1'b1) ? INIT_BUS_ERROR : WAIT_BEGIN;
-      WAIT_BEGIN          : s_stateNext <= (beginTransactionIn == 1'b1) ? SERVICING : (s_timeOutReg[15] == 1'b0) ? REMOVE : WAIT_BEGIN;
-      SERVICING           : s_stateNext <= (beginTransactionIn == 1'b1 || s_timeOutReg[15] == 1'b0) ? INIT_BUS_ERROR : (endTransactionIn == 1'b1) ? REMOVE : SERVICING;
-      INIT_BUS_ERROR      : s_stateNext <= (endTransactionIn == 1'b1) ? IDLE : BUS_ERROR;
-      BUS_ERROR           : s_stateNext <= (s_timeOutReg[15] == 1'b0) ? END_TRANSACTION : (endTransactionIn == 1'b1 && s_activeTransactionReg == 1'b1) ? REMOVE :
+      IDLE                : s_stateNext = (beginTransactionIn == 1'b1) ? INIT_BUS_ERROR : (s_queueEmpty == 1'b0) ? GRANT : IDLE;
+      GRANT               : s_stateNext = (beginTransactionIn == 1'b1) ? INIT_BUS_ERROR : WAIT_BEGIN;
+      WAIT_BEGIN          : s_stateNext = (beginTransactionIn == 1'b1) ? SERVICING : (s_timeOutReg[15] == 1'b0) ? REMOVE : WAIT_BEGIN;
+      SERVICING           : s_stateNext = (beginTransactionIn == 1'b1 || s_timeOutReg[15] == 1'b0) ? INIT_BUS_ERROR : (endTransactionIn == 1'b1) ? REMOVE : SERVICING;
+      INIT_BUS_ERROR      : s_stateNext = (endTransactionIn == 1'b1) ? IDLE : BUS_ERROR;
+      BUS_ERROR           : s_stateNext = (s_timeOutReg[15] == 1'b0) ? END_TRANSACTION : (endTransactionIn == 1'b1 && s_activeTransactionReg == 1'b1) ? REMOVE :
                                            (endTransactionIn == 1'b1) ? IDLE : BUS_ERROR;
-      default             : s_stateNext <= IDLE;
+      default             : s_stateNext = IDLE;
     endcase
   
   always @(posedge clock)
@@ -73,9 +73,11 @@ module busArbiter ( input wire         clock,
                                     (s_insertIntoQueue == 1'b1 && s_stateReg == REMOVE) ? (s_queuedRequests | s_toBeQueuedMask) & ~s_grantMask : 
                                     (s_stateReg == REMOVE) ? s_queuedRequests & ~s_grantMask : s_queuedRequests;
   wire [4:0]  s_queueInsertPointerNext = (s_insertIntoQueue == 1'b1) ? s_queueInsertPointerReg + 5'd1 : s_queueInsertPointerReg;
-  wire [1:0]  s_select;
-  assign s_select[1] = s_orMasks[4] | s_orMasks[5] | s_orMasks[6] | s_orMasks[7]; 
-  assign s_select[0] = (s_select[1] == 1'b1) ? s_orMasks[6] | s_orMasks[7] : s_orMasks[2] | s_orMasks[3];
+  wire s_select_h;
+  wire s_select_l;
+  wire [1:0]  s_select = {s_select_h, s_select_l};
+  assign s_select_h = s_orMasks[4] | s_orMasks[5] | s_orMasks[6] | s_orMasks[7]; 
+  assign s_select_l = (s_select_h == 1'b1) ? s_orMasks[6] | s_orMasks[7] : s_orMasks[2] | s_orMasks[3];
 
   genvar n;
   
@@ -88,10 +90,10 @@ module busArbiter ( input wire         clock,
   /* here we define the priority encoding, note that request 31 has the highes priority */
   always @*
     case (s_select)
-      2'd0    : s_groupSelect <= {s_select,s_orMasks[1]};
-      2'd1    : s_groupSelect <= {s_select,s_orMasks[3]};
-      2'd2    : s_groupSelect <= {s_select,s_orMasks[5]};
-      default : s_groupSelect <= {s_select,s_orMasks[7]};
+      2'd0    : s_groupSelect = {s_select,s_orMasks[1]};
+      2'd1    : s_groupSelect = {s_select,s_orMasks[3]};
+      2'd2    : s_groupSelect = {s_select,s_orMasks[5]};
+      default : s_groupSelect = {s_select,s_orMasks[7]};
     endcase
   
   generate
@@ -107,14 +109,14 @@ module busArbiter ( input wire         clock,
   
   always @*
     case (s_groupSelect)
-      3'd0    : s_toBeQueuedMask <= {28'd0,s_selectMask[3:0]};
-      3'd1    : s_toBeQueuedMask <= {24'd0,s_selectMask[7:4],4'd0};
-      3'd2    : s_toBeQueuedMask <= {20'd0,s_selectMask[11:8],8'd0};
-      3'd3    : s_toBeQueuedMask <= {16'd0,s_selectMask[15:12],12'd0};
-      3'd4    : s_toBeQueuedMask <= {12'd0,s_selectMask[19:16],16'd0};
-      3'd5    : s_toBeQueuedMask <= {8'd0,s_selectMask[23:20],20'd0};
-      3'd6    : s_toBeQueuedMask <= {4'd0,s_selectMask[27:24],24'd0};
-      default : s_toBeQueuedMask <= {s_selectMask[31:28],28'd0};
+      3'd0    : s_toBeQueuedMask = {28'd0,s_selectMask[3:0]};
+      3'd1    : s_toBeQueuedMask = {24'd0,s_selectMask[7:4],4'd0};
+      3'd2    : s_toBeQueuedMask = {20'd0,s_selectMask[11:8],8'd0};
+      3'd3    : s_toBeQueuedMask = {16'd0,s_selectMask[15:12],12'd0};
+      3'd4    : s_toBeQueuedMask = {12'd0,s_selectMask[19:16],16'd0};
+      3'd5    : s_toBeQueuedMask = {8'd0,s_selectMask[23:20],20'd0};
+      3'd6    : s_toBeQueuedMask = {4'd0,s_selectMask[27:24],24'd0};
+      default : s_toBeQueuedMask = {s_selectMask[31:28],28'd0};
     endcase
 
   queueMemory queue ( .writeClock(clock),

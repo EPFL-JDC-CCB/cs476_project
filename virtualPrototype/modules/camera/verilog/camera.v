@@ -148,13 +148,13 @@ module camera #(parameter [7:0] customInstructionId = 8'd0,
 
   always @*
     case (ciValueA[3:0])
-      4'd0    : s_selectedResult <= {21'd0,s_pixelCountValueReg};
-      4'd1    : s_selectedResult <= {21'd0,s_lineCountValueReg};
-      4'd2    : s_selectedResult <= {15'd0,s_pclkCountValueReg};
-      4'd3    : s_selectedResult <= {24'd0,s_fpsCountValueReg};
-      4'd4    : s_selectedResult <= s_frameBufferBaseReg;
-      4'd7    : s_selectedResult <= {31'd0,s_singleShotDoneReg};
-      default : s_selectedResult <= 32'd0;
+      4'd0    : s_selectedResult = {21'd0,s_pixelCountValueReg};
+      4'd1    : s_selectedResult = {21'd0,s_lineCountValueReg};
+      4'd2    : s_selectedResult = {15'd0,s_pclkCountValueReg};
+      4'd3    : s_selectedResult = {24'd0,s_fpsCountValueReg};
+      4'd4    : s_selectedResult = s_frameBufferBaseReg;
+      4'd7    : s_selectedResult = {31'd0,s_singleShotDoneReg};
+      default : s_selectedResult = 32'd0;
     endcase
 
   /*
@@ -227,13 +227,13 @@ module camera #(parameter [7:0] customInstructionId = 8'd0,
   
   always @*
     case (s_stateMachineReg)
-      IDLE            : s_stateMachineNext <= ((s_grabberRunningReg == 1'b1 || s_singleShotActionReg[0] == 1'b1) && s_newLine == 1'b1) ? REQUEST_BUS1 : IDLE;
-      REQUEST_BUS1    : s_stateMachineNext <= (busGrant == 1'b1) ? INIT_BURST1 : REQUEST_BUS1;
-      INIT_BURST1     : s_stateMachineNext <= DO_BURST1;
-      DO_BURST1       : s_stateMachineNext <= (busErrorIn == 1'b1) ? END_TRANS2 :
+      IDLE            : s_stateMachineNext = ((s_grabberRunningReg == 1'b1 || s_singleShotActionReg[0] == 1'b1) && s_newLine == 1'b1) ? REQUEST_BUS1 : IDLE;
+      REQUEST_BUS1    : s_stateMachineNext = (busGrant == 1'b1) ? INIT_BURST1 : REQUEST_BUS1;
+      INIT_BURST1     : s_stateMachineNext = DO_BURST1;
+      DO_BURST1       : s_stateMachineNext = (busErrorIn == 1'b1) ? END_TRANS2 :
                                               (s_burstCountReg[8] == 1'b1 && busyIn == 1'b0) ? END_TRANS1 : DO_BURST1;
-      END_TRANS1      : s_stateMachineNext <= (s_nrOfPixelsPerLineReg != 9'd0) ? REQUEST_BUS1 : IDLE;
-      default         : s_stateMachineNext <= IDLE;
+      END_TRANS1      : s_stateMachineNext = (s_nrOfPixelsPerLineReg != 9'd0) ? REQUEST_BUS1 : IDLE;
+      default         : s_stateMachineNext = IDLE;
     endcase
   
   always @(posedge clock)

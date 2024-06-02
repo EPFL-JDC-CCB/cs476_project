@@ -86,22 +86,22 @@ module spiBus #( parameter [31:0] baseAddress = 32'h00000000,
   
   always @*
     case (ciDataB[3:0])
-      4'h0    : s_ciResult <= {24'd0, s_manufacturingId};
-      4'h1    : s_ciResult <= {24'd0, s_memoryType};
-      4'h2    : s_ciResult <= {24'd0, s_memoryCap};
-      4'h3    : s_ciResult <= {24'd0, s_statusReg0};
-      4'h4    : s_ciResult <= {24'd0, s_statusReg1};
-      4'h5    : s_ciResult <= {24'd0, s_statusReg2};
-      4'h6    : s_ciResult <= {8'd0, s_flashAddressReg};
-      4'h7    : s_ciResult <= {29'd0, s_eraseErrorIndicator, s_writeErrorIndicator, s_flashBusy};
-      4'h8    : s_ciResult <= s_programData1;
-      4'h9    : s_ciResult <= s_programData2;
-      4'hA    : s_ciResult <= s_programData3;
-      4'hB    : s_ciResult <= s_programData4;
-      4'hC    : s_ciResult <= s_programData5;
-      4'hD    : s_ciResult <= s_programData6;
-      4'hE    : s_ciResult <= s_programData7;
-      default : s_ciResult <= s_programData8;
+      4'h0    : s_ciResult = {24'd0, s_manufacturingId};
+      4'h1    : s_ciResult = {24'd0, s_memoryType};
+      4'h2    : s_ciResult = {24'd0, s_memoryCap};
+      4'h3    : s_ciResult = {24'd0, s_statusReg0};
+      4'h4    : s_ciResult = {24'd0, s_statusReg1};
+      4'h5    : s_ciResult = {24'd0, s_statusReg2};
+      4'h6    : s_ciResult = {8'd0, s_flashAddressReg};
+      4'h7    : s_ciResult = {29'd0, s_eraseErrorIndicator, s_writeErrorIndicator, s_flashBusy};
+      4'h8    : s_ciResult = s_programData1;
+      4'h9    : s_ciResult = s_programData2;
+      4'hA    : s_ciResult = s_programData3;
+      4'hB    : s_ciResult = s_programData4;
+      4'hC    : s_ciResult = s_programData5;
+      4'hD    : s_ciResult = s_programData6;
+      4'hE    : s_ciResult = s_programData7;
+      default : s_ciResult = s_programData8;
     endcase
   
   always @(posedge clock)

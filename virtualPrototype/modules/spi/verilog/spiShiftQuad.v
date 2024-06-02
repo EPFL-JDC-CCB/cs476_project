@@ -127,17 +127,17 @@ module spiShiftQuad ( input wire         clock,
 
   always @*
     case (s_stateReg)
-      IDLE            : s_stateNext <= (start == 1'b1) ? WAITBUSY : IDLE;
-      WAITBUSY        : s_stateNext <= (busyIn == 1'b1) ? WAITBUSY : CHECKBUSY;
-      CHECKBUSY       : s_stateNext <= (busyIn == 1'b1) ? WAITBUSY :
+      IDLE            : s_stateNext = (start == 1'b1) ? WAITBUSY : IDLE;
+      WAITBUSY        : s_stateNext = (busyIn == 1'b1) ? WAITBUSY : CHECKBUSY;
+      CHECKBUSY       : s_stateNext = (busyIn == 1'b1) ? WAITBUSY :
                                        `ifdef GECKO5Education SENDCOMMAND; `else (s_contReadModeEnabledReg == 1'b0) ? SENDCOMMAND : INITADDRESS; `endif
-      SENDCOMMAND     : s_stateNext <= WAITCOMMAND;
-      WAITCOMMAND     : s_stateNext <= (s_shiftDone == 1'b1) ? WAITADDRESS : WAITCOMMAND;
-      INITADDRESS     : s_stateNext <= WAITADDRESS;
-      WAITADDRESS     : s_stateNext <= (s_shiftDone == 1'b1) ? WAITDUMMY : WAITADDRESS;
-      WAITDUMMY       : s_stateNext <= (s_shiftDone == 1'b1) ? WAITWORD : WAITDUMMY;
-      WAITWORD        : s_stateNext <= (s_shiftDone == 1'b1 && s_nextWord == 1'b0) ? IDLE : WAITWORD;
-      default         : s_stateNext <= IDLE;
+      SENDCOMMAND     : s_stateNext = WAITCOMMAND;
+      WAITCOMMAND     : s_stateNext = (s_shiftDone == 1'b1) ? WAITADDRESS : WAITCOMMAND;
+      INITADDRESS     : s_stateNext = WAITADDRESS;
+      WAITADDRESS     : s_stateNext = (s_shiftDone == 1'b1) ? WAITDUMMY : WAITADDRESS;
+      WAITDUMMY       : s_stateNext = (s_shiftDone == 1'b1) ? WAITWORD : WAITDUMMY;
+      WAITWORD        : s_stateNext = (s_shiftDone == 1'b1 && s_nextWord == 1'b0) ? IDLE : WAITWORD;
+      default         : s_stateNext = IDLE;
     endcase
   
   always @(posedge clock) s_stateReg <= (reset == 1'b1) ? IDLE : s_stateNext;

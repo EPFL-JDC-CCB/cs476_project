@@ -35,9 +35,9 @@ module uartTx ( input wire        clock,
   
   always @*
     case (controlReg[1:0])
-      2'b00     : s_mux2 <= fifoData[4];
-      2'b01     : s_mux2 <= s_xorStage1[2];
-      default   : s_mux2 <= s_xorStage2[1];
+      2'b00     : s_mux2 = fifoData[4];
+      2'b01     : s_mux2 = s_xorStage1[2];
+      default   : s_mux2 = s_xorStage2[1];
     endcase
   
   // here we define the shifter
@@ -78,22 +78,22 @@ module uartTx ( input wire        clock,
   
   always @*
     case (controlReg[3:0])
-      4'h0    : s_halfBitLoadValue <= 5'd14;
-      4'h1    : s_halfBitLoadValue <= 5'd16;
-      4'h2    : s_halfBitLoadValue <= 5'd18;
-      4'h3    : s_halfBitLoadValue <= 5'd20;
-      4'h4    : s_halfBitLoadValue <= 5'd15;
-      4'h5    : s_halfBitLoadValue <= 5'd18;
-      4'h6    : s_halfBitLoadValue <= 5'd20;
-      4'h7    : s_halfBitLoadValue <= 5'd22;
-      4'h8    : s_halfBitLoadValue <= 5'd16;
-      4'h9    : s_halfBitLoadValue <= 5'd18;
-      4'hA    : s_halfBitLoadValue <= 5'd20;
-      4'hB    : s_halfBitLoadValue <= 5'd22;
-      4'hC    : s_halfBitLoadValue <= 5'd17;
-      4'hD    : s_halfBitLoadValue <= 5'd20;
-      4'hE    : s_halfBitLoadValue <= 5'd22;
-      default : s_halfBitLoadValue <= 5'd24;
+      4'h0    : s_halfBitLoadValue = 5'd14;
+      4'h1    : s_halfBitLoadValue = 5'd16;
+      4'h2    : s_halfBitLoadValue = 5'd18;
+      4'h3    : s_halfBitLoadValue = 5'd20;
+      4'h4    : s_halfBitLoadValue = 5'd15;
+      4'h5    : s_halfBitLoadValue = 5'd18;
+      4'h6    : s_halfBitLoadValue = 5'd20;
+      4'h7    : s_halfBitLoadValue = 5'd22;
+      4'h8    : s_halfBitLoadValue = 5'd16;
+      4'h9    : s_halfBitLoadValue = 5'd18;
+      4'hA    : s_halfBitLoadValue = 5'd20;
+      4'hB    : s_halfBitLoadValue = 5'd22;
+      4'hC    : s_halfBitLoadValue = 5'd17;
+      4'hD    : s_halfBitLoadValue = 5'd20;
+      4'hE    : s_halfBitLoadValue = 5'd22;
+      default : s_halfBitLoadValue = 5'd24;
     endcase
   
   // here we define the state machine
@@ -101,11 +101,11 @@ module uartTx ( input wire        clock,
   
   always @*
     case (s_stateMachineReg)
-      IDLE     : s_stateMachineNext <= (fifoEmpty == 1'b0) ? LOAD : IDLE;
-      LOAD     : s_stateMachineNext <= (baudRateX2tick == 1'b1) ? SHIFT : LOAD;
-      SHIFT    : s_stateMachineNext <= (s_halfBitCountReg == 5'd1 && fifoEmpty == 1'b1) ? IDLE :
+      IDLE     : s_stateMachineNext = (fifoEmpty == 1'b0) ? LOAD : IDLE;
+      LOAD     : s_stateMachineNext = (baudRateX2tick == 1'b1) ? SHIFT : LOAD;
+      SHIFT    : s_stateMachineNext = (s_halfBitCountReg == 5'd1 && fifoEmpty == 1'b1) ? IDLE :
                                        (s_halfBitCountReg == 5'd1 && fifoEmpty == 1'b0) ? LOAD : SHIFT;
-      default  : s_stateMachineNext <= IDLE;
+      default  : s_stateMachineNext = IDLE;
     endcase
   
   always @(posedge clock) s_stateMachineReg <= (reset == 1'b1) ? IDLE : s_stateMachineNext;

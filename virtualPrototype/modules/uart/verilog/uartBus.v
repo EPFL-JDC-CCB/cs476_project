@@ -59,28 +59,28 @@ module uartBus #( parameter [31:0] baseAddress = 0 )
   
   always @*
     case (s_readStateReg)
-      IDLE    : s_readStateNext <= (s_writeDataOutValue == 1'b1) ? WAIT : IDLE;
-      WAIT    : s_readStateNext <= (busyIn == 1'b1) ? WAIT : END;
-      default : s_readStateNext <= IDLE;
+      IDLE    : s_readStateNext = (s_writeDataOutValue == 1'b1) ? WAIT : IDLE;
+      WAIT    : s_readStateNext = (busyIn == 1'b1) ? WAIT : END;
+      default : s_readStateNext = IDLE;
     endcase
   
   always @*
     case (s_busAddressReg[1:0])
       2'd0    : begin
-                  s_requiredByteEnables <= 4'd1;
-                  s_selectedDataIn      <= s_dataInReg[7:0];
+                  s_requiredByteEnables = 4'd1;
+                  s_selectedDataIn      = s_dataInReg[7:0];
                 end
       2'd1    : begin
-                  s_requiredByteEnables <= 4'd2;
-                  s_selectedDataIn      <= s_dataInReg[15:8];
+                  s_requiredByteEnables = 4'd2;
+                  s_selectedDataIn      = s_dataInReg[15:8];
                 end
       2'd2    : begin
-                  s_requiredByteEnables <= 4'd4;
-                  s_selectedDataIn      <= s_dataInReg[23:16];
+                  s_requiredByteEnables = 4'd4;
+                  s_selectedDataIn      = s_dataInReg[23:16];
                 end
       default : begin
-                  s_requiredByteEnables <= 4'd8;
-                  s_selectedDataIn      <= s_dataInReg[31:24];
+                  s_requiredByteEnables = 4'd8;
+                  s_selectedDataIn      = s_dataInReg[31:24];
                 end
    endcase
 
@@ -220,10 +220,10 @@ module uartBus #( parameter [31:0] baseAddress = 0 )
   
   always @*
     case (s_fifoControlReg)
-      2'd0     : s_rxAvailableNext <= s_rxNrOfEntries[4] | s_rxNrOfEntries[3] | s_rxNrOfEntries[2] | s_rxNrOfEntries[1] | s_rxNrOfEntries[0];
-      2'd1     : s_rxAvailableNext <= s_rxNrOfEntries[4] | s_rxNrOfEntries[3] | s_rxNrOfEntries[2];
-      2'd2     : s_rxAvailableNext <= s_rxNrOfEntries[4] | s_rxNrOfEntries[3];
-      default  : s_rxAvailableNext <= (s_rxNrOfEntries[4] == 1'b1 || s_rxNrOfEntries[4:1] == 4'd7) ? 1'b1 : 1'b0;
+      2'd0     : s_rxAvailableNext = s_rxNrOfEntries[4] | s_rxNrOfEntries[3] | s_rxNrOfEntries[2] | s_rxNrOfEntries[1] | s_rxNrOfEntries[0];
+      2'd1     : s_rxAvailableNext = s_rxNrOfEntries[4] | s_rxNrOfEntries[3] | s_rxNrOfEntries[2];
+      2'd2     : s_rxAvailableNext = s_rxNrOfEntries[4] | s_rxNrOfEntries[3];
+      default  : s_rxAvailableNext = (s_rxNrOfEntries[4] == 1'b1 || s_rxNrOfEntries[4:1] == 4'd7) ? 1'b1 : 1'b0;
     endcase
   
   // finally we define the value read out of the core

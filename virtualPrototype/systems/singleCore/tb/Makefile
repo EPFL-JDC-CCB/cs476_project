@@ -38,7 +38,7 @@ VERILATOR_FLAGS += -cc --exe
 # Optimize
 VERILATOR_FLAGS += -x-assign fast
 # Warn abount lint issues; may not want this on less solid designs
-VERILATOR_FLAGS += -Wno-lint -Wno-style -Wno-MULTIDRIVEN -Wno-COMBDLY -Wno-TIMESCALEMOD -Wno-UNOPTFLAT
+VERILATOR_FLAGS +=  -Wno-style -Wno-TIMESCALEMOD   -Wno-lint 
 # Make waveforms
 VERILATOR_FLAGS += --trace
 # Check SystemVerilog assertions

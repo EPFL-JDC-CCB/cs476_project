@@ -76,13 +76,13 @@ module bios ( input wire       clock,
   
   always @*
     case (s_stateMachineReg)
-      IDLE      : s_stateMachineNext <= (beginTransactionIn == 1'b1) ? INTERPRET : IDLE;
-      INTERPRET : s_stateMachineNext <= (s_isMyBurst == 1'b0) ? IDLE :
+      IDLE      : s_stateMachineNext = (beginTransactionIn == 1'b1) ? INTERPRET : IDLE;
+      INTERPRET : s_stateMachineNext = (s_isMyBurst == 1'b0) ? IDLE :
                                         (s_readNotWriteReg == 1'b0 || (s_addressReg[1:0] != 2'd0 && s_burstSizeReg != 8'd0)) ? BUSERROR : BURST;
-      BURST     : s_stateMachineNext <= (endTransactionIn == 1'b1) ? IDLE :
+      BURST     : s_stateMachineNext = (endTransactionIn == 1'b1) ? IDLE :
                                         (s_burstCountReg[8] == 1'b1) ? ENDTRANSACTION : BURST;
-      BUSERROR  : s_stateMachineNext <= (endTransactionIn == 1'b1) ? IDLE : BUSERROR;
-      default   : s_stateMachineNext <= IDLE;
+      BUSERROR  : s_stateMachineNext = (endTransactionIn == 1'b1) ? IDLE : BUSERROR;
+      default   : s_stateMachineNext = IDLE;
     endcase
   
   always @(posedge clock) s_stateMachineReg <= (reset == 1'b1) ? IDLE : s_stateMachineNext;

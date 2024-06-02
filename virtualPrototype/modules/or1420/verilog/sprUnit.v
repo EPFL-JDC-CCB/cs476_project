@@ -19,25 +19,25 @@ module sprUnit ( input wire         cpuClock,
   always @*
     if (sprIndex[15:8] == 8'd0)
       case (sprIndex[7:0])
-        8'h00   : sprDataOut <= {{4{exceptionPrefix}}, 28'd48};
-        8'h01   : sprDataOut <= {{4{exceptionPrefix}}, s_iCacheVectorReg};
-        8'h02   : sprDataOut <= {{4{exceptionPrefix}}, s_dCacheVectorReg};
-        8'h03   : sprDataOut <= {{4{exceptionPrefix}}, s_irqVectorReg};
-        8'h04   : sprDataOut <= {{4{exceptionPrefix}}, s_invalidVectorReg};
-        8'h05   : sprDataOut <= {{4{exceptionPrefix}}, s_systemVectorReg};
-        8'h12   : sprDataOut <= {29'd0,s_exceptionReg};
-        default : sprDataOut <= 32'd0;
+        8'h00   : sprDataOut = {{4{exceptionPrefix}}, 28'd48};
+        8'h01   : sprDataOut = {{4{exceptionPrefix}}, s_iCacheVectorReg};
+        8'h02   : sprDataOut = {{4{exceptionPrefix}}, s_dCacheVectorReg};
+        8'h03   : sprDataOut = {{4{exceptionPrefix}}, s_irqVectorReg};
+        8'h04   : sprDataOut = {{4{exceptionPrefix}}, s_invalidVectorReg};
+        8'h05   : sprDataOut = {{4{exceptionPrefix}}, s_systemVectorReg};
+        8'h12   : sprDataOut = {29'd0,s_exceptionReg};
+        default : sprDataOut = 32'd0;
       endcase
-    else sprDataOut <= 32'd0;
+    else sprDataOut = 32'd0;
 
   always @*
     case (exeExcepMode)
-      3'd1    : exceptionVector <= {{4{exceptionPrefix}}, s_iCacheVectorReg};
-      3'd2    : exceptionVector <= {{4{exceptionPrefix}}, s_dCacheVectorReg};
-      3'd3    : exceptionVector <= {{4{exceptionPrefix}}, s_irqVectorReg};
-      3'd4    : exceptionVector <= {{4{exceptionPrefix}}, s_invalidVectorReg};
-      3'd5    : exceptionVector <= {{4{exceptionPrefix}}, s_systemVectorReg};
-      default : exceptionVector <= {{4{exceptionPrefix}}, 28'd48};
+      3'd1    : exceptionVector = {{4{exceptionPrefix}}, s_iCacheVectorReg};
+      3'd2    : exceptionVector = {{4{exceptionPrefix}}, s_dCacheVectorReg};
+      3'd3    : exceptionVector = {{4{exceptionPrefix}}, s_irqVectorReg};
+      3'd4    : exceptionVector = {{4{exceptionPrefix}}, s_invalidVectorReg};
+      3'd5    : exceptionVector = {{4{exceptionPrefix}}, s_systemVectorReg};
+      default : exceptionVector = {{4{exceptionPrefix}}, 28'd48};
     endcase
   
   always @(posedge cpuClock)

@@ -80,10 +80,10 @@ module graphicsController #( parameter [31:0] baseAddress = 32'h00000000) // max
   
   always @*
     case (s_busAddressReg[3:2])
-      2'd0    : s_selectedData <= (s_dualPixelReg == 1'b0) ? {22'd0, s_graphicsWidthReg} : {s_dualPixelReg,22'd0, s_graphicsWidthReg[9:1]};
-      2'd1    : s_selectedData <= (s_dualLineReg == 1'b0) ? {22'd0, s_graphicsHeightReg} : {s_dualLineReg,22'd0, s_graphicsHeightReg[9:1]};
-      2'd2    : s_selectedData <= {30'd0,s_grayScaleReg,~s_grayScaleReg};
-      default : s_selectedData <= s_graphicBaseAddressReg;
+      2'd0    : s_selectedData = (s_dualPixelReg == 1'b0) ? {22'd0, s_graphicsWidthReg} : {s_dualPixelReg,22'd0, s_graphicsWidthReg[9:1]};
+      2'd1    : s_selectedData = (s_dualLineReg == 1'b0) ? {22'd0, s_graphicsHeightReg} : {s_dualLineReg,22'd0, s_graphicsHeightReg[9:1]};
+      2'd2    : s_selectedData = {30'd0,s_grayScaleReg,~s_grayScaleReg};
+      default : s_selectedData = s_graphicBaseAddressReg;
     endcase
   
   always @(posedge clock)
@@ -146,23 +146,23 @@ module graphicsController #( parameter [31:0] baseAddress = 32'h00000000) // max
 
   always @*
     case (s_dmaState)
-      IDLE             : s_dmaStateNext <= (s_requestData == 1'b1 && s_graphicBaseAddressReg[1:0] == 2'd0) ? REQUEST :
+      IDLE             : s_dmaStateNext = (s_requestData == 1'b1 && s_graphicBaseAddressReg[1:0] == 2'd0) ? REQUEST :
                                            (s_requestData == 1'b1) ? INIT_WRITE_BLACK : IDLE;
-      REQUEST          : s_dmaStateNext <= (transactionGranted == 1'b1) ? INIT : REQUEST;
-      INIT             : s_dmaStateNext <= READ;
-      READ             : s_dmaStateNext <= (busErrorIn == 1'b1 && endTransactionIn == 1'b0) ? ERROR :
+      REQUEST          : s_dmaStateNext = (transactionGranted == 1'b1) ? INIT : REQUEST;
+      INIT             : s_dmaStateNext = READ;
+      READ             : s_dmaStateNext = (busErrorIn == 1'b1 && endTransactionIn == 1'b0) ? ERROR :
                                            (busErrorIn == 1'b1) ? IDLE : 
                                            (s_endTransactionInReg == 1'b1 && s_dualBurst == 1'b0) ? READ_DONE :
                                            (s_endTransactionInReg == 1'b1) ? REQUEST1 : READ;
-      REQUEST1         : s_dmaStateNext <= (transactionGranted == 1'b1) ? INIT1 : REQUEST1;
-      INIT1            : s_dmaStateNext <= READ1;
-      READ1            : s_dmaStateNext <= (busErrorIn == 1'b1 && endTransactionIn == 1'b0) ? ERROR :
+      REQUEST1         : s_dmaStateNext = (transactionGranted == 1'b1) ? INIT1 : REQUEST1;
+      INIT1            : s_dmaStateNext = READ1;
+      READ1            : s_dmaStateNext = (busErrorIn == 1'b1 && endTransactionIn == 1'b0) ? ERROR :
                                            (busErrorIn == 1'b1) ? IDLE : 
                                            (s_endTransactionInReg == 1'b1) ? READ_DONE : READ1;
-      INIT_WRITE_BLACK : s_dmaStateNext <= WRITE_BLACK;
-      WRITE_BLACK      : s_dmaStateNext <= (s_writeAddressReg[9] == 1'b1) ? IDLE : WRITE_BLACK;
-      ERROR            : s_dmaStateNext <= (s_endTransactionInReg == 1'b1) ? IDLE : ERROR;
-      default          : s_dmaStateNext <= IDLE;
+      INIT_WRITE_BLACK : s_dmaStateNext = WRITE_BLACK;
+      WRITE_BLACK      : s_dmaStateNext = (s_writeAddressReg[9] == 1'b1) ? IDLE : WRITE_BLACK;
+      ERROR            : s_dmaStateNext = (s_endTransactionInReg == 1'b1) ? IDLE : ERROR;
+      default          : s_dmaStateNext = IDLE;
     endcase
   
   always @(posedge clock)

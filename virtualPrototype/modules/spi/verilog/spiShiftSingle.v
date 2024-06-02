@@ -188,47 +188,47 @@ module spiShiftSingle ( input wire         clock,
   
   always @*
     case (s_cntrlReg)
-      NOP                 : s_cntrlNext <= (s_startErase == 1'b1 && contReadModeEnabled == 1'b1) ? INITERASE0 :
+      NOP                 : s_cntrlNext = (s_startErase == 1'b1 && contReadModeEnabled == 1'b1) ? INITERASE0 :
                                            (s_startErase == 1'b1) ? INITERASE1 :
                                            (s_startWrite == 1'b1 && contReadModeEnabled == 1'b1) ? INITWRITE0 :
                                            (s_startWrite == 1'b1) ? INITWRITE1 : NOP;
-      RES                 : s_cntrlNext <= INITRESCONTREAD;
-      INITRESCONTREAD     : s_cntrlNext <= WAITRESCONTREAD;
-      WAITRESCONTREAD     : s_cntrlNext <= (s_stateReg == IDLE) ? READJEDECID : WAITRESCONTREAD;
-      READJEDECID         : s_cntrlNext <= WAITJEDECID;
-      WAITJEDECID         : s_cntrlNext <= (s_stateReg == IDLE) ? INITSTATUSWRITE : WAITJEDECID;
-      INITSTATUSWRITE     : s_cntrlNext <= WAITINITSTATUSWRITE;
-      WAITINITSTATUSWRITE : s_cntrlNext <= (s_stateReg == IDLE) ? WRITESTATUSREGS : WAITINITSTATUSWRITE;
-      WRITESTATUSREGS     : s_cntrlNext <= WAITWRITESTATUSREGS;
-      WAITWRITESTATUSREGS : s_cntrlNext <= (s_stateReg == IDLE) ? INITBUSYWAIT1 : WAITWRITESTATUSREGS;
-      INITBUSYWAIT1       : s_cntrlNext <= WAITBUSYWAIT1;
-      WAITBUSYWAIT1       : s_cntrlNext <= (s_stateReg == IDLE && s_status0Reg[0] == 1'b1 && s_chipPresentReg == 1'b1) ? INITBUSYWAIT1 :
+      RES                 : s_cntrlNext = INITRESCONTREAD;
+      INITRESCONTREAD     : s_cntrlNext = WAITRESCONTREAD;
+      WAITRESCONTREAD     : s_cntrlNext = (s_stateReg == IDLE) ? READJEDECID : WAITRESCONTREAD;
+      READJEDECID         : s_cntrlNext = WAITJEDECID;
+      WAITJEDECID         : s_cntrlNext = (s_stateReg == IDLE) ? INITSTATUSWRITE : WAITJEDECID;
+      INITSTATUSWRITE     : s_cntrlNext = WAITINITSTATUSWRITE;
+      WAITINITSTATUSWRITE : s_cntrlNext = (s_stateReg == IDLE) ? WRITESTATUSREGS : WAITINITSTATUSWRITE;
+      WRITESTATUSREGS     : s_cntrlNext = WAITWRITESTATUSREGS;
+      WAITWRITESTATUSREGS : s_cntrlNext = (s_stateReg == IDLE) ? INITBUSYWAIT1 : WAITWRITESTATUSREGS;
+      INITBUSYWAIT1       : s_cntrlNext = WAITBUSYWAIT1;
+      WAITBUSYWAIT1       : s_cntrlNext = (s_stateReg == IDLE && s_status0Reg[0] == 1'b1 && s_chipPresentReg == 1'b1) ? INITBUSYWAIT1 :
                                            (s_stateReg == IDLE) ? `ifdef GECKO5Education NOP `else INITSTATR2 `endif : WAITBUSYWAIT1;
-      INITSTATR2          : s_cntrlNext <= WAITSTATUS2;
-      WAITSTATUS2         : s_cntrlNext <= (s_stateReg == IDLE) ? INITSTATR3 : WAITSTATUS2;
-      INITSTATR3          : s_cntrlNext <= WAITSTATUS3;
-      WAITSTATUS3         : s_cntrlNext <= (s_stateReg == IDLE) ? NOP : WAITSTATUS3;
-      INITERASE0          : s_cntrlNext <= WAITINITERASE0;
-      WAITINITERASE0      : s_cntrlNext <= (s_stateReg == IDLE) ? INITERASE1 : WAITINITERASE0;
-      INITERASE1          : s_cntrlNext <= WAITINITERASE1;
-      WAITINITERASE1      : s_cntrlNext <= (s_stateReg == IDLE) ? INITERASE2 : WAITINITERASE1;
-      INITERASE2          : s_cntrlNext <= WAITINITERASE2;
-      WAITINITERASE2      : s_cntrlNext <= (s_stateReg == IDLE && s_status0Reg[0] == 1'b1) ? INITERASE2 :
+      INITSTATR2          : s_cntrlNext = WAITSTATUS2;
+      WAITSTATUS2         : s_cntrlNext = (s_stateReg == IDLE) ? INITSTATR3 : WAITSTATUS2;
+      INITSTATR3          : s_cntrlNext = WAITSTATUS3;
+      WAITSTATUS3         : s_cntrlNext = (s_stateReg == IDLE) ? NOP : WAITSTATUS3;
+      INITERASE0          : s_cntrlNext = WAITINITERASE0;
+      WAITINITERASE0      : s_cntrlNext = (s_stateReg == IDLE) ? INITERASE1 : WAITINITERASE0;
+      INITERASE1          : s_cntrlNext = WAITINITERASE1;
+      WAITINITERASE1      : s_cntrlNext = (s_stateReg == IDLE) ? INITERASE2 : WAITINITERASE1;
+      INITERASE2          : s_cntrlNext = WAITINITERASE2;
+      WAITINITERASE2      : s_cntrlNext = (s_stateReg == IDLE && s_status0Reg[0] == 1'b1) ? INITERASE2 :
                                            (s_stateReg == IDLE && s_status0Reg[1] == 1'b1) ? INITERASE3 :
                                            (s_stateReg == IDLE) ? ERASEERROR : WAITINITERASE2;
-      INITERASE3          : s_cntrlNext <= WAITINITERASE3;
-      WAITINITERASE3      : s_cntrlNext <= (s_stateReg == IDLE) ? INITBUSYWAIT1 : WAITINITERASE3;
-      INITWRITE0          : s_cntrlNext <= WAITINITWRITE0;
-      WAITINITWRITE0      : s_cntrlNext <= (s_stateReg == IDLE) ? INITWRITE1 : WAITINITWRITE0;
-      INITWRITE1          : s_cntrlNext <= WAITINITWRITE1;
-      WAITINITWRITE1      : s_cntrlNext <= (s_stateReg == IDLE) ? INITWRITE2 : WAITINITWRITE1;
-      INITWRITE2          : s_cntrlNext <= WAITINITWRITE2;
-      WAITINITWRITE2      : s_cntrlNext <= (s_stateReg == IDLE && s_status0Reg[0] == 1'b1) ? INITWRITE2 :
+      INITERASE3          : s_cntrlNext = WAITINITERASE3;
+      WAITINITERASE3      : s_cntrlNext = (s_stateReg == IDLE) ? INITBUSYWAIT1 : WAITINITERASE3;
+      INITWRITE0          : s_cntrlNext = WAITINITWRITE0;
+      WAITINITWRITE0      : s_cntrlNext = (s_stateReg == IDLE) ? INITWRITE1 : WAITINITWRITE0;
+      INITWRITE1          : s_cntrlNext = WAITINITWRITE1;
+      WAITINITWRITE1      : s_cntrlNext = (s_stateReg == IDLE) ? INITWRITE2 : WAITINITWRITE1;
+      INITWRITE2          : s_cntrlNext = WAITINITWRITE2;
+      WAITINITWRITE2      : s_cntrlNext = (s_stateReg == IDLE && s_status0Reg[0] == 1'b1) ? INITWRITE2 :
                                            (s_stateReg == IDLE && s_status0Reg[1] == 1'b1) ? INITWRITE3 :
                                            (s_stateReg == IDLE) ? WRITEERROR : WAITINITWRITE2;
-      INITWRITE3          : s_cntrlNext <= WAITINITWRITE3;
-      WAITINITWRITE3      : s_cntrlNext <= (s_stateReg == IDLE) ? INITBUSYWAIT1 : WAITINITWRITE3;
-      default             : s_cntrlNext <= NOP;
+      INITWRITE3          : s_cntrlNext = WAITINITWRITE3;
+      WAITINITWRITE3      : s_cntrlNext = (s_stateReg == IDLE) ? INITBUSYWAIT1 : WAITINITWRITE3;
+      default             : s_cntrlNext = NOP;
     endcase
 
   always @(posedge clock) s_cntrlReg <= (reset == 1'b1) ? RES : s_cntrlNext;
@@ -242,50 +242,50 @@ module spiShiftSingle ( input wire         clock,
   always @*
     case (s_stateReg)
       IDLE            : case (s_cntrlReg)
-                          READJEDECID     : s_stateNext <= LOADJEDEC;
+                          READJEDECID     : s_stateNext = LOADJEDEC;
                           INITSTATUSWRITE,
                           INITERASE1,
-                          INITWRITE1      : s_stateNext <= INITWEENA;
-                          WRITESTATUSREGS : s_stateNext <= INITWESTATUS;
+                          INITWRITE1      : s_stateNext = INITWEENA;
+                          WRITESTATUSREGS : s_stateNext = INITWESTATUS;
                           INITBUSYWAIT1,
                           INITWRITE2,
-                          INITERASE2      : s_stateNext <= INITSTATUS1;
-                          INITSTATR2      : s_stateNext <= INITSTATUS2;
-                          INITSTATR3      : s_stateNext <= INITSTATUS3;
-                          INITERASE3      : s_stateNext <= INITSECTORERASE;
-                          INITWRITE3      : s_stateNext <= INITWRITE;
+                          INITERASE2      : s_stateNext = INITSTATUS1;
+                          INITSTATR2      : s_stateNext = INITSTATUS2;
+                          INITSTATR3      : s_stateNext = INITSTATUS3;
+                          INITERASE3      : s_stateNext = INITSECTORERASE;
+                          INITWRITE3      : s_stateNext = INITWRITE;
                           INITRESCONTREAD,
                           INITERASE0,
-                          INITWRITE0      : s_stateNext <= RESCONTREAD;
-                          default         : s_stateNext <= IDLE;
+                          INITWRITE0      : s_stateNext = RESCONTREAD;
+                          default         : s_stateNext = IDLE;
                         endcase
-      RESCONTREAD     : s_stateNext <= WAITCONTREAD;
-      WAITCONTREAD    : s_stateNext <= (s_shiftDone == 1'b1) ? IDLE : WAITCONTREAD;
-      LOADJEDEC       : s_stateNext <= READJDEC;
-      READJDEC        : s_stateNext <= (s_shiftDone == 1'b1) ? STOREJDEC : READJDEC;
-      INITSTATUS1     : s_stateNext <= READSTATUS1;
-      READSTATUS1     : s_stateNext <= (s_shiftDone == 1'b1) ? WRITESTATUS1 : READSTATUS1;
-      INITSTATUS2     : s_stateNext <= READSTATUS2;
-      READSTATUS2     : s_stateNext <= (s_shiftDone == 1'b1) ? WRITESTATUS2 : READSTATUS2;
-      INITSTATUS3     : s_stateNext <= READSTATUS3;
-      READSTATUS3     : s_stateNext <= (s_shiftDone == 1'b1) ? WRITESTATUS3 : READSTATUS3;
-      INITWEENA       : s_stateNext <= WAITWEENA;
-      WAITWEENA       : s_stateNext <= (s_shiftDone == 1'b1) ? WEENADONE : WAITWEENA;
-      INITWESTATUS    : s_stateNext <= WAITWESTATUS;
-      WAITWESTATUS    : s_stateNext <= (s_shiftDone == 1'b1) ? WESTATUSDONE : WAITWESTATUS;
-      INITSECTORERASE : s_stateNext <= WAITSECTORERASE;
-      WAITSECTORERASE : s_stateNext <= (s_shiftDone == 1'b1) ? IDLE : WAITSECTORERASE;
-      INITWRITE       : s_stateNext <= WAITWRITECMD;
-      WAITWRITECMD    : s_stateNext <= (s_shiftDone == 1'b1) ? WAITWRITEBYTE1 : WAITWRITECMD;
-      WAITWRITEBYTE1  : s_stateNext <= (s_shiftDone == 1'b1) ? WAITWRITEBYTE2 : WAITWRITEBYTE1;
-      WAITWRITEBYTE2  : s_stateNext <= (s_shiftDone == 1'b1) ? WAITWRITEBYTE3 : WAITWRITEBYTE2;
-      WAITWRITEBYTE3  : s_stateNext <= (s_shiftDone == 1'b1) ? WAITWRITEBYTE4 : WAITWRITEBYTE3;
-      WAITWRITEBYTE4  : s_stateNext <= (s_shiftDone == 1'b1) ? WAITWRITEBYTE5 : WAITWRITEBYTE4;
-      WAITWRITEBYTE5  : s_stateNext <= (s_shiftDone == 1'b1) ? WAITWRITEBYTE6 : WAITWRITEBYTE5;
-      WAITWRITEBYTE6  : s_stateNext <= (s_shiftDone == 1'b1) ? WAITWRITEBYTE7 : WAITWRITEBYTE6;
-      WAITWRITEBYTE7  : s_stateNext <= (s_shiftDone == 1'b1) ? WAITWRITEBYTE8 : WAITWRITEBYTE7;
-      WAITWRITEBYTE8  : s_stateNext <= (s_shiftDone == 1'b1) ? IDLE : WAITWRITEBYTE8;
-      default         : s_stateNext <= IDLE;
+      RESCONTREAD     : s_stateNext = WAITCONTREAD;
+      WAITCONTREAD    : s_stateNext = (s_shiftDone == 1'b1) ? IDLE : WAITCONTREAD;
+      LOADJEDEC       : s_stateNext = READJDEC;
+      READJDEC        : s_stateNext = (s_shiftDone == 1'b1) ? STOREJDEC : READJDEC;
+      INITSTATUS1     : s_stateNext = READSTATUS1;
+      READSTATUS1     : s_stateNext = (s_shiftDone == 1'b1) ? WRITESTATUS1 : READSTATUS1;
+      INITSTATUS2     : s_stateNext = READSTATUS2;
+      READSTATUS2     : s_stateNext = (s_shiftDone == 1'b1) ? WRITESTATUS2 : READSTATUS2;
+      INITSTATUS3     : s_stateNext = READSTATUS3;
+      READSTATUS3     : s_stateNext = (s_shiftDone == 1'b1) ? WRITESTATUS3 : READSTATUS3;
+      INITWEENA       : s_stateNext = WAITWEENA;
+      WAITWEENA       : s_stateNext = (s_shiftDone == 1'b1) ? WEENADONE : WAITWEENA;
+      INITWESTATUS    : s_stateNext = WAITWESTATUS;
+      WAITWESTATUS    : s_stateNext = (s_shiftDone == 1'b1) ? WESTATUSDONE : WAITWESTATUS;
+      INITSECTORERASE : s_stateNext = WAITSECTORERASE;
+      WAITSECTORERASE : s_stateNext = (s_shiftDone == 1'b1) ? IDLE : WAITSECTORERASE;
+      INITWRITE       : s_stateNext = WAITWRITECMD;
+      WAITWRITECMD    : s_stateNext = (s_shiftDone == 1'b1) ? WAITWRITEBYTE1 : WAITWRITECMD;
+      WAITWRITEBYTE1  : s_stateNext = (s_shiftDone == 1'b1) ? WAITWRITEBYTE2 : WAITWRITEBYTE1;
+      WAITWRITEBYTE2  : s_stateNext = (s_shiftDone == 1'b1) ? WAITWRITEBYTE3 : WAITWRITEBYTE2;
+      WAITWRITEBYTE3  : s_stateNext = (s_shiftDone == 1'b1) ? WAITWRITEBYTE4 : WAITWRITEBYTE3;
+      WAITWRITEBYTE4  : s_stateNext = (s_shiftDone == 1'b1) ? WAITWRITEBYTE5 : WAITWRITEBYTE4;
+      WAITWRITEBYTE5  : s_stateNext = (s_shiftDone == 1'b1) ? WAITWRITEBYTE6 : WAITWRITEBYTE5;
+      WAITWRITEBYTE6  : s_stateNext = (s_shiftDone == 1'b1) ? WAITWRITEBYTE7 : WAITWRITEBYTE6;
+      WAITWRITEBYTE7  : s_stateNext = (s_shiftDone == 1'b1) ? WAITWRITEBYTE8 : WAITWRITEBYTE7;
+      WAITWRITEBYTE8  : s_stateNext = (s_shiftDone == 1'b1) ? IDLE : WAITWRITEBYTE8;
+      default         : s_stateNext = IDLE;
     endcase
 
   always @(posedge clock) s_stateReg <= (reset == 1'b1) ? IDLE : s_stateNext;

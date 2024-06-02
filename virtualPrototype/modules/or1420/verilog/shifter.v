@@ -18,12 +18,12 @@ module shifter ( input wire [2:0]   control,
   
   always @*
     case (control)
-      3'b010 : result <= {operantB[15:0],16'h0000};
-      3'b011 : result <= flagIn == 1'b1 ? operantA : operantB;
-      3'b100 : result <= s_shiftStage5[31:0];
-      3'b101 : result <= s_shiftStage5[62:31];
-      3'b110 : result <= s_shiftStage5[62:31];
-      3'b111 : result <= s_shiftStage5[62:31] | {s_shiftStage5[30:0],1'b0};
-      default: result <= {32{1'b0}};
+      3'b010 : result = {operantB[15:0],16'h0000};
+      3'b011 : result = flagIn == 1'b1 ? operantA : operantB;
+      3'b100 : result = s_shiftStage5[31:0];
+      3'b101 : result = s_shiftStage5[62:31];
+      3'b110 : result = s_shiftStage5[62:31];
+      3'b111 : result = s_shiftStage5[62:31] | {s_shiftStage5[30:0],1'b0};
+      default: result = {32{1'b0}};
     endcase
 endmodule

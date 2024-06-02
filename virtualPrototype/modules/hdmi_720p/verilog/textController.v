@@ -115,10 +115,10 @@ module textController #(parameter [15:0] defaultForeGroundColor = 16'hFFFF,
   
   always @*
     case (s_lineSelect)
-      2'b00   : s_maxLines <= 7'd45 - {4'd0,s_TextCorrectionReg,1'd0};
-      2'b01   : s_maxLines <= 7'd90 - {4'd0,s_TextCorrectionReg,1'd0};
-      2'b10   : s_maxLines <= 7'd22 - {5'd0,s_TextCorrectionReg};
-      default : s_maxLines <= 7'd44 - {5'd0,s_TextCorrectionReg};
+      2'b00   : s_maxLines = 7'd45 - {4'd0,s_TextCorrectionReg,1'd0};
+      2'b01   : s_maxLines = 7'd90 - {4'd0,s_TextCorrectionReg,1'd0};
+      2'b10   : s_maxLines = 7'd22 - {5'd0,s_TextCorrectionReg};
+      default : s_maxLines = 7'd44 - {5'd0,s_TextCorrectionReg};
     endcase
   
   /*
@@ -132,13 +132,13 @@ module textController #(parameter [15:0] defaultForeGroundColor = 16'hFFFF,
   
   always @*
     case (ciDataA[2:0])
-      3'd0    : s_ciResult <= {16'd0, s_foreGroundColorReg};
-      3'd1    : s_ciResult <= {16'd0, s_backGroundColorReg};
-      3'd4    : s_ciResult <= {31'd0,s_smallCharsReg};
-      3'd5    : s_ciResult <= {31'd0,s_cursorVisibleReg};
-      3'd6    : s_ciResult <= {30'd0,s_TextCorrectionReg};
-      3'd7    : s_ciResult <= {8'd0, s_maxLines, 8'd0, s_maxCharsPerLine};
-      default : s_ciResult <= 32'd0;
+      3'd0    : s_ciResult = {16'd0, s_foreGroundColorReg};
+      3'd1    : s_ciResult = {16'd0, s_backGroundColorReg};
+      3'd4    : s_ciResult = {31'd0,s_smallCharsReg};
+      3'd5    : s_ciResult = {31'd0,s_cursorVisibleReg};
+      3'd6    : s_ciResult = {30'd0,s_TextCorrectionReg};
+      3'd7    : s_ciResult = {8'd0, s_maxLines, 8'd0, s_maxCharsPerLine};
+      default : s_ciResult = 32'd0;
     endcase
 
   /*

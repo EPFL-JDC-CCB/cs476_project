@@ -129,18 +129,18 @@ module ramDmaCi #( parameter [7:0] customId = 8'h00 )
   // here we define the next state
   always @*
     case (s_dmaCurrentStateReg)
-      IDLE                  : s_dmaNextState <= (s_requestDmaIn == 1'b1 || s_requestDmaOut == 1'b1) ? INIT : IDLE;
-      INIT                  : s_dmaNextState <= REQUEST_BUS;
-      REQUEST_BUS           : s_dmaNextState <= (transactionGranted == 1'b1) ? SET_UP_TRANSACTION : REQUEST_BUS;
-      SET_UP_TRANSACTION    : s_dmaNextState <= (s_isReadBurstReg == 1'b1) ? DO_READ : DO_WRITE;
-      DO_READ               : s_dmaNextState <= (busErrorIn == 1'b1) ? WAIT_END:
+      IDLE                  : s_dmaNextState = (s_requestDmaIn == 1'b1 || s_requestDmaOut == 1'b1) ? INIT : IDLE;
+      INIT                  : s_dmaNextState = REQUEST_BUS;
+      REQUEST_BUS           : s_dmaNextState = (transactionGranted == 1'b1) ? SET_UP_TRANSACTION : REQUEST_BUS;
+      SET_UP_TRANSACTION    : s_dmaNextState = (s_isReadBurstReg == 1'b1) ? DO_READ : DO_WRITE;
+      DO_READ               : s_dmaNextState = (busErrorIn == 1'b1) ? WAIT_END:
                                                 (s_endTransactionInReg == 1'b1 && s_dmaDone == 1'b1) ? IDLE :
                                                 (s_endTransactionInReg == 1'b1) ? REQUEST_BUS : DO_READ;
-      WAIT_END              : s_dmaNextState <= (s_endTransactionInReg == 1'b1) ? IDLE : WAIT_END;
-      DO_WRITE              : s_dmaNextState <= (busErrorIn == 1'b1) ? END_TRANSACTION_ERROR :
+      WAIT_END              : s_dmaNextState = (s_endTransactionInReg == 1'b1) ? IDLE : WAIT_END;
+      DO_WRITE              : s_dmaNextState = (busErrorIn == 1'b1) ? END_TRANSACTION_ERROR :
                                                 (s_wordsWrittenReg[8] == 1'b1 && busyIn == 1'b0) ? END_WRITE_TRANSACTION : DO_WRITE;
-      END_WRITE_TRANSACTION : s_dmaNextState <= (s_dmaDone == 1'b1) ? IDLE : REQUEST_BUS;
-      default               : s_dmaNextState <= IDLE;
+      END_WRITE_TRANSACTION : s_dmaNextState = (s_dmaDone == 1'b1) ? IDLE : REQUEST_BUS;
+      default               : s_dmaNextState = IDLE;
     endcase
   
   always @(posedge clock)
@@ -215,13 +215,13 @@ module ramDmaCi #( parameter [7:0] customId = 8'h00 )
   
   always @*
     case (valueA[12:10])
-      3'b000    : s_result <= s_sramDataValue;
-      3'b001    : s_result <= s_busStartAddressReg;
-      3'b010    : s_result <= {23'd0,s_memoryStartAddressReg};
-      3'b011    : s_result <= {22'd0,s_blockSizeReg};
-      3'b100    : s_result <= {24'd0,s_usedBurstSizeReg};
-      3'b101    : s_result <= {30'd0,s_busErrorReg,s_dmaIsBusy};
-      default   : s_result <= 32'd0;
+      3'b000    : s_result = s_sramDataValue;
+      3'b001    : s_result = s_busStartAddressReg;
+      3'b010    : s_result = {23'd0,s_memoryStartAddressReg};
+      3'b011    : s_result = {22'd0,s_blockSizeReg};
+      3'b100    : s_result = {24'd0,s_usedBurstSizeReg};
+      3'b101    : s_result = {30'd0,s_busErrorReg,s_dmaIsBusy};
+      default   : s_result = 32'd0;
     endcase
   
   assign result = (s_isSramReadReg == 1'b1) ? s_result : 32'd0;

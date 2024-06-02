@@ -113,37 +113,37 @@ module i2cMaster #( parameter CLOCK_FREQUENCY = 12000000,
   
   always @*
     case (s_stateMachineReg)
-      IDLE      : s_stateMachineNext <= (s_actionPendingReg == 1'b1 && s_clockCountReg == 2'd0) ? SENDSTART : IDLE;
-      SENDSTART : s_stateMachineNext <= A6;
-      A6        : s_stateMachineNext <= A5;
-      A5        : s_stateMachineNext <= A4;
-      A4        : s_stateMachineNext <= A3;
-      A3        : s_stateMachineNext <= A2;
-      A2        : s_stateMachineNext <= A1;
-      A1        : s_stateMachineNext <= A0;
-      A0        : s_stateMachineNext <= DIR;
-      DIR       : s_stateMachineNext <= ACK1;
-      ACK1      : s_stateMachineNext <= (s_ackErrorReg != 1'b0) ? SENDSTOP : 
+      IDLE      : s_stateMachineNext = (s_actionPendingReg == 1'b1 && s_clockCountReg == 2'd0) ? SENDSTART : IDLE;
+      SENDSTART : s_stateMachineNext = A6;
+      A6        : s_stateMachineNext = A5;
+      A5        : s_stateMachineNext = A4;
+      A4        : s_stateMachineNext = A3;
+      A3        : s_stateMachineNext = A2;
+      A2        : s_stateMachineNext = A1;
+      A1        : s_stateMachineNext = A0;
+      A0        : s_stateMachineNext = DIR;
+      DIR       : s_stateMachineNext = ACK1;
+      ACK1      : s_stateMachineNext = (s_ackErrorReg != 1'b0) ? SENDSTOP : 
                                         (s_isReadActionReg == 1'b0 || s_firstReadPassReg == 1'b1) ? R7 : D7;
-      R7        : s_stateMachineNext <= R6;
-      R6        : s_stateMachineNext <= R5;
-      R5        : s_stateMachineNext <= R4;
-      R4        : s_stateMachineNext <= R3;
-      R3        : s_stateMachineNext <= R2;
-      R2        : s_stateMachineNext <= R1;
-      R1        : s_stateMachineNext <= R0;
-      R0        : s_stateMachineNext <= ACK2;
-      ACK2      : s_stateMachineNext <= (s_ackErrorReg != 1'b0 || s_firstReadPassReg == 1'b1) ? SENDSTOP : D7;
-      D7        : s_stateMachineNext <= D6;
-      D6        : s_stateMachineNext <= D5;
-      D5        : s_stateMachineNext <= D4;
-      D4        : s_stateMachineNext <= D3;
-      D3        : s_stateMachineNext <= D2;
-      D2        : s_stateMachineNext <= D1;
-      D1        : s_stateMachineNext <= D0;
-      D0        : s_stateMachineNext <= ACK3;
-      ACK3      : s_stateMachineNext <= SENDSTOP;
-      default   : s_stateMachineNext <= IDLE;
+      R7        : s_stateMachineNext = R6;
+      R6        : s_stateMachineNext = R5;
+      R5        : s_stateMachineNext = R4;
+      R4        : s_stateMachineNext = R3;
+      R3        : s_stateMachineNext = R2;
+      R2        : s_stateMachineNext = R1;
+      R1        : s_stateMachineNext = R0;
+      R0        : s_stateMachineNext = ACK2;
+      ACK2      : s_stateMachineNext = (s_ackErrorReg != 1'b0 || s_firstReadPassReg == 1'b1) ? SENDSTOP : D7;
+      D7        : s_stateMachineNext = D6;
+      D6        : s_stateMachineNext = D5;
+      D5        : s_stateMachineNext = D4;
+      D4        : s_stateMachineNext = D3;
+      D3        : s_stateMachineNext = D2;
+      D2        : s_stateMachineNext = D1;
+      D1        : s_stateMachineNext = D0;
+      D0        : s_stateMachineNext = ACK3;
+      ACK3      : s_stateMachineNext = SENDSTOP;
+      default   : s_stateMachineNext = IDLE;
     endcase
   
   always @(posedge clock)
@@ -170,33 +170,33 @@ module i2cMaster #( parameter CLOCK_FREQUENCY = 12000000,
   
   always @*
     case (s_stateMachineReg)
-      SENDSTART  : s_sdaNext <= (s_clockCountReg == 2'd1) ? 1'b1 : 1'b0;
-      A6         : s_sdaNext <= address[6];
-      A5         : s_sdaNext <= address[5];
-      A4         : s_sdaNext <= address[4];
-      A3         : s_sdaNext <= address[3];
-      A2         : s_sdaNext <= address[2];
-      A1         : s_sdaNext <= address[1];
-      A0         : s_sdaNext <= address[0];
-      DIR        : s_sdaNext <= s_isReadActionReg & ~s_firstReadPassReg;
-      R7         : s_sdaNext <= regIn[7];
-      R6         : s_sdaNext <= regIn[6];
-      R5         : s_sdaNext <= regIn[5];
-      R4         : s_sdaNext <= regIn[4];
-      R3         : s_sdaNext <= regIn[3];
-      R2         : s_sdaNext <= regIn[2];
-      R1         : s_sdaNext <= regIn[1];
-      R0         : s_sdaNext <= regIn[0];
-      D7         : s_sdaNext <= dataIn[7] | s_isReadActionReg;
-      D6         : s_sdaNext <= dataIn[6] | s_isReadActionReg;
-      D5         : s_sdaNext <= dataIn[5] | s_isReadActionReg;
-      D4         : s_sdaNext <= dataIn[4] | s_isReadActionReg;
-      D3         : s_sdaNext <= dataIn[3] | s_isReadActionReg;
-      D2         : s_sdaNext <= dataIn[2] | s_isReadActionReg;
-      D1         : s_sdaNext <= dataIn[1] | s_isReadActionReg;
-      D0         : s_sdaNext <= dataIn[0] | s_isReadActionReg;
-      SENDSTOP   : s_sdaNext <= 1'b0;
-      default    : s_sdaNext <= 1'b1;
+      SENDSTART  : s_sdaNext = (s_clockCountReg == 2'd1) ? 1'b1 : 1'b0;
+      A6         : s_sdaNext = address[6];
+      A5         : s_sdaNext = address[5];
+      A4         : s_sdaNext = address[4];
+      A3         : s_sdaNext = address[3];
+      A2         : s_sdaNext = address[2];
+      A1         : s_sdaNext = address[1];
+      A0         : s_sdaNext = address[0];
+      DIR        : s_sdaNext = s_isReadActionReg & ~s_firstReadPassReg;
+      R7         : s_sdaNext = regIn[7];
+      R6         : s_sdaNext = regIn[6];
+      R5         : s_sdaNext = regIn[5];
+      R4         : s_sdaNext = regIn[4];
+      R3         : s_sdaNext = regIn[3];
+      R2         : s_sdaNext = regIn[2];
+      R1         : s_sdaNext = regIn[1];
+      R0         : s_sdaNext = regIn[0];
+      D7         : s_sdaNext = dataIn[7] | s_isReadActionReg;
+      D6         : s_sdaNext = dataIn[6] | s_isReadActionReg;
+      D5         : s_sdaNext = dataIn[5] | s_isReadActionReg;
+      D4         : s_sdaNext = dataIn[4] | s_isReadActionReg;
+      D3         : s_sdaNext = dataIn[3] | s_isReadActionReg;
+      D2         : s_sdaNext = dataIn[2] | s_isReadActionReg;
+      D1         : s_sdaNext = dataIn[1] | s_isReadActionReg;
+      D0         : s_sdaNext = dataIn[0] | s_isReadActionReg;
+      SENDSTOP   : s_sdaNext = 1'b0;
+      default    : s_sdaNext = 1'b1;
     endcase
   
   always @(posedge clock)

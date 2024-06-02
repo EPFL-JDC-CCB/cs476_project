@@ -128,9 +128,9 @@ module dCache ( input wire         cpuClock,
   
   always @*
     case (storeMode)
-      2'b01   : s_dataFromCpu <= cpuDataIn;
-      2'b10   : s_dataFromCpu <= {cpuDataIn[23:16], cpuDataIn[31:24], cpuDataIn[7:0], cpuDataIn[15:8]};
-      default : s_dataFromCpu <= {cpuDataIn[7:0], cpuDataIn[15:8], cpuDataIn[23:16], cpuDataIn[31:24]};
+      2'b01   : s_dataFromCpu = cpuDataIn;
+      2'b10   : s_dataFromCpu = {cpuDataIn[23:16], cpuDataIn[31:24], cpuDataIn[7:0], cpuDataIn[15:8]};
+      default : s_dataFromCpu = {cpuDataIn[7:0], cpuDataIn[15:8], cpuDataIn[23:16], cpuDataIn[31:24]};
     endcase
 
   assign s_weSpm[0] = (memoryAddress[31:13] == SPM_BASE[31:13] && s_stall == 1'b0 &&
@@ -161,14 +161,14 @@ module dCache ( input wire         cpuClock,
   always @*
     case (s_loadModeReg[1:0])
       2'b01   : case (s_memoryAddressReg[1:0])
-                  2'b00   : cpuDataOut <= {{24{(s_selectedData[7]&s_loadModeReg[2])}}, s_selectedData[7:0]};
-                  2'b01   : cpuDataOut <= {{24{(s_selectedData[15]&s_loadModeReg[2])}}, s_selectedData[15:8]};
-                  2'b10   : cpuDataOut <= {{24{(s_selectedData[23]&s_loadModeReg[2])}}, s_selectedData[23:16]};
-                  default : cpuDataOut <= {{24{(s_selectedData[31]&s_loadModeReg[2])}}, s_selectedData[31:24]};
+                  2'b00   : cpuDataOut = {{24{(s_selectedData[7]&s_loadModeReg[2])}}, s_selectedData[7:0]};
+                  2'b01   : cpuDataOut = {{24{(s_selectedData[15]&s_loadModeReg[2])}}, s_selectedData[15:8]};
+                  2'b10   : cpuDataOut = {{24{(s_selectedData[23]&s_loadModeReg[2])}}, s_selectedData[23:16]};
+                  default : cpuDataOut = {{24{(s_selectedData[31]&s_loadModeReg[2])}}, s_selectedData[31:24]};
                 endcase
-      2'b10   : cpuDataOut <= (s_memoryAddressReg[1] == 1'b0) ? {{16{(s_selectedData[7]&s_loadModeReg[2])}}, s_selectedData[7:0], s_selectedData[15:8]} :
+      2'b10   : cpuDataOut = (s_memoryAddressReg[1] == 1'b0) ? {{16{(s_selectedData[7]&s_loadModeReg[2])}}, s_selectedData[7:0], s_selectedData[15:8]} :
                               {{16{(s_selectedData[23]&s_loadModeReg[2])}}, s_selectedData[23:16], s_selectedData[31:24]};
-      default : cpuDataOut <= {s_selectedData[7:0], s_selectedData[15:8], s_selectedData[23:16], s_selectedData[31:24]};
+      default : cpuDataOut = {s_selectedData[7:0], s_selectedData[15:8], s_selectedData[23:16], s_selectedData[31:24]};
     endcase
 
   /*
@@ -180,10 +180,10 @@ module dCache ( input wire         cpuClock,
   
   always @*
     case (s_stateReg)
-      IDLE            : s_stateNext <= (s_stallReg == 1'b1) ? REQUEST_ACTION : IDLE;
-      REQUEST_ACTION  : s_stateNext <= WAIT_FOR_ACTION;
-      WAIT_FOR_ACTION : s_stateNext <= (s_busActionDone == 1'b1) ? SIGNAL_DONE : WAIT_FOR_ACTION;
-      default         : s_stateNext <= IDLE;
+      IDLE            : s_stateNext = (s_stallReg == 1'b1) ? REQUEST_ACTION : IDLE;
+      REQUEST_ACTION  : s_stateNext = WAIT_FOR_ACTION;
+      WAIT_FOR_ACTION : s_stateNext = (s_busActionDone == 1'b1) ? SIGNAL_DONE : WAIT_FOR_ACTION;
+      default         : s_stateNext = IDLE;
     endcase
   
   always @(posedge cpuClock) s_stateReg <= (cpuReset == 1'b1) ? IDLE : s_stateNext;
@@ -207,16 +207,16 @@ module dCache ( input wire         cpuClock,
   
   always @*
     case (s_busStateReg)
-      NOOP             : s_busStateNext <= (s_stateReg == REQUEST_ACTION) ? REQUEST_BUS : NOOP;
-      REQUEST_BUS      : s_busStateNext <= (busAccessGranted == 1'b1) ? INIT_TRANSACTION : REQUEST_BUS;
-      INIT_TRANSACTION : s_busStateNext <= (s_loadModeReg == 3'd0) ? DO_WRITE : WAIT_READ;
-      WAIT_READ        : s_busStateNext <= (busErrorIn == 1'b1) ? BUS_ERROR :
+      NOOP             : s_busStateNext = (s_stateReg == REQUEST_ACTION) ? REQUEST_BUS : NOOP;
+      REQUEST_BUS      : s_busStateNext = (busAccessGranted == 1'b1) ? INIT_TRANSACTION : REQUEST_BUS;
+      INIT_TRANSACTION : s_busStateNext = (s_loadModeReg == 3'd0) ? DO_WRITE : WAIT_READ;
+      WAIT_READ        : s_busStateNext = (busErrorIn == 1'b1) ? BUS_ERROR :
                                            (endTransactionIn == 1'b1) ? SIG_DONE : WAIT_READ;
-      DO_WRITE         : s_busStateNext <= (busErrorIn == 1'b1) ? BUS_ERROR :
+      DO_WRITE         : s_busStateNext = (busErrorIn == 1'b1) ? BUS_ERROR :
                                            (busyIn == 1'b1) ? DO_WRITE : END_WRITE;
       END_WRITE,
-      BUS_ERROR        : s_busStateNext <= SIG_DONE;
-      default          : s_busStateNext <= IDLE;
+      BUS_ERROR        : s_busStateNext = SIG_DONE;
+      default          : s_busStateNext = IDLE;
     endcase
 
   always @(posedge cpuClock)

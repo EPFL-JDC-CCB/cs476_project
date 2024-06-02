@@ -162,11 +162,11 @@ module fetchStage #(parameter [31:0] NOP_INSTRUCTION = 32'h1500FFFF)
   
   always @*
     case (s_stateReg)
-      IDLE               : s_nextState <= (s_stallReg == 1'b1) ? REQUEST_CACHE_LINE : IDLE;
-      REQUEST_CACHE_LINE : s_nextState <= WAIT_CACHE_LINE;
-      WAIT_CACHE_LINE    : s_nextState <= (s_ackClBus == 1'b1) ? UPDATE_TAG : WAIT_CACHE_LINE;
-      UPDATE_TAG         : s_nextState <= LOOKUP;
-      default            : s_nextState <= IDLE;
+      IDLE               : s_nextState = (s_stallReg == 1'b1) ? REQUEST_CACHE_LINE : IDLE;
+      REQUEST_CACHE_LINE : s_nextState = WAIT_CACHE_LINE;
+      WAIT_CACHE_LINE    : s_nextState = (s_ackClBus == 1'b1) ? UPDATE_TAG : WAIT_CACHE_LINE;
+      UPDATE_TAG         : s_nextState = LOOKUP;
+      default            : s_nextState = IDLE;
     endcase
   
   always @(posedge cpuClock) s_stateReg <= (cpuReset == 1'b1) ? IDLE : s_nextState;
@@ -189,13 +189,13 @@ module fetchStage #(parameter [31:0] NOP_INSTRUCTION = 32'h1500FFFF)
   
   always @*
     case (s_busStateReg)
-      NOP              : s_nextBusState <= (s_stateReg == REQUEST_CACHE_LINE) ? REQUEST_BUS : NOP;
-      REQUEST_BUS      : s_nextBusState <= (busAccessGranted == 1'b1) ? INIT_TRANSACTION : REQUEST_BUS;
-      INIT_TRANSACTION : s_nextBusState <= WAIT_BURST;
-      WAIT_BURST       : s_nextBusState <= (busErrorIn == 1'b1) ? BUS_ERROR:
+      NOP              : s_nextBusState = (s_stateReg == REQUEST_CACHE_LINE) ? REQUEST_BUS : NOP;
+      REQUEST_BUS      : s_nextBusState = (busAccessGranted == 1'b1) ? INIT_TRANSACTION : REQUEST_BUS;
+      INIT_TRANSACTION : s_nextBusState = WAIT_BURST;
+      WAIT_BURST       : s_nextBusState = (busErrorIn == 1'b1) ? BUS_ERROR:
                                            (endTransactionIn == 1'b1) ? SIGNAL_DONE : WAIT_BURST;
-      BUS_ERROR        : s_nextBusState <= SIGNAL_DONE;
-      default          : s_nextBusState <= IDLE;
+      BUS_ERROR        : s_nextBusState = SIGNAL_DONE;
+      default          : s_nextBusState = IDLE;
     endcase
 
   always @(posedge cpuClock)

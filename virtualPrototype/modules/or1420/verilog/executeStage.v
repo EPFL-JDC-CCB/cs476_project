@@ -88,16 +88,16 @@ module executeStage ( input wire         cpuClock,
   always @* 
   begin
     case (exeForwardCntrlA)
-      2'b00   : s_opperantA <= exePortADataIn;
-      2'b01   : s_opperantA <= exeWbData;
-      2'b10   : s_opperantA <= memWbData;
-      default : s_opperantA <= wbWbData;
+      2'b00   : s_opperantA = exePortADataIn;
+      2'b01   : s_opperantA = exeWbData;
+      2'b10   : s_opperantA = memWbData;
+      default : s_opperantA = wbWbData;
     endcase
     case (exeForwardCntrlB)
-      2'b00   : s_opperantB <= exePortBDataIn;
-      2'b01   : s_opperantB <= exeWbData;
-      2'b10   : s_opperantB <= memWbData;
-      default : s_opperantB <= wbWbData;
+      2'b00   : s_opperantB = exePortBDataIn;
+      2'b01   : s_opperantB = exeWbData;
+      2'b10   : s_opperantB = memWbData;
+      default : s_opperantB = wbWbData;
     endcase
   end
 
@@ -105,10 +105,10 @@ module executeStage ( input wire         cpuClock,
   wire s_isException = exeExcepMode[2] | exeExcepMode[1] | exeExcepMode[0];
   always @* 
     case (exeJumpMode)
-        2'b01   : doJump <= 1'b1;
-        2'b10   : doJump <= s_flagReg | s_isException | exeRfe;
-        2'b11   : doJump <= ~s_flagReg | s_isException | exeRfe;
-        default : doJump <= exeSoftReset | s_isException | exeRfe;
+        2'b01   : doJump = 1'b1;
+        2'b10   : doJump = s_flagReg | s_isException | exeRfe;
+        2'b11   : doJump = ~s_flagReg | s_isException | exeRfe;
+        default : doJump = exeSoftReset | s_isException | exeRfe;
     endcase
 
   // here the exception control is defined
@@ -130,9 +130,9 @@ module executeStage ( input wire         cpuClock,
   // here the memory stage signals are defined
   always @* 
     case (memStoreModeIn)
-        2'b01   : s_memStoreDataNext <= {s_opperantB[7:0], s_opperantB[7:0], s_opperantB[7:0], s_opperantB[7:0]};
-        2'b10   : s_memStoreDataNext <= {s_opperantB[15:0], s_opperantB[15:0]};
-        default : s_memStoreDataNext <= s_opperantB;
+        2'b01   : s_memStoreDataNext = {s_opperantB[7:0], s_opperantB[7:0], s_opperantB[7:0], s_opperantB[7:0]};
+        2'b10   : s_memStoreDataNext = {s_opperantB[15:0], s_opperantB[15:0]};
+        default : s_memStoreDataNext = s_opperantB;
     endcase
   always @(posedge cpuClock ) if (stall == 1'b0) memStoreData <= s_memStoreDataNext;
 

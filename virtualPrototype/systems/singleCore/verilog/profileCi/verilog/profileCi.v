@@ -62,11 +62,15 @@ module profileCi #( parameter[7:0] customId = 8'h00 )
             .counterValue(s_counterValue3));
 
   always @*
-    if (s_isMyCi == 1'b0) result <= 32'd0;
-    else case (valueA[1:0])
-      2'd0    : result <= s_counterValue0;
-      2'd1    : result <= s_counterValue1;
-      2'd2    : result <= s_counterValue2;
-      default : result <= s_counterValue3;
-    endcase
+    if (s_isMyCi == 1'b0) begin
+      result = 32'd0;
+    end
+    else begin
+      case (valueA[1:0])
+        2'd0    : result = s_counterValue0;
+        2'd1    : result = s_counterValue1;
+        2'd2    : result = s_counterValue2;
+        default : result = s_counterValue3;
+      endcase
+    end
 endmodule
