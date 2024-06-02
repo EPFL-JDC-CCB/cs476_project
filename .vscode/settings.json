@@ -18,5 +18,10 @@
         "${workspaceFolder}/virtualPrototype/systems/singleCore/verilog/ramDmaCi",
         "${workspaceFolder}/virtualPrototype/systems/singleCore/verilog/rgb565",
         "${workspaceFolder}/virtualPrototype/systems/singleCore/tb"
-    ]
+    ],
+    "files.associations": {
+        "biosold_compressed.h": "c",
+        "biosold_orig.h": "c",
+        "biosold_default.h": "c"
+    }
 }

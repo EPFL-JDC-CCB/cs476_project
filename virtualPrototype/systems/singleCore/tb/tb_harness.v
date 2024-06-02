@@ -52,7 +52,7 @@ module tb_harness ( input wire clk, input wire rst );
     ///////////////////////////
     uartdpi #(
         .BAUD(115200),
-        .FREQ(74_250_000),
+        .FREQ(74_250_000)
     ) iUART (
         .clk_i(clk),
         .rst_ni(~rst),

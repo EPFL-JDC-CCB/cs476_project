@@ -1,4 +1,4 @@
-../../../modules/bios/verilog/bios1_rom.v
+../../../modules/bios/verilog/biosRom.v
 ../../../modules/bios/verilog/bios.v
 ../../../modules/bus_arbiter/verilog/busArbiter.v
 ../../../modules/bus_arbiter/verilog/queueMemory.v
