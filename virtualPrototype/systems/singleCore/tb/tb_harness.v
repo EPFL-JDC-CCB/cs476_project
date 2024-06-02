@@ -68,16 +68,16 @@ module tb_harness ( input wire clk, input wire rst );
     /////////////////////////////
     // instantiate uart model //
     ///////////////////////////
-    uartdpi #(
-        .BAUD(115200),
-        .FREQ(74_250_000)
-    ) iUART (
-        .clk_i(clk),
-        .rst_ni(~rst),
-        .active(1'b1),
-        .tx_o(RxD),
-        .rx_i(TxD)
-    );
+    //uartdpi #(
+    //    .BAUD(115200),
+    //    .FREQ(74_250_000)
+    //) iUART (
+    //    .clk_i(clk),
+    //    .rst_ni(~rst),
+    //    .active(1'b1),
+    //    .tx_o(RxD),
+    //    .rx_i(TxD)
+    //);
 
     ////////////////////////
     // instantatiate SoC //

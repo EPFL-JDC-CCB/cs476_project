@@ -12,7 +12,7 @@ int bios() {
     volatile int* base = (volatile int*)4;
     volatile int* print_base = (volatile int*)0x50000000;
     *base = 0xDEADBEEF;
-    *print_base = 1;
+    *print_base = *base;
     if (*base != 0xDEADBEEF) {
         *print_base = 0;
     } else {
