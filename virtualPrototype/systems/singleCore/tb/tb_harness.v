@@ -46,6 +46,24 @@ module tb_harness ( input wire clk, input wire rst );
     .bus_error_o(mem_out_error)
     );
 
+    //////////////////////////////
+    // instantiate print slave //
+    ////////////////////////////
+
+    simplePrintSlave #(
+        .baseAddr(32'h50000000)
+    ) iPRINTSLV (
+    .clk_i(clk),
+    .rst_i(rst),
+    .bus_addrData_i(s_addressData),
+    .bus_byteEnables_i(s_byteEnables),
+    .bus_burstSize_i(s_burstSize),
+    .bus_readNWrite_i(s_readNotWrite),
+    .bus_beginTransaction_i(s_beginTransaction),
+    .bus_endTransaction_i(s_endTransaction),
+    .bus_dataValid_i(s_dataValid)
+    );
+
 
     /////////////////////////////
     // instantiate uart model //

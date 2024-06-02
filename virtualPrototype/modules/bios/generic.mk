@@ -10,6 +10,8 @@ CC = or1k-elf-gcc
 
 default: verilog/$(VERILOG_MODULE).v
 
+.PHONY: $(BUILD)/$(BIOS_BIN) verilog/$(VERILOG_MODULE).v
+
 $(BUILD)/$(BIOS_BIN): $(SRCS) c/$(BINARY_NAME).c $(BUILD)
 	echo "#define compiledate \"Build version: $(shell date)\\\\n\\\\n\"" > c/date.h
 	$(CC) $(CFLAGS) $(SRCS) c/$(BINARY_NAME).c -o $(BUILD)/$(BIOS_BIN)

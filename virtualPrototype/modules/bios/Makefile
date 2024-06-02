@@ -1,4 +1,4 @@
-.PHONY: clean biosOR1420 biosOld uartTest
+.PHONY: clean biosOR1420 biosOld uartTest memTest
 
 biosOR1420:
 	make -f generic.mk CFLAGS="-D OR1420 -msoft-div -Os -nostartfiles -Wl,-Ttext=0xF0000000" BINARY_NAME=$@
@@ -8,6 +8,10 @@ biosOld:
 
 uartTest:
 	make -f generic.mk SRCS="c/crt0.S c/uart.c" CFLAGS="-D OR1420 -msoft-div -Os -nostartfiles -fno-builtin -Wl,-Ttext=0xF0000000" BINARY_NAME=$@
+
+memTest:
+	make -f generic.mk SRCS="c/crt0.S" CFLAGS="-D OR1420 -msoft-div -Os -nostartfiles -fno-builtin -Wl,-Ttext=0xF0000000" BINARY_NAME=$@
+
 
 clean:
 	rm -rf build/
