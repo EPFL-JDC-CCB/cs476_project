@@ -51,11 +51,11 @@
 ../../../modules/support/verilog/sram_1024x16_dp.v
 ../../../modules/support/verilog/sram2048x8Dp.v
 ../verilog/or1420SingleCore.v
-../verilog/or1420SingleCoreSDRAM.v
-../verilog/top.v
 ../verilog/profileCi/verilog/profileCi.v
 ../verilog/profileCi/verilog/counter.v
 ../verilog/grayscaleCi/verilog/rgb565Grayscale.v
 ../verilog/grayscaleCi/verilog/rgb565ISE.v
 ../verilog/ramDmaCi/verilog/ramDmaCi.v
 ../verilog/ramDmaCi/verilog/dualPortSSram.v
+../verilog/or1420SingleCoreSDRAM.v
+../verilog/top.v

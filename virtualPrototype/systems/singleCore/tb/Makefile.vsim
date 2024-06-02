@@ -1,0 +1,2 @@
+run:
+    vsim -do vsim.tcl
