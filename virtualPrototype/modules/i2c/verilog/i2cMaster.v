@@ -1,3 +1,4 @@
+`default_nettype none 
 `default_nettype none
 module i2cMaster #( parameter CLOCK_FREQUENCY = 12000000,
                     parameter I2C_FREQUENCY = 1000000)

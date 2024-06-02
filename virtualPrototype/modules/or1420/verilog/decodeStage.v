@@ -1,3 +1,4 @@
+`default_nettype none 
 module decodeStage ( input wire  cpuClock,
                                  cpuReset,
                                  stall,

@@ -1,3 +1,4 @@
+`default_nettype none 
 module sdramFifo ( input wire        clock,
                                      reset,
                                      clearReadFifo,

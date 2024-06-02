@@ -1,3 +1,4 @@
+`default_nettype none 
 module counter #( parameter WIDTH = 8)
                 ( input wire reset,
                              clock,

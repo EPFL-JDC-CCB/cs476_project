@@ -1,3 +1,4 @@
+`default_nettype none 
 module fetchStage #(parameter [31:0] NOP_INSTRUCTION = 32'h1500FFFF)
                    (input wire         cpuClock,
                                        cpuReset,

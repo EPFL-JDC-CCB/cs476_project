@@ -1,3 +1,4 @@
+`default_nettype none 
 module charRom ( input wire        clock,
                  input wire [9:0] address,
                  output reg [7:0]  data);

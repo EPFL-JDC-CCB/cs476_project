@@ -1,3 +1,4 @@
+`default_nettype none 
 module logicUnit ( input wire [2:0]   opcode,
                    input wire [31:0]  operantA,
                                       operantB,

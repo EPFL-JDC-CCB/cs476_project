@@ -1,3 +1,4 @@
+`default_nettype none 
 module dCache ( input wire         cpuClock,
                                    cpuReset,
                                    iCacheStall,

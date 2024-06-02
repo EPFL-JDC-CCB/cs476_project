@@ -1,3 +1,4 @@
+`default_nettype none 
 module sram512X32 ( input wire        clock,
                                       writeEnable,
                     input wire [8:0]  address,

@@ -1,3 +1,4 @@
+`default_nettype none 
 // Original top bios file: c/memTest.c
 
 module biosRom ( input wire        clock,

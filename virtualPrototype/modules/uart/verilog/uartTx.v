@@ -1,3 +1,4 @@
+`default_nettype none 
 module uartTx ( input wire        clock,
                                   reset,
                                   baudRateX2tick,

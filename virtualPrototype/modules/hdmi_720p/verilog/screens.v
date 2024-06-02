@@ -1,3 +1,4 @@
+`default_nettype none 
 module screens #( parameter [31:0] baseAddress = 32'h00000000,
                   parameter [26:0] pixelClockFrequency = 27'd60000000,
                   parameter [26:0] cursorBlinkFrequency = 27'd1)

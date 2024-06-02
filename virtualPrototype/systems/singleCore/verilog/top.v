@@ -1,3 +1,4 @@
+`default_nettype none 
 module top			    ( input wire         clock12MHz,
                                              clock50MHz,
                                              nReset,

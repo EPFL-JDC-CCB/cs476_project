@@ -1,3 +1,4 @@
+`default_nettype none 
 module sram2048X8Dp ( input wire        clockA,
                                         writeEnableA,
                       input wire [10:0] addressA,

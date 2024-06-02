@@ -1,3 +1,4 @@
+`default_nettype none 
 module busArbiter ( input wire         clock,
                                        reset,
                     input wire [31:0]  busRequests,

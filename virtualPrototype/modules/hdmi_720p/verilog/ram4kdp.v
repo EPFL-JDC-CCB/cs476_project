@@ -1,3 +1,4 @@
+`default_nettype none 
 module dualPortRam4k ( input wire [11:0] address1,
                                          address2,
                        input wire        clock1,

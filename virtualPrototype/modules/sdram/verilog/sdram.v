@@ -1,3 +1,4 @@
+`default_nettype none 
 `default_nettype none
 module sdramController #( parameter [31:0] baseAddress = 32'h00000000,
                           parameter        systemClockInHz = 40000000 ) // supports up to 100MHz

@@ -1,3 +1,4 @@
+`default_nettype none 
 module spiShiftSingle ( input wire         clock,
                                            reset,
                                            startErase,

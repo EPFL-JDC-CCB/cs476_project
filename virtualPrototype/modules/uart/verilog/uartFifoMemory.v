@@ -1,3 +1,4 @@
+`default_nettype none 
 module uartFifoMemory ( input wire         writeClock,
                                            writeEnable,
                         input wire [3:0]   writeAddress,

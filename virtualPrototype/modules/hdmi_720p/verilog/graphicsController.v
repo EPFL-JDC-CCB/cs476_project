@@ -1,3 +1,4 @@
+`default_nettype none 
 module graphicsController #( parameter [31:0] baseAddress = 32'h00000000) // maximum height supported is 720
                           ( input wire         clock,
                                                reset,

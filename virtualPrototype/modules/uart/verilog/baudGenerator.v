@@ -1,3 +1,4 @@
+`default_nettype none 
 module baudGenerator ( input wire        clock,
                                          reset,
                        input wire [15:0] baudDivisor,

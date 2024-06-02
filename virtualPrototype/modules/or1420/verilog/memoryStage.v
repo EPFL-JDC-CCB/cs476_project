@@ -1,3 +1,4 @@
+`default_nettype none 
 module memoryStage ( input wire        cpuClock,
                                        cpuReset,
                                        stall,

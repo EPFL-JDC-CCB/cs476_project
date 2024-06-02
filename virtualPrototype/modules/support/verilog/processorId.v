@@ -1,3 +1,4 @@
+`default_nettype none 
 module processorId #( parameter [2:0] processorId = 1,
                       parameter [2:0] NumberOfProcessors = 1,
                       parameter ReferenceClockFrequencyInHz = 12000000 )

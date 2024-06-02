@@ -1,3 +1,4 @@
+`default_nettype none 
 module shifter ( input wire [2:0]   control,
                  input wire         flagIn,
                  input wire [31:0]  operantA,

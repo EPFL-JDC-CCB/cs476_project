@@ -1,3 +1,4 @@
+`default_nettype none 
 module dualPortSSRAM #( parameter bitwidth = 8,
                         parameter nrOfEntries = 512)
                       ( input wire                             clockA, clockB,

@@ -1,3 +1,4 @@
+`default_nettype none 
 module synchroFlop ( input wire  clockIn,
                                  clockOut,
                                  reset,

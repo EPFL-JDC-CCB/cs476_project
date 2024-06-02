@@ -1,3 +1,4 @@
+`default_nettype none 
 module swapByte #(parameter [7:0]  customIntructionNr = 8'd0)
                  (input wire [7:0]   ciN,
                   input wire [31:0]  ciDataA,

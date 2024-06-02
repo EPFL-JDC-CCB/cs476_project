@@ -1,3 +1,4 @@
+`default_nettype none 
 module delayIse #( parameter referenceClockFrequencyInHz = 12000000,
                    parameter [7:0] customInstructionId = 8'd0 )
                 ( input wire         clock,

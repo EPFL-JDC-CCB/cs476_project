@@ -1,3 +1,4 @@
+`default_nettype none 
 module profileCi #( parameter[7:0] customId = 8'h00 )
                   ( input wire        start,
                                       clock,

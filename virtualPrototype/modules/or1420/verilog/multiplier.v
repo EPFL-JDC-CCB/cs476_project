@@ -1,3 +1,4 @@
+`default_nettype none 
 module multiplier ( input wire         doMultiply,
                     input wire [31:0]  operantA,
                                        operantB,

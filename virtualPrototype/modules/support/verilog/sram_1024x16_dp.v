@@ -1,3 +1,4 @@
+`default_nettype none 
 module sram1024X16Dp ( input wire        clockA,
                                          writeEnableA,
                        input wire [9:0]  addressA,

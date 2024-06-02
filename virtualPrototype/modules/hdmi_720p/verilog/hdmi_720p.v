@@ -1,3 +1,4 @@
+`default_nettype none 
 module hdmi_720p ( input wire pixelClockIn,
                               reset,
                               testPicture,

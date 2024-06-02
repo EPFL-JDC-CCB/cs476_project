@@ -1,3 +1,4 @@
+`default_nettype none 
 module adder ( input wire         flagIn,
                                   carryIn,
                input wire [1:0]   opcode,

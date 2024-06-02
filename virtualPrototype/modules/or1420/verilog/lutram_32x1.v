@@ -1,3 +1,4 @@
+`default_nettype none 
 module lutRam32x1 ( input wire       clock,
                                      we,
                                      dataIn,

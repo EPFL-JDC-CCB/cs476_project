@@ -1,3 +1,4 @@
+`default_nettype none 
 module dCacheSpm ( input wire        clock,
                    input wire [3:0]  byteWe,
                    input wire [10:0]  address,

@@ -1,3 +1,4 @@
+`default_nettype none 
 module uartBus #( parameter [31:0] baseAddress = 0 )
                ( input wire         clock,
                                     reset,

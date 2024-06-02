@@ -1,3 +1,4 @@
+`default_nettype none 
 module textController #(parameter [15:0] defaultForeGroundColor = 16'hFFFF,
                         parameter [15:0] defaultBackGroundColor = 16'd0,
                         parameter [7:0]  customIntructionNr = 8'd0,

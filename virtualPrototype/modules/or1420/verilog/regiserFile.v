@@ -1,3 +1,4 @@
+`default_nettype none 
 module registerFile ( input wire         cpuClock,
                                          stall,
                                          inExceptionMode,

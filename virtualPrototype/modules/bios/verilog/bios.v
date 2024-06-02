@@ -1,3 +1,4 @@
+`default_nettype none 
 module bios ( input wire       clock,
                                reset,
             // here is the bus interface

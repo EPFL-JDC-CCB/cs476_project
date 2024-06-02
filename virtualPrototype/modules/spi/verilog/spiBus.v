@@ -1,3 +1,4 @@
+`default_nettype none 
 `default_nettype none
 module spiBus #( parameter [31:0] baseAddress = 32'h00000000,
                  parameter [7:0]  customIntructionNr = 8'd0)

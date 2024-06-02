@@ -1,3 +1,4 @@
+`default_nettype none 
 module tmdsEncoder ( input wire       clock,
                                       blank,
                      input wire [7:0] data,

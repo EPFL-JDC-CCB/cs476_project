@@ -1,3 +1,4 @@
+`default_nettype none 
 module camera #(parameter [7:0] customInstructionId = 8'd0,
                 parameter clockFrequencyInHz = 2000)
                (input wire         clock,

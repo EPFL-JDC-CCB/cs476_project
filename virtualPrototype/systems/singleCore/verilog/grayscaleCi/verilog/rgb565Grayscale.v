@@ -1,3 +1,4 @@
+`default_nettype none 
 module rgb565Grayscale( input wire [15:0] rgb565,
                         output wire [7:0] grayscale );
 

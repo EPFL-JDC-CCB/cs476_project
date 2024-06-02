@@ -1,3 +1,4 @@
+`default_nettype none 
 module sram32x32DpAr ( input wire         writeClock,
                                           writeEnable,
                        input wire [4:0]   writeAddress,

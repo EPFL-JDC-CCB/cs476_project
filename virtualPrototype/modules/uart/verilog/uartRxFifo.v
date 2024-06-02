@@ -1,3 +1,4 @@
+`default_nettype none 
 module uartRxFifo ( input wire        clock,
                                       reset,
                                       fifoRe,
