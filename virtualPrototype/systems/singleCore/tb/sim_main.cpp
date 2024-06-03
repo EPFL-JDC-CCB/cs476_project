@@ -24,20 +24,9 @@
 // Legacy function required only so linking works on Cygwin and MSVC++
 double sc_time_stamp() { return 0; }
 
-void set_pixel(Uint32 *buffer, int pos, Uint32 color)
+void set_pixel(Uint32 *buffer, int pos, SDL_Color color)
 {
-    int x, y;
-    if (pos < SCREEN_WIDTH * SCREEN_HEIGHT)
-    {
-        x = pos % (SCREEN_WIDTH);
-        y = pos / (SCREEN_WIDTH);
-        buffer[x + y * SCREEN_WIDTH] = color;
-    }
-    // else {
-    //     pos -= SCREEN_WIDTH*SCREEN_HEIGHT/2;
-    //     x = (SCREEN_WIDTH/2) + (pos % (SCREEN_WIDTH/2));
-    //     y = pos / (SCREEN_WIDTH/2);
-    // }
+    buffer[pos] = *(Uint32*)&color;
 }
 
 Uint32 *hdmi_screen;
@@ -198,17 +187,19 @@ int main(int argc, char **argv)
         {
             if (!top->horizontalSync && top->activePixel && !top->verticalSync)
             {
-                Uint8 r = top->red << 4;
-                Uint8 g = top->green << 12;
-                Uint8 b = top->blue << 20;
-                Uint32 c = 0xFF000000 | r | g | b;
-                set_pixel(hdmi_screen, hdmi_p, c);
+                SDL_Color color;
+                color.b = top->red << 4;
+                color.g = top->green << 4;
+                color.r = top->blue << 4;
+                color.a = 0xFF;
+                set_pixel(hdmi_screen, hdmi_p, color);
                 hdmi_p = (hdmi_p + 1) % (SCREEN_WIDTH * SCREEN_HEIGHT);
             }
         }
         pixelClock_1d = top->pixelClock;
 
         // Cam
+        #if 1
         if (vsync)
         {
             int cam_counter = ((clock_counter / 2) / 784) % 510;
@@ -233,6 +224,7 @@ int main(int argc, char **argv)
             if (((clock_counter / 2) / 784) % 510 == 509)
                 vsync = true;
         }
+        #endif
     }
 
     thread_hdmi.join();
