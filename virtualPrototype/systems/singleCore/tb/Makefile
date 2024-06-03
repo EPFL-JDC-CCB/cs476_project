@@ -51,6 +51,14 @@ endif
 ifneq ($(LIMIT),)
 VTOP_FLAGS += +limit=$(LIMIT)
 endif
+
+ifneq ($(MEMFILE),)
+VTOP_FLAGS += +memfile=out.mem
+endif
+
+ifneq ($(CPU_DEBUG),)
+VERILATOR_FLAGS += +define+CPU_DEBUG
+endif
 # Check SystemVerilog assertions
 # VERILATOR_FLAGS += --assert
 # Generate coverage analysis
@@ -82,6 +90,12 @@ run:
 #	$(MAKE) -j -C obj_dir -f Vtop.mk
 # 3. Or, call a submakefile where we can override the rules ourselves
 	$(MAKE) -j -C obj_dir -f V$(TOP).mk
+
+ifneq ($(MEMFILE),)
+	@echo
+	@echo "-- COPY MEMFILE ------------"
+	python3 adjust.py $(MEMFILE)
+endif
 
 	@echo
 	@echo "-- RUN ---------------------"

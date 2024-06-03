@@ -1,10 +1,10 @@
 module simpleMemSlave #(
     parameter [31: 0] baseAddr = 32'h0,
-    parameter memSize = 512,
-    parameter string hexFile = ""
+    parameter memSize = 512
 ) (
     input clk_i,
     input rst_i,
+    input string hexFile,
 
     // Slave Input
     input [31:0] bus_addrData_i,
@@ -31,6 +31,7 @@ initial begin
             mem[i] = 0;
         end
     end else begin
+        $display("Loading %s into flash...", hexFile);
         $readmemh(hexFile, mem);
     end
 end
