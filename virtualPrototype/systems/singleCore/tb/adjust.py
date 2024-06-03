@@ -8,7 +8,11 @@ f = open(sys.argv[1])
 g = open("out.mem", 'w')
 
 lines = f.readlines()
-size = int(lines[-3][1:], base=16) 
+size = 0
+
+for line in lines:
+    if line[0] == '@':
+        size = int(line[1:], base=16)
 
 idx = 0
 for line in lines:
@@ -17,7 +21,7 @@ for line in lines:
     else:
         if idx == 2:
             words = line.split(" ")
-            words[1] =  bytearray(int(size+1).to_bytes(4, 'little')).hex()
+            words[1] =  bytearray(int(size+0x800).to_bytes(4, 'little')).hex()
             g.write(" ".join(words))
         else:
             g.write(line)

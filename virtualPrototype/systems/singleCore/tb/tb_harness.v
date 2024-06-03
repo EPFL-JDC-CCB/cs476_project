@@ -45,7 +45,7 @@ module tb_harness #(
         .baseAddr(32'h00000000),
         // 1MB just for testing
         // real system has 32MB
-        .memSize(1024*256)
+        .memSize(1024*1024*32)
     ) iMEM (
     .clk_i(clk),
     .rst_i(rst),

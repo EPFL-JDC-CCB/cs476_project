@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "fractal_fxpt.h": "c",
+        "main.h": "c",
+        "stdint.h": "c",
+        "cache.h": "c",
+        "defs.h": "c",
+        "stddef.h": "c"
+    }
+}
