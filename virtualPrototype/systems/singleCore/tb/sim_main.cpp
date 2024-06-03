@@ -15,8 +15,8 @@
 #include "Vtb_harness.h"
 
 // Include SDL2 stuff
+#include <thread>
 #include <SDL2/SDL.h>
-#include <iostream>
 
 #define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 720
@@ -26,7 +26,75 @@ double sc_time_stamp() { return 0; }
 
 void set_pixel(Uint32 *buffer, int pos, Uint32 color)
 {
-    buffer[pos] = color;
+    int x, y;
+    if (pos < SCREEN_WIDTH*SCREEN_HEIGHT) {
+        x = pos % (SCREEN_WIDTH);
+        y = pos / (SCREEN_WIDTH);
+        buffer[x + y * SCREEN_WIDTH] = color;
+    }
+    // else {
+    //     pos -= SCREEN_WIDTH*SCREEN_HEIGHT/2;
+    //     x = (SCREEN_WIDTH/2) + (pos % (SCREEN_WIDTH/2));
+    //     y = pos / (SCREEN_WIDTH/2);
+    // }
+}
+
+Uint32 *hdmi_screen;
+
+void game_loop()
+{
+    // Open the SDL Window
+    if (SDL_Init(SDL_INIT_VIDEO) < 0)
+        return;
+
+    SDL_Window *window = SDL_CreateWindow("SDL2 Window",
+                                          SDL_WINDOWPOS_CENTERED,
+                                          SDL_WINDOWPOS_CENTERED,
+                                          SCREEN_WIDTH, SCREEN_HEIGHT,
+                                          0);
+
+    if (!window)
+        return;
+
+    SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+
+    if (renderer == nullptr)
+        return;
+
+    SDL_Event e;
+    bool running = true;
+
+    SDL_Texture *texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, SCREEN_WIDTH, SCREEN_HEIGHT);
+    if (texture == nullptr)
+    {
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
+        SDL_Quit();
+        return;
+    }
+
+    while (running)
+    {
+        while (SDL_PollEvent(&e) > 0)
+        {
+            switch (e.type)
+            {
+            case SDL_QUIT:
+                running = false;
+                break;
+            }
+        }
+
+        SDL_UpdateTexture(texture, nullptr, hdmi_screen, SCREEN_WIDTH * sizeof(Uint32));
+        SDL_RenderClear(renderer);
+        SDL_RenderCopy(renderer, texture, nullptr, nullptr);
+        SDL_RenderPresent(renderer);
+    }
+
+    delete hdmi_screen;
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
 }
 
 int main(int argc, char **argv)
@@ -72,57 +140,19 @@ int main(int argc, char **argv)
     // "TOP" will be the hierarchical name of the module.
     const std::unique_ptr<Vtb_harness> top{new Vtb_harness{contextp.get(), "tb_top"}};
 
-    // Open the SDL Window
-    if (SDL_Init(SDL_INIT_VIDEO) < 0)
-    {
-        std::cout << "Failed to initialize the SDL2 library\n";
-        return -1;
-    }
-
-    SDL_Window *window = SDL_CreateWindow("SDL2 Window",
-                                          SDL_WINDOWPOS_CENTERED,
-                                          SDL_WINDOWPOS_CENTERED,
-                                          SCREEN_WIDTH, SCREEN_HEIGHT,
-                                          0);
-
-    if (!window)
-    {
-        std::cout << "Failed to create window\n";
-        return -1;
-    }
-
-    SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-
-    if (renderer == nullptr)
-    {
-        std::cerr << "Renderer could not be created! SDL_Error: " << SDL_GetError() << std::endl;
-        return false;
-    }
-
-    SDL_Event e;
-    bool running = true;
-    Uint32 *hdmi_screen = new Uint32[SCREEN_WIDTH * SCREEN_HEIGHT];
+    // Handling the HDMI
+    hdmi_screen = new Uint32[SCREEN_WIDTH * SCREEN_HEIGHT];
     int hdmi_p = 0;
-    bool horizontalSync_1d = false;
-
-    SDL_Texture *texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, SCREEN_WIDTH, SCREEN_HEIGHT);
-    if (texture == nullptr)
-    {
-        std::cerr << "Texture could not be created! SDL_Error: " << SDL_GetError() << std::endl;
-        SDL_DestroyRenderer(renderer);
-        SDL_DestroyWindow(window);
-        SDL_Quit();
-        return -1;
-    }
+    bool pixelClock_1d = false;
+    std::thread thread_hdmi(game_loop);
 
     // Set Vtop's input signals
     int clock_counter = 0;
-
     top->clk = 0;
     top->clkX2 = 0;
 
     // Simulate until $finish
-    while (running && !contextp->gotFinish())
+    while (!contextp->gotFinish())
     {
         // Historical note, before Verilator 4.200 Verilated::gotFinish()
         // was used above in place of contextp->gotFinish().
@@ -138,9 +168,9 @@ int main(int argc, char **argv)
         // new API, and sc_time_stamp() will no longer work.
 
         // Toggle a fast (time/2 period) clock
-        if (clock_counter % 2)
+        if (clock_counter % 2 == 0)
             top->clk = !top->clk;
-        if (clock_counter % 1)
+        if (clock_counter % 1 == 0)
             top->clkX2 = !top->clkX2;
 
         clock_counter++;
@@ -157,19 +187,9 @@ int main(int argc, char **argv)
         //                  contextp->time(), top->clk, top->reset_l, top->in_quad, top->out_quad,
         //                  top->out_wide[2], top->out_wide[1], top->out_wide[0]);
 
-        while (SDL_PollEvent(&e) > 0)
+        if (top->pixelClock && !pixelClock_1d)
         {
-            switch (e.type)
-            {
-            case SDL_QUIT:
-                running = false;
-                break;
-            }
-        }
-
-        if (top->pixelClock)
-        {
-            if (top->verticalSync && top->activePixel)
+            if (!top->horizontalSync && top->activePixel && !top->verticalSync)
             {
                 Uint8 r = top->red << 4;
                 Uint8 g = top->green << 12;
@@ -178,21 +198,12 @@ int main(int argc, char **argv)
                 set_pixel(hdmi_screen, hdmi_p, c);
                 hdmi_p = (hdmi_p + 1) % (SCREEN_WIDTH * SCREEN_HEIGHT);
             }
-
-            horizontalSync_1d = top->horizontalSync;
         }
 
-        SDL_UpdateTexture(texture, nullptr, hdmi_screen, SCREEN_WIDTH * sizeof(Uint32));
-        SDL_RenderClear(renderer);
-        SDL_RenderCopy(renderer, texture, nullptr, nullptr);
-        SDL_RenderPresent(renderer);
+        pixelClock_1d = top->pixelClock;
     }
 
-    delete hdmi_screen;
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
-    SDL_Quit();
-
+    thread_hdmi.join();
     // Final model cleanup
     top->final();
 
