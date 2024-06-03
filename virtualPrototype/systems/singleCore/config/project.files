@@ -57,5 +57,5 @@
 ../verilog/grayscaleCi/verilog/rgb565ISE.v
 ../verilog/ramDmaCi/verilog/ramDmaCi.v
 ../verilog/ramDmaCi/verilog/dualPortSSram.v
-../verilog/or1420SingleCoreSDRAM.v
+../verilog/or1420SingleCoreExtMem.v
 ../verilog/top.v

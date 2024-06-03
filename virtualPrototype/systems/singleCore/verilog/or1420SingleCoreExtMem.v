@@ -78,6 +78,12 @@ module or1420SingleCoreSDRAM ( input wire    systemClock,     // 74.25MHz
   wire        s_readNotWrite, s_dataValid, s_busy;
   wire [7:0]  s_burstSize;
 
+  wire [31:0] s_cpu1CiResult;
+  wire [31:0] s_cpu1CiDataA, s_cpu1CiDataB;
+  wire [7:0] s_cpu1CiN;
+  wire s_cpu1CiCke;
+  wire s_cpu1CiStart;
+
 
   /*
    * Here we instantiate the SDRAM controller
@@ -122,9 +128,56 @@ module or1420SingleCoreSDRAM ( input wire    systemClock,     // 74.25MHz
                      .sdramDataDriven(sdramDataDriven),
                      .sdramDataIn(sdramDataIn));
 
-    /////////////////////////////////////////////
-    // instantatiate SoC and hook up to SDRAM //
-    ///////////////////////////////////////////
+  /*
+   *
+   * Here the spi-flash controller is defined
+   *
+   */
+  
+  wire [31:0] s_flashAddressData;
+  wire s_flashEndTransaction, s_flashDataValid, s_flashBusError;
+  wire [31:0] s_flashResult;
+  wire s_flashDone;
+  spiBus #( .baseAddress(32'h04000000),
+            .customIntructionNr(8'd2)) flash
+          ( .clock(systemClock),
+            .reset(systemReset),
+            .spiScl(spiScl),
+            .spiNCs(spiNCs),
+            .spiSiIo0Out(spiSiIo0Out),
+            .spiSoIo1Out(spiSoIo1Out),
+            .spiIo2Out(spiIo2Out),
+            .spiIo3Out(spiIo3Out),
+            .spiSiIo0In(spiSiIo0In),
+            .spiSoIo1In(spiSoIo1In),
+            .spiIo2In(spiIo2In),
+            .spiIo3In(spiIo3In),
+            .spiSiIo0Driven(spiSiIo0Driven),
+            .spiSoIo1Driven(spiSoIo1Driven),
+            .spiIo2Driven(spiIo2Driven),
+            .spiIo3Driven(spiIo3Driven),
+            .ciN(s_cpu1CiN),
+            .ciDataA(s_cpu1CiDataA),
+            .ciDataB(s_cpu1CiDataB),
+            .ciStart(s_cpu1CiStart),
+            .ciCke(s_cpu1CiCke),
+            .ciDone(s_flashDone),
+            .ciResult(s_flashResult),
+            .beginTransactionIn(beginTransaction),
+            .endTransactionIn(endTransaction),
+            .readNotWriteIn(readNotWrite),
+            .busErrorIn(busError),
+            .addressDataIn(addressData),
+            .burstSizeIn(burstSize),
+            .byteEnablesIn(byteEnables),
+            .addressDataOut(s_flashAddressData),
+            .endTransactionOut(s_flashEndTransaction),
+            .dataValidOut(s_flashDataValid),
+            .busErrorOut(s_flashBusError) );
+
+    ////////////////////////////////////////////////////
+    // instantatiate SoC and hook up to SDRAM, FLASH //
+    //////////////////////////////////////////////////
     or1420SingleCore iSingleCore (
         .systemClock(systemClock),
         .pixelClockIn(pixelClockIn),
@@ -145,12 +198,27 @@ module or1420SingleCoreSDRAM ( input wire    systemClock,     // 74.25MHz
         .busy(s_busy),
         .burstSize(s_burstSize),
 
+        .ciN(s_cpu1CiN),
+        .ciDataA(s_cpu1CiDataA),
+        .ciDataB(s_cpu1CiDataB),
+        .ciStart(s_cpu1CiStart),
+        .ciCke(s_cpu1CiCke),
+
         .ramInitBusy(s_sdramInitBusy),
         .ramEndTransaction(s_sdramEndTransaction),
         .ramDataValid(s_sdramDataValid),
         .ramBusy(s_sdramBusy),
         .ramBusError(s_sdramBusError),
         .ramAddressData(s_sdramAddressData),
+
+        .flashEndTransaction(s_flashEndTransaction),
+        .flashDataValid(s_flashDataValid),
+        .flashBusy(1'b0),
+        .flashBusError(s_flashBusError),
+        .flashAddressData(s_flashAddressData),
+
+        .flashDone(s_flashDone),
+        .flashResult(s_flashResult),
         
         .spiScl(spiScl),
         .spiNCs(spiNCs),

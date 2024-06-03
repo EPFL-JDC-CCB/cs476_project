@@ -84,19 +84,19 @@ int bios() {
   helpscreen();
   repeat = 1;
   do {
-    kar = get_rs232_blocking();
+    kar = biosNextChar();
     switch (kar) {
       case '#': or32PrintMultiple(&vgaPrintChar, &sendRs232Char, "Download: done\n");
                 break;
-      case '&': kar = get_rs232_blocking();
+      case '&': kar = biosNextChar();
                 or32PrintMultiple(&vgaPrintChar, &sendRs232Char, "Reading code table\n");
                 int index = 0, karCnt;
                 do {
-                  while (kar == ' ') kar = get_rs232_blocking();
+                  while (kar == ' ') kar = biosNextChar();
                   karCnt = 0;
                   do {
                     codeTable[index][karCnt++] = kar;
-                    kar = get_rs232_blocking();
+                    kar = biosNextChar();
                   } while (kar != ' ');
                   codeTable[index][karCnt] = 0;
                   index++;
@@ -114,7 +114,7 @@ int bios() {
                   asm volatile ("l.jumps");
                 }
                 break;
-      case '*': kar = get_rs232_blocking();
+      case '*': kar = biosNextChar();
                 switch (kar) {
                   case 'h': or32PrintMultiple(&sendRs232Char, 0, "\n\n");
                             helpscreen();
@@ -171,6 +171,7 @@ int bios() {
                             }
                             break;
                   case 'r': if (flash[0] == 0xDEADBEEF) {
+                              or32PrintMultiple(&vgaPrintChar, &sendRs232Char, "Loading flash program...\n");
                               unsigned int endAddr = flash[1];
                               for (unsigned int i = 0; i<endAddr; i++) sdram[i] = flash[i];
                               or32PrintMultiple(&vgaPrintChar, &sendRs232Char, "Executing flash program...\n");
@@ -222,15 +223,15 @@ int bios() {
       case '\r' :
       case '\n' :
       case ' '  : break;
-      case '\'' : kar = get_rs232_blocking();
+      case '\'' : kar = biosNextChar();
                   repeat = kar - '0';
-                  kar = get_rs232_blocking();
+                  kar = biosNextChar();
                   repeat *= 10;
                   repeat += (kar - '0');
                   break;
       case '-':
       case '+':
-      case '=': str[1] = get_rs232_blocking();
+      case '=': str[1] = biosNextChar();
       default : str[0] = kar;
                 int value = -1;
                 for (int i = 0; i < 256; i++) {

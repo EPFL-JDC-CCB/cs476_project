@@ -1,6 +1,6 @@
 // 74.25MHz clock
 module tb_harness #(
-    parameter integer runcnt_p = 1000
+    parameter integer runcnt_p = 0
 )( input wire clk);
     reg rst;
     reg started;
@@ -114,21 +114,22 @@ module tb_harness #(
         .ramBusy(mem_out_busy),
         .ramBusError(mem_out_error),
         .ramAddressData(mem_out_addrData),
+
+        .ciN(),
+        .ciDataA(),
+        .ciDataB(),
+        .ciStart(),
+        .ciCke(),
+
+        .flashEndTransaction(0),
+        .flashDataValid(0),
+        .flashBusy(0),
+        .flashBusError(0),
+        .flashAddressData(0),
+
+        .flashDone(0),
+        .flashResult(0),
         
-        .spiScl(),
-        .spiNCs(),
-        .spiSiIo0Out(),
-        .spiSoIo1Out(),
-        .spiIo2Out(),
-        .spiIo3Out(),
-        .spiSiIo0In(0),
-        .spiSoIo1In(0),
-        .spiIo2In(0),
-        .spiIo3In(0),
-        .spiSiIo0Driven(),
-        .spiSoIo1Driven(),
-        .spiIo2Driven(),
-        .spiIo3Driven(),
         .pixelClock(),
         .horizontalSync(),
         .verticalSync(),

@@ -28,7 +28,7 @@ end
 
 always @* begin
     if (go_r && bus_dataValid_i) begin
-        $display("(t=%t) print: %x\n", $time, bus_addrData_i);
+        $display("(t=%t) print: %x", $time, bus_addrData_i);
     end
 end
 endmodule

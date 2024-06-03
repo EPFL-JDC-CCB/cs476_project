@@ -22,6 +22,7 @@
     "files.associations": {
         "biosold_compressed.h": "c",
         "biosold_orig.h": "c",
-        "biosold_default.h": "c"
+        "biosold_default.h": "c",
+        "biosor1420_default.h": "c"
     }
 }

@@ -3,6 +3,9 @@
 biosOR1420:
 	make -f generic.mk CFLAGS="-D OR1420 -msoft-div -Os -nostartfiles -Wl,-Ttext=0xF0000000" BINARY_NAME=$@
 
+simBios:
+	make -f generic.mk CFLAGS="-D OR1420 -D SIMULATION -msoft-div -Os -nostartfiles -Wl,-Ttext=0xF0000000" BINARY_NAME=$@
+
 biosOld: 
 	make -f generic.mk CFLAGS="-Os -nostartfiles -Wl,-Ttext=0xF0000000" BINARY_NAME=$@
 

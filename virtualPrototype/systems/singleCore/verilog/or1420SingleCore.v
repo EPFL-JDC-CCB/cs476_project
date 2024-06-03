@@ -1,4 +1,3 @@
-`default_nettype none 
 `default_nettype none
 `timescale 1ns/1ns
 
@@ -23,6 +22,12 @@ module or1420SingleCore ( input wire         systemClock,     // 74.25MHz
                           output wire busy,
                           output wire [7:0] burstSize,
 
+                          output wire [7:0] ciN,
+                          output wire [31:0] ciDataA,
+                          output wire [31:0] ciDataB,
+                          output wire ciStart,
+                          output wire ciCke,
+
                           input wire ramInitBusy,
                           input wire ramEndTransaction,
                           input wire ramDataValid,
@@ -30,21 +35,14 @@ module or1420SingleCore ( input wire         systemClock,     // 74.25MHz
                           input wire ramBusError,
                           input wire [31:0] ramAddressData,
 
-                          // The spi interface
-                          output wire        spiScl,
-                                             spiNCs,
-                          output wire        spiSiIo0Out,
-                                             spiSoIo1Out,
-                                             spiIo2Out,
-                                             spiIo3Out,
-                          output wire        spiSiIo0Driven,
-                                             spiSoIo1Driven,
-                                             spiIo2Driven,
-                                             spiIo3Driven,
-                          input wire         spiSiIo0In,
-                                             spiSoIo1In,
-                                             spiIo2In,
-                                             spiIo3In,
+                          input wire flashEndTransaction,
+                          input wire flashDataValid,
+                          input wire flashBusy,
+                          input wire flashBusError,
+                          input wire [31:0] flashAddressData,
+
+                          input wire flashDone,
+                          input wire [31:0] flashResult,
 
                           output wire        pixelClock,
                                              horizontalSync,
@@ -73,8 +71,8 @@ module or1420SingleCore ( input wire         systemClock,     // 74.25MHz
                            );
 
   wire        s_busIdle, s_snoopableBurst;
-  wire        s_hdmiDone, s_swapByteDone, s_flashDone, s_cpuFreqDone;
-  wire [31:0] s_hdmiResult, s_swapByteResult, s_flashResult, s_cpuFreqResult;
+  wire        s_hdmiDone, s_swapByteDone, s_cpuFreqDone;
+  wire [31:0] s_hdmiResult, s_swapByteResult, s_cpuFreqResult;
 
   wire        s_cpuReset = systemReset | ramInitBusy;
   
@@ -121,8 +119,8 @@ module or1420SingleCore ( input wire         systemClock,     // 74.25MHz
   wire [7:0]  s_cpu1BurstSize;
   wire        s_spm1Irq, s_profileDone, s_stall, s_grayDone;
   
-  assign s_cpu1CiDone = s_hdmiDone | s_swapByteDone | s_flashDone | s_cpuFreqDone | s_i2cCiDone | s_delayCiDone | s_camCiDone | s_profileDone | s_grayDone | s_ramDmaDone;
-  assign s_cpu1CiResult = s_hdmiResult | s_swapByteResult | s_flashResult | s_cpuFreqResult | s_i2cCiResult | s_camCiResult | s_delayResult | s_profileResult | s_grayResult |
+  assign s_cpu1CiDone = s_hdmiDone | s_swapByteDone | flashDone | s_cpuFreqDone | s_i2cCiDone | s_delayCiDone | s_camCiDone | s_profileDone | s_grayDone | s_ramDmaDone;
+  assign s_cpu1CiResult = s_hdmiResult | s_swapByteResult | flashResult | s_cpuFreqResult | s_i2cCiResult | s_camCiResult | s_delayResult | s_profileResult | s_grayResult |
                           s_ramDmaResult; 
 
   or1420Top #( .NOP_INSTRUCTION(32'h1500FFFF)) cpu1
@@ -401,49 +399,6 @@ module or1420SingleCore ( input wire         systemClock,     // 74.25MHz
             .activePixel(activePixel)
             );
 
-  /*
-   *
-   * Here the spi-flash controller is defined
-   *
-   */
-  wire [31:0] s_flashAddressData;
-  wire s_flashEndTransaction, s_flashDataValid, s_flashBusError;
-  spiBus #( .baseAddress(32'h04000000),
-            .customIntructionNr(8'd2)) flash
-          ( .clock(systemClock),
-            .reset(systemReset),
-            .spiScl(spiScl),
-            .spiNCs(spiNCs),
-            .spiSiIo0Out(spiSiIo0Out),
-            .spiSoIo1Out(spiSoIo1Out),
-            .spiIo2Out(spiIo2Out),
-            .spiIo3Out(spiIo3Out),
-            .spiSiIo0In(spiSiIo0In),
-            .spiSoIo1In(spiSoIo1In),
-            .spiIo2In(spiIo2In),
-            .spiIo3In(spiIo3In),
-            .spiSiIo0Driven(spiSiIo0Driven),
-            .spiSoIo1Driven(spiSoIo1Driven),
-            .spiIo2Driven(spiIo2Driven),
-            .spiIo3Driven(spiIo3Driven),
-            .ciN(s_cpu1CiN),
-            .ciDataA(s_cpu1CiDataA),
-            .ciDataB(s_cpu1CiDataB),
-            .ciStart(s_cpu1CiStart),
-            .ciCke(s_cpu1CiCke),
-            .ciDone(s_flashDone),
-            .ciResult(s_flashResult),
-            .beginTransactionIn(beginTransaction),
-            .endTransactionIn(endTransaction),
-            .readNotWriteIn(readNotWrite),
-            .busErrorIn(busError),
-            .addressDataIn(addressData),
-            .burstSizeIn(burstSize),
-            .byteEnablesIn(byteEnables),
-            .addressDataOut(s_flashAddressData),
-            .endTransactionOut(s_flashEndTransaction),
-            .dataValidOut(s_flashDataValid),
-            .busErrorOut(s_flashBusError) );
 
   /*
    *
@@ -507,19 +462,25 @@ module or1420SingleCore ( input wire         systemClock,     // 74.25MHz
    * Here we define the bus architecture
    *
    */
- assign busError         = s_arbBusError | s_biosBusError | s_uartBusError | ramBusError | s_flashBusError;
+ assign busError         = s_arbBusError | s_biosBusError | s_uartBusError | ramBusError | flashBusError;
  assign beginTransaction = s_cpu1BeginTransaction | s_hdmiBeginTransaction | s_camBeginTransaction| s_ramDmaBeginTransaction;
  assign endTransaction   = s_cpu1EndTransaction | s_arbEndTransaction | s_biosEndTransaction | s_uartEndTransaction |
-                             ramEndTransaction | s_hdmiEndTransaction | s_flashEndTransaction | s_camEndTransaction | s_ramDmaEndTransaction;
+                             ramEndTransaction | s_hdmiEndTransaction | flashEndTransaction | s_camEndTransaction | s_ramDmaEndTransaction;
  assign addressData      = s_cpu1AddressData | s_biosAddressData | s_uartAddressData | ramAddressData | s_hdmiAddressData |
-                             s_flashAddressData | s_camAddressData | s_ramDmaAddressData;
+                             flashAddressData | s_camAddressData | s_ramDmaAddressData;
  assign byteEnables      = s_cpu1byteEnables | s_hdmiByteEnables | s_camByteEnables | s_ramDmaByteEnables;
  assign readNotWrite     = s_cpu1ReadNotWrite | s_hdmiReadNotWrite | s_ramDmaReadNotWrite;
  assign dataValid        = s_cpu1DataValid | s_biosDataValid | s_uartDataValid | ramDataValid | s_hdmiDataValid | 
-                             s_flashDataValid | s_camDataValid | s_ramDmaDataValid;
+                            flashDataValid | s_camDataValid | s_ramDmaDataValid;
  assign busy             = ramBusy;
  assign burstSize        = s_cpu1BurstSize | s_hdmiBurstSize | s_camBurstSize | s_ramDmaBurstSize;
  
+ // assign ci-interface
+ assign ciN = s_cpu1CiN;
+ assign ciDataA = s_cpu1CiDataA;
+ assign ciDataA = s_cpu1CiDataB;
+ assign ciStart = s_cpu1CiStart;
+ assign ciCke = s_cpu1CiCke;
 endmodule
 
 `default_nettype wire

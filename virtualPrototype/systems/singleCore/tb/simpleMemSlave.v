@@ -1,6 +1,7 @@
 module simpleMemSlave #(
-    parameter [31: 0] baseAddr = 32'hDEADBEEF,
-    parameter memSize = 512
+    parameter [31: 0] baseAddr = 32'h0,
+    parameter memSize = 512,
+    parameter string hexFile = ""
 ) (
     input clk_i,
     input rst_i,
@@ -25,8 +26,12 @@ module simpleMemSlave #(
 reg [31:0] mem [memSize-1:0];
 integer i;
 initial begin
-    for (i = 0; i < memSize; i = i + 1) begin
-        mem[i] = 0;
+    if (hexFile == "") begin
+        for (i = 0; i < memSize; i = i + 1) begin
+            mem[i] = 0;
+        end
+    end else begin
+        $readmemh(hexFile, mem);
     end
 end
 
