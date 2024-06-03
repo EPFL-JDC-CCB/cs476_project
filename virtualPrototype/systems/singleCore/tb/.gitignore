@@ -1,3 +1,4 @@
 obj_dir/
 proj/
+logs/
 uart0.log

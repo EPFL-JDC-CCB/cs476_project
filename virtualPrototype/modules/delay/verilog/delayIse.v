@@ -12,6 +12,9 @@ module delayIse #( parameter referenceClockFrequencyInHz = 12000000,
                   output wire        ciDone,
                   output wire [31:0] ciResult);
 
+
+  reg s_doneReg;
+
   /*
    *
    * This module implements a blocking delay element, where ciValueA
@@ -69,7 +72,6 @@ module delayIse #( parameter referenceClockFrequencyInHz = 12000000,
    *
    */
   reg [31:0] s_delayCountReg;
-  reg s_doneReg;
   reg s_supressDoneReg;
   wire s_delayCountZero = (s_delayCountReg == 32'd0) ? 1'd1 : 1'd0;
   wire s_delayCountOne  = (s_delayCountReg == 32'd1) ? 1'd1 : 1'd0;

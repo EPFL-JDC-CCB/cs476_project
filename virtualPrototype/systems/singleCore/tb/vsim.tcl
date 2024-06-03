@@ -16,7 +16,7 @@ if {$num_files > 2} {
 lappend project_file_list "simpleMemSlave.v"
 lappend project_file_list "simplePrintSlave.v"
 lappend project_file_list "tb_harness.v"
-lappend project_file_list "vsim_top.v"
+lappend project_file_list "tb_top.v"
 lappend project_file_list "uartprint.sv"
 
 # Create a new project
@@ -37,4 +37,5 @@ project compileall
 
 # Simulate the testbench
 # Assuming 'testbench' is the top-level module
-vsim -voptargs=+acc   -c -do "vcd file dump.vcd; vcd add -r vsim_top/*; run -all; quit" vsim_top
+# vcd file dump.vcd; vcd add -r tb_top/*; 
+vsim -voptargs=+acc   -c -do "run -all; quit" tb_top

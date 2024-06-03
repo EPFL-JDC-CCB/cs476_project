@@ -82,7 +82,7 @@ module screens #( parameter [31:0] baseAddress = 32'h00000000,
   wire [10:0] s_screenOffset1, s_screenOffset2;
   
   // we synchronize the testpicture with the new-screen
-  always @(posedge pixelClockIn) s_testPicture = (reset == 1'b1) ? 1'b0 : (s_newScreen == 1'b1) ? testPicture : s_testPicture;
+  always @(posedge pixelClockIn) s_testPicture <= (reset == 1'b1) ? 1'b0 : (s_newScreen == 1'b1) ? testPicture : s_testPicture;
   
   // we map the core
   hdmi_720p generator (.pixelClockIn(pixelClockIn),
@@ -289,7 +289,7 @@ module screens #( parameter [31:0] baseAddress = 32'h00000000,
   reg         s_nextGraphicLineReg;
   wire [9:0]  s_readPixelCounterNext = (s_nextLine == 1'b1) ? 9'd0 :
                                        (s_isInGraphicRegion[1] == 1'b1) ? s_readPixelCounterReg + 10'd1 : s_readPixelCounterReg;
-
+                                       
   wire        s_pixelWe, s_newScreenSlow, s_newLineSlow, s_writeIndex, s_dualPixel;
   wire [31:0] s_dualPixelData1, s_dualPixelData2;
   wire [31:0] s_dualPixelData = (s_writeIndex == 1'b1) ? s_dualPixelData1 : s_dualPixelData2;

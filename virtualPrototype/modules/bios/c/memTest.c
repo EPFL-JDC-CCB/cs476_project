@@ -10,7 +10,7 @@ void system_handler() {}
 
 int bios() {
     volatile int* base = (volatile int*)4;
-    volatile int* print_base = (volatile int*)0x50000000;
+    volatile int* print_base = (volatile int*)0x60000000;
     *base = 0xDEADBEEF;
     *print_base = *base;
     if (*base != 0xDEADBEEF) {

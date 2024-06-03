@@ -38,7 +38,7 @@ module ramDmaCi #( parameter [7:0] customId = 8'h00 )
   
   assign done   = (s_isMyCi & valueA[9]) | s_isSramReadReg;
   
-  always @(posedge clock) s_isSramReadReg = ~reset & s_isSramRead;
+  always @(posedge clock) s_isSramReadReg <= ~reset & s_isSramRead;
 
   /*
    *

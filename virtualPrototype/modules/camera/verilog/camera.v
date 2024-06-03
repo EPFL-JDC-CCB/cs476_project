@@ -26,6 +26,7 @@ module camera #(parameter [7:0] customInstructionId = 8'd0,
                 input wire         busyIn,
                                    busErrorIn);
 
+  reg [1:0] s_singleShotActionReg;
   /*
    *
    * this module provides an interface to the OV7670 camera module
@@ -88,7 +89,6 @@ module camera #(parameter [7:0] customInstructionId = 8'd0,
    *
    */
 
-  reg [1:0] s_singleShotActionReg;
   reg[31:0] s_frameBufferBaseReg;
   reg s_grabberActiveReg,s_grabberSingleShotReg;
   

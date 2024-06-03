@@ -1,2 +1,5 @@
 run:
 	vsim -c -do vsim.tcl
+
+run_gui:
+	vsim -do vsim.tcl

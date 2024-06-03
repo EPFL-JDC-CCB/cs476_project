@@ -558,8 +558,8 @@ module decodeStage ( input wire  cpuClock,
                               ||
                               (instruction[31:26] == 6'b110101) // SW
                               ? s_canExecute : 1'b0;
-  always @(posedge cpuClock) if (cpuReset == 1'b1) memStoreMode = 2'b00;
-                             else if (stall == 1'b0) memStoreMode = s_storeModeNext;
+  always @(posedge cpuClock) if (cpuReset == 1'b1) memStoreMode <= 2'b00;
+                             else if (stall == 1'b0) memStoreMode <= s_storeModeNext;
   
 
   wire[2:0] s_loadModeNext;
@@ -585,8 +585,8 @@ module decodeStage ( input wire  cpuClock,
                              ||
                              (instruction[31:26] == 6'b100010) // LWS
                              ? s_canExecute : 1'b0;
-  always @(posedge cpuClock) if (cpuReset == 1'b1) s_exeLoadModeReg = 3'b000;
-                             else if (stall == 1'b0) s_exeLoadModeReg = s_loadModeNext;
+  always @(posedge cpuClock) if (cpuReset == 1'b1) s_exeLoadModeReg <= 3'b000;
+                             else if (stall == 1'b0) s_exeLoadModeReg <= s_loadModeNext;
 
   wire[1:0] s_jumpModeNext;
   assign s_jumpModeNext[0] = (instruction[31:26] == 6'b000000) // J

@@ -55,14 +55,13 @@ int main(int argc, char** argv) {
     // Construct the Verilated model, from Vtop.h generated from Verilating "top.v".
     // Using unique_ptr is similar to "Vtop* top = new Vtop" then deleting at end.
     // "TOP" will be the hierarchical name of the module.
-    const std::unique_ptr<Vtb_harness> top{new Vtb_harness{contextp.get(), "TOP"}};
+    const std::unique_ptr<Vtb_harness> top{new Vtb_harness{contextp.get(), "tb_top"}};
 
     // Set Vtop's input signals
     top->clk = 0;
-    top->rst = 1;
 
     // Simulate until $finish
-    while (!contextp->gotFinish() && (contextp->time() < 100000)) {
+    while (!contextp->gotFinish()) {
         // Historical note, before Verilator 4.200 Verilated::gotFinish()
         // was used above in place of contextp->gotFinish().
         // Most of the contextp-> calls can use Verilated:: calls instead;
@@ -78,15 +77,6 @@ int main(int argc, char** argv) {
 
         // Toggle a fast (time/2 period) clock
         top->clk = !top->clk;
-
-        if (!top->clk) {
-            if (contextp->time() < 10) {
-                top->rst = 1;  // Assert reset
-            } else {
-                top->rst = 0;  // Deassert reset
-            }
-        }
-
         // Evaluate model
         // (If you have multiple models being simulated in the same
         // timestep then instead of eval(), call eval_step() on each, then

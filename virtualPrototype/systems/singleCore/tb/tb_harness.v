@@ -1,5 +1,9 @@
 // 74.25MHz clock
-module tb_harness ( input wire clk, input wire rst );
+module tb_harness #(
+    parameter integer runcnt_p = 1000000
+)( input wire clk);
+    reg rst;
+    reg started;
 
     ////////////////////////
     // wire declarations //
@@ -144,10 +148,24 @@ module tb_harness ( input wire clk, input wire rst );
     );
     
 initial begin
-    if ($test$plusargs("trace") != 0) begin
-        $display("[%0t] Tracing to logs/vlt_dump.vcd...\n", $time);
-        $dumpfile("logs/vlt_dump.vcd");
-        $dumpvars();
+    rst = 0;
+    started = 0;
+end
+
+integer runcnt = 0;
+always @(negedge clk) begin
+    runcnt <= runcnt + 1;
+    if (runcnt <= 10) rst <= 1;
+    else if (runcnt == runcnt_p) $finish;
+    else begin 
+        rst <= 0; 
+        started <= 1;
+        if (!started && ($test$plusargs("trace") != 0)) begin
+            $display("[%0t] Tracing to logs/vlt_dump.vcd...\n", $time);
+            $dumpfile("logs/vlt_dump.vcd");
+            $dumpvars();
+        end
     end
 end
+
 endmodule

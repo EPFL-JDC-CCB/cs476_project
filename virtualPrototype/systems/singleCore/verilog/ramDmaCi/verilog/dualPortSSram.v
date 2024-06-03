@@ -11,14 +11,14 @@ module dualPortSSRAM #( parameter bitwidth = 8,
   
   always @(posedge clockA)
     begin
-      if (writeEnableA == 1'b1) memoryContent[addressA] = dataInA;
-      dataOutA = memoryContent[addressA];
+      if (writeEnableA == 1'b1) memoryContent[addressA] <= dataInA;
+      dataOutA <= memoryContent[addressA];
     end
 
   always @(posedge clockB)
     begin
-      if (writeEnableB == 1'b1) memoryContent[addressB] = dataInB;
-      dataOutB = memoryContent[addressB];
+      if (writeEnableB == 1'b1) memoryContent[addressB] <= dataInB;
+      dataOutB <= memoryContent[addressB];
     end
 
 endmodule
