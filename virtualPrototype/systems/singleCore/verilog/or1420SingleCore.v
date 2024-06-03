@@ -46,7 +46,7 @@ module or1420SingleCore ( input wire         systemClock,     // 74.25MHz
                                              spiIo2In,
                                              spiIo3In,
 
-                          output             pixelClock,
+                          output wire        pixelClock,
                                              horizontalSync,
                                              verticalSync,
                                              activePixel,
@@ -63,8 +63,8 @@ module or1420SingleCore ( input wire         systemClock,     // 74.25MHz
                                              hdmiBlue,
 `endif
                           output wire        SCL,
-                          output             sdaDriven,
-                          input              sdaIn,
+                          output wire        sdaDriven,
+                          input wire         sdaIn,
                           input wire         camPclk,
                                              camHsync,
                                              camVsync,

@@ -1,6 +1,9 @@
+`timescale 1ns/1ns
 module vsim_top();
 
 reg clk, rst;
+
+tb_harness iDUT (.clk(clk), .rst(rst));
 
 initial begin
     clk = 0;
@@ -9,7 +12,7 @@ initial begin
     rst = 1;
     repeat (10) @(posedge clk);
     rst = 0;
-    repeat (1000) @(posedge clk);
+    repeat (100000) @(posedge clk);
     $finish;
 end
 

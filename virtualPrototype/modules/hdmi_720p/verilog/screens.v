@@ -289,13 +289,14 @@ module screens #( parameter [31:0] baseAddress = 32'h00000000,
   reg         s_nextGraphicLineReg;
   wire [9:0]  s_readPixelCounterNext = (s_nextLine == 1'b1) ? 9'd0 :
                                        (s_isInGraphicRegion[1] == 1'b1) ? s_readPixelCounterReg + 10'd1 : s_readPixelCounterReg;
+
+  wire        s_pixelWe, s_newScreenSlow, s_newLineSlow, s_writeIndex, s_dualPixel;
   wire [31:0] s_dualPixelData1, s_dualPixelData2;
   wire [31:0] s_dualPixelData = (s_writeIndex == 1'b1) ? s_dualPixelData1 : s_dualPixelData2;
   wire [15:0] s_grayPixel = {s_selectedGrayData[7:3],s_selectedGrayData[7:2],s_selectedGrayData[7:3]};
   wire [15:0] s_pixelData = (s_grayscale == 1'b1) ? s_grayPixel : (s_selectReg == 1'b1) ? s_dualPixelData[31:16] : s_dualPixelData[15:0];
   wire [31:0] s_pixelWriteData;
   wire [8:0]  s_pixelWriteAddress;
-  wire        s_pixelWe, s_newScreenSlow, s_newLineSlow, s_writeIndex, s_dualPixel;
   wire [8:0]  s_pixelReadAddress = ((s_dualPixel == 1'b1 && s_grayscale == 1'b0) || (s_dualPixel == 1'b0 && s_grayscale == 1'b1)) ? {1'b0,s_readPixelCounterReg[9:2]} : 
                                     (s_dualPixel == 1'b1) ? {2'b0,s_readPixelCounterReg[9:3]} : s_readPixelCounterReg[9:1];
 

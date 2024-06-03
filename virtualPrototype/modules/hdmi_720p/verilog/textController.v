@@ -25,9 +25,9 @@ module textController #(parameter [15:0] defaultForeGroundColor = 16'hFFFF,
                         output wire [12:0] ramLookupAddress,
                         output reg [2:0]   asciiBitSelector,
                                            asciiLineIndex,
-                        output [15:0]      foreGroundColor,
-                                           backGroundColor,
-                        output             cursorVisible );
+                        output wire [15:0]      foreGroundColor,
+                               wire           backGroundColor,
+                        output wire            cursorVisible );
 
   /*
    * This is the text controller that supports following resolutions:

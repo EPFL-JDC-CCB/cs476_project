@@ -1,0 +1,551 @@
+# do vsim.tcl
+# file12
+# ../../../modules/bios/verilog/biosRom.v
+# ../../../modules/bios/verilog/bios.v
+# ../../../modules/bus_arbiter/verilog/busArbiter.v
+# ../../../modules/bus_arbiter/verilog/queueMemory.v
+# ../../../modules/hdmi_720p/font/ami386__8x8.v
+# ../../../modules/hdmi_720p/verilog/graphicsController.v
+# ../../../modules/hdmi_720p/verilog/hdmi_720p.v
+# ../../../modules/hdmi_720p/verilog/ram2kdp.v
+# ../../../modules/hdmi_720p/verilog/ram4kdp.v
+# ../../../modules/hdmi_720p/verilog/textController.v
+# ../../../modules/hdmi_720p/verilog/tmds_encoder.v
+# ../../../modules/hdmi_720p/verilog/screens.v
+# ../../../modules/spi/verilog/spiShiftSingle.v
+# ../../../modules/spi/verilog/spiShiftQuad.v
+# ../../../modules/spi/verilog/spiBus.v
+# ../../../modules/i2c/verilog/i2cMaster.v
+# ../../../modules/i2c/verilog/i2cCustomInstr.v
+# ../../../modules/camera/verilog/camera.v
+# ../../../modules/delay/verilog/delayIse.v
+# ../../../modules/swapbyteIse/verilog/swapByteIse.v
+# ../../../modules/uart/verilog/baudGenerator.v
+# ../../../modules/uart/verilog/uartFifoMemory.v
+# ../../../modules/uart/verilog/uartRx.v
+# ../../../modules/uart/verilog/uartTx.v
+# ../../../modules/uart/verilog/uartRxFifo.v
+# ../../../modules/uart/verilog/uartTxFifo.v
+# ../../../modules/uart/verilog/uartBus.v
+# ../../../modules/or1420/verilog/adder.v
+# ../../../modules/or1420/verilog/dCacheSpm.v
+# ../../../modules/or1420/verilog/dCache.v
+# ../../../modules/or1420/verilog/decodeStage.v
+# ../../../modules/or1420/verilog/executeStage.v
+# ../../../modules/or1420/verilog/fetchStage.v
+# ../../../modules/or1420/verilog/logicUnit.v
+# ../../../modules/or1420/verilog/lutram_32x1.v
+# ../../../modules/or1420/verilog/memoryStage.v
+# ../../../modules/or1420/verilog/multiplier.v
+# ../../../modules/or1420/verilog/or1420Top.v
+# ../../../modules/or1420/verilog/regiserFile.v
+# ../../../modules/or1420/verilog/shifter.v
+# ../../../modules/or1420/verilog/sprUnit.v
+# ../../../modules/sdram/verilog/sdramFifo.v
+# ../../../modules/sdram/verilog/sdram.v
+# ../../../modules/support/verilog/decimalCounter.v
+# ../../../modules/support/verilog/processorId.v
+# ../../../modules/support/verilog/synchroFlop.v
+# ../../../modules/support/verilog/sram_16x32_dp_ar.v
+# ../../../modules/support/verilog/sram_32x32_dp_ar.v
+# ../../../modules/support/verilog/sram_512x32_dp.v
+# ../../../modules/support/verilog/sram_512x32.v
+# ../../../modules/support/verilog/sram_1024x16_dp.v
+# ../../../modules/support/verilog/sram2048x8Dp.v
+# ../verilog/or1420SingleCore.v
+# ../verilog/profileCi/verilog/profileCi.v
+# ../verilog/profileCi/verilog/counter.v
+# ../verilog/grayscaleCi/verilog/rgb565Grayscale.v
+# ../verilog/grayscaleCi/verilog/rgb565ISE.v
+# ../verilog/ramDmaCi/verilog/ramDmaCi.v
+# ../verilog/ramDmaCi/verilog/dualPortSSram.v
+# ../verilog/or1420SingleCoreSDRAM.v
+# ../verilog/top.v
+# ../../../modules/bios/verilog/biosRom.v ../../../modules/bios/verilog/bios.v ../../../modules/bus_arbiter/verilog/busArbiter.v ../../../modules/bus_arbiter/verilog/queueMemory.v ../../../modules/hdmi_720p/font/ami386__8x8.v ../../../modules/hdmi_720p/verilog/graphicsController.v ../../../modules/hdmi_720p/verilog/hdmi_720p.v ../../../modules/hdmi_720p/verilog/ram2kdp.v ../../../modules/hdmi_720p/verilog/ram4kdp.v ../../../modules/hdmi_720p/verilog/textController.v ../../../modules/hdmi_720p/verilog/tmds_encoder.v ../../../modules/hdmi_720p/verilog/screens.v ../../../modules/spi/verilog/spiShiftSingle.v ../../../modules/spi/verilog/spiShiftQuad.v ../../../modules/spi/verilog/spiBus.v ../../../modules/i2c/verilog/i2cMaster.v ../../../modules/i2c/verilog/i2cCustomInstr.v ../../../modules/camera/verilog/camera.v ../../../modules/delay/verilog/delayIse.v ../../../modules/swapbyteIse/verilog/swapByteIse.v ../../../modules/uart/verilog/baudGenerator.v ../../../modules/uart/verilog/uartFifoMemory.v ../../../modules/uart/verilog/uartRx.v ../../../modules/uart/verilog/uartTx.v ../../../modules/uart/verilog/uartRxFifo.v ../../../modules/uart/verilog/uartTxFifo.v ../../../modules/uart/verilog/uartBus.v ../../../modules/or1420/verilog/adder.v ../../../modules/or1420/verilog/dCacheSpm.v ../../../modules/or1420/verilog/dCache.v ../../../modules/or1420/verilog/decodeStage.v ../../../modules/or1420/verilog/executeStage.v ../../../modules/or1420/verilog/fetchStage.v ../../../modules/or1420/verilog/logicUnit.v ../../../modules/or1420/verilog/lutram_32x1.v ../../../modules/or1420/verilog/memoryStage.v ../../../modules/or1420/verilog/multiplier.v ../../../modules/or1420/verilog/or1420Top.v ../../../modules/or1420/verilog/regiserFile.v ../../../modules/or1420/verilog/shifter.v ../../../modules/or1420/verilog/sprUnit.v ../../../modules/sdram/verilog/sdramFifo.v ../../../modules/sdram/verilog/sdram.v ../../../modules/support/verilog/decimalCounter.v ../../../modules/support/verilog/processorId.v ../../../modules/support/verilog/synchroFlop.v ../../../modules/support/verilog/sram_16x32_dp_ar.v ../../../modules/support/verilog/sram_32x32_dp_ar.v ../../../modules/support/verilog/sram_512x32_dp.v ../../../modules/support/verilog/sram_512x32.v ../../../modules/support/verilog/sram_1024x16_dp.v ../../../modules/support/verilog/sram2048x8Dp.v ../verilog/or1420SingleCore.v ../verilog/profileCi/verilog/profileCi.v ../verilog/profileCi/verilog/counter.v ../verilog/grayscaleCi/verilog/rgb565Grayscale.v ../verilog/grayscaleCi/verilog/rgb565ISE.v ../verilog/ramDmaCi/verilog/ramDmaCi.v ../verilog/ramDmaCi/verilog/dualPortSSram.v ../verilog/or1420SingleCoreSDRAM.v ../verilog/top.v
+# 61
+# ../../../modules/bios/verilog/biosRom.v ../../../modules/bios/verilog/bios.v ../../../modules/bus_arbiter/verilog/busArbiter.v ../../../modules/bus_arbiter/verilog/queueMemory.v ../../../modules/hdmi_720p/font/ami386__8x8.v ../../../modules/hdmi_720p/verilog/graphicsController.v ../../../modules/hdmi_720p/verilog/hdmi_720p.v ../../../modules/hdmi_720p/verilog/ram2kdp.v ../../../modules/hdmi_720p/verilog/ram4kdp.v ../../../modules/hdmi_720p/verilog/textController.v ../../../modules/hdmi_720p/verilog/tmds_encoder.v ../../../modules/hdmi_720p/verilog/screens.v ../../../modules/spi/verilog/spiShiftSingle.v ../../../modules/spi/verilog/spiShiftQuad.v ../../../modules/spi/verilog/spiBus.v ../../../modules/i2c/verilog/i2cMaster.v ../../../modules/i2c/verilog/i2cCustomInstr.v ../../../modules/camera/verilog/camera.v ../../../modules/delay/verilog/delayIse.v ../../../modules/swapbyteIse/verilog/swapByteIse.v ../../../modules/uart/verilog/baudGenerator.v ../../../modules/uart/verilog/uartFifoMemory.v ../../../modules/uart/verilog/uartRx.v ../../../modules/uart/verilog/uartTx.v ../../../modules/uart/verilog/uartRxFifo.v ../../../modules/uart/verilog/uartTxFifo.v ../../../modules/uart/verilog/uartBus.v ../../../modules/or1420/verilog/adder.v ../../../modules/or1420/verilog/dCacheSpm.v ../../../modules/or1420/verilog/dCache.v ../../../modules/or1420/verilog/decodeStage.v ../../../modules/or1420/verilog/executeStage.v ../../../modules/or1420/verilog/fetchStage.v ../../../modules/or1420/verilog/logicUnit.v ../../../modules/or1420/verilog/lutram_32x1.v ../../../modules/or1420/verilog/memoryStage.v ../../../modules/or1420/verilog/multiplier.v ../../../modules/or1420/verilog/or1420Top.v ../../../modules/or1420/verilog/regiserFile.v ../../../modules/or1420/verilog/shifter.v ../../../modules/or1420/verilog/sprUnit.v ../../../modules/sdram/verilog/sdramFifo.v ../../../modules/sdram/verilog/sdram.v ../../../modules/support/verilog/decimalCounter.v ../../../modules/support/verilog/processorId.v ../../../modules/support/verilog/synchroFlop.v ../../../modules/support/verilog/sram_16x32_dp_ar.v ../../../modules/support/verilog/sram_32x32_dp_ar.v ../../../modules/support/verilog/sram_512x32_dp.v ../../../modules/support/verilog/sram_512x32.v ../../../modules/support/verilog/sram_1024x16_dp.v ../../../modules/support/verilog/sram2048x8Dp.v ../verilog/or1420SingleCore.v ../verilog/profileCi/verilog/profileCi.v ../verilog/profileCi/verilog/counter.v ../verilog/grayscaleCi/verilog/rgb565Grayscale.v ../verilog/grayscaleCi/verilog/rgb565ISE.v ../verilog/ramDmaCi/verilog/ramDmaCi.v ../verilog/ramDmaCi/verilog/dualPortSSram.v
+# ../../../modules/bios/verilog/biosRom.v ../../../modules/bios/verilog/bios.v ../../../modules/bus_arbiter/verilog/busArbiter.v ../../../modules/bus_arbiter/verilog/queueMemory.v ../../../modules/hdmi_720p/font/ami386__8x8.v ../../../modules/hdmi_720p/verilog/graphicsController.v ../../../modules/hdmi_720p/verilog/hdmi_720p.v ../../../modules/hdmi_720p/verilog/ram2kdp.v ../../../modules/hdmi_720p/verilog/ram4kdp.v ../../../modules/hdmi_720p/verilog/textController.v ../../../modules/hdmi_720p/verilog/tmds_encoder.v ../../../modules/hdmi_720p/verilog/screens.v ../../../modules/spi/verilog/spiShiftSingle.v ../../../modules/spi/verilog/spiShiftQuad.v ../../../modules/spi/verilog/spiBus.v ../../../modules/i2c/verilog/i2cMaster.v ../../../modules/i2c/verilog/i2cCustomInstr.v ../../../modules/camera/verilog/camera.v ../../../modules/delay/verilog/delayIse.v ../../../modules/swapbyteIse/verilog/swapByteIse.v ../../../modules/uart/verilog/baudGenerator.v ../../../modules/uart/verilog/uartFifoMemory.v ../../../modules/uart/verilog/uartRx.v ../../../modules/uart/verilog/uartTx.v ../../../modules/uart/verilog/uartRxFifo.v ../../../modules/uart/verilog/uartTxFifo.v ../../../modules/uart/verilog/uartBus.v ../../../modules/or1420/verilog/adder.v ../../../modules/or1420/verilog/dCacheSpm.v ../../../modules/or1420/verilog/dCache.v ../../../modules/or1420/verilog/decodeStage.v ../../../modules/or1420/verilog/executeStage.v ../../../modules/or1420/verilog/fetchStage.v ../../../modules/or1420/verilog/logicUnit.v ../../../modules/or1420/verilog/lutram_32x1.v ../../../modules/or1420/verilog/memoryStage.v ../../../modules/or1420/verilog/multiplier.v ../../../modules/or1420/verilog/or1420Top.v ../../../modules/or1420/verilog/regiserFile.v ../../../modules/or1420/verilog/shifter.v ../../../modules/or1420/verilog/sprUnit.v ../../../modules/sdram/verilog/sdramFifo.v ../../../modules/sdram/verilog/sdram.v ../../../modules/support/verilog/decimalCounter.v ../../../modules/support/verilog/processorId.v ../../../modules/support/verilog/synchroFlop.v ../../../modules/support/verilog/sram_16x32_dp_ar.v ../../../modules/support/verilog/sram_32x32_dp_ar.v ../../../modules/support/verilog/sram_512x32_dp.v ../../../modules/support/verilog/sram_512x32.v ../../../modules/support/verilog/sram_1024x16_dp.v ../../../modules/support/verilog/sram2048x8Dp.v ../verilog/or1420SingleCore.v ../verilog/profileCi/verilog/profileCi.v ../verilog/profileCi/verilog/counter.v ../verilog/grayscaleCi/verilog/rgb565Grayscale.v ../verilog/grayscaleCi/verilog/rgb565ISE.v ../verilog/ramDmaCi/verilog/ramDmaCi.v ../verilog/ramDmaCi/verilog/dualPortSSram.v simpleMemSlave.v
+# ../../../modules/bios/verilog/biosRom.v ../../../modules/bios/verilog/bios.v ../../../modules/bus_arbiter/verilog/busArbiter.v ../../../modules/bus_arbiter/verilog/queueMemory.v ../../../modules/hdmi_720p/font/ami386__8x8.v ../../../modules/hdmi_720p/verilog/graphicsController.v ../../../modules/hdmi_720p/verilog/hdmi_720p.v ../../../modules/hdmi_720p/verilog/ram2kdp.v ../../../modules/hdmi_720p/verilog/ram4kdp.v ../../../modules/hdmi_720p/verilog/textController.v ../../../modules/hdmi_720p/verilog/tmds_encoder.v ../../../modules/hdmi_720p/verilog/screens.v ../../../modules/spi/verilog/spiShiftSingle.v ../../../modules/spi/verilog/spiShiftQuad.v ../../../modules/spi/verilog/spiBus.v ../../../modules/i2c/verilog/i2cMaster.v ../../../modules/i2c/verilog/i2cCustomInstr.v ../../../modules/camera/verilog/camera.v ../../../modules/delay/verilog/delayIse.v ../../../modules/swapbyteIse/verilog/swapByteIse.v ../../../modules/uart/verilog/baudGenerator.v ../../../modules/uart/verilog/uartFifoMemory.v ../../../modules/uart/verilog/uartRx.v ../../../modules/uart/verilog/uartTx.v ../../../modules/uart/verilog/uartRxFifo.v ../../../modules/uart/verilog/uartTxFifo.v ../../../modules/uart/verilog/uartBus.v ../../../modules/or1420/verilog/adder.v ../../../modules/or1420/verilog/dCacheSpm.v ../../../modules/or1420/verilog/dCache.v ../../../modules/or1420/verilog/decodeStage.v ../../../modules/or1420/verilog/executeStage.v ../../../modules/or1420/verilog/fetchStage.v ../../../modules/or1420/verilog/logicUnit.v ../../../modules/or1420/verilog/lutram_32x1.v ../../../modules/or1420/verilog/memoryStage.v ../../../modules/or1420/verilog/multiplier.v ../../../modules/or1420/verilog/or1420Top.v ../../../modules/or1420/verilog/regiserFile.v ../../../modules/or1420/verilog/shifter.v ../../../modules/or1420/verilog/sprUnit.v ../../../modules/sdram/verilog/sdramFifo.v ../../../modules/sdram/verilog/sdram.v ../../../modules/support/verilog/decimalCounter.v ../../../modules/support/verilog/processorId.v ../../../modules/support/verilog/synchroFlop.v ../../../modules/support/verilog/sram_16x32_dp_ar.v ../../../modules/support/verilog/sram_32x32_dp_ar.v ../../../modules/support/verilog/sram_512x32_dp.v ../../../modules/support/verilog/sram_512x32.v ../../../modules/support/verilog/sram_1024x16_dp.v ../../../modules/support/verilog/sram2048x8Dp.v ../verilog/or1420SingleCore.v ../verilog/profileCi/verilog/profileCi.v ../verilog/profileCi/verilog/counter.v ../verilog/grayscaleCi/verilog/rgb565Grayscale.v ../verilog/grayscaleCi/verilog/rgb565ISE.v ../verilog/ramDmaCi/verilog/ramDmaCi.v ../verilog/ramDmaCi/verilog/dualPortSSram.v simpleMemSlave.v simplePrintSlave.v
+# ../../../modules/bios/verilog/biosRom.v ../../../modules/bios/verilog/bios.v ../../../modules/bus_arbiter/verilog/busArbiter.v ../../../modules/bus_arbiter/verilog/queueMemory.v ../../../modules/hdmi_720p/font/ami386__8x8.v ../../../modules/hdmi_720p/verilog/graphicsController.v ../../../modules/hdmi_720p/verilog/hdmi_720p.v ../../../modules/hdmi_720p/verilog/ram2kdp.v ../../../modules/hdmi_720p/verilog/ram4kdp.v ../../../modules/hdmi_720p/verilog/textController.v ../../../modules/hdmi_720p/verilog/tmds_encoder.v ../../../modules/hdmi_720p/verilog/screens.v ../../../modules/spi/verilog/spiShiftSingle.v ../../../modules/spi/verilog/spiShiftQuad.v ../../../modules/spi/verilog/spiBus.v ../../../modules/i2c/verilog/i2cMaster.v ../../../modules/i2c/verilog/i2cCustomInstr.v ../../../modules/camera/verilog/camera.v ../../../modules/delay/verilog/delayIse.v ../../../modules/swapbyteIse/verilog/swapByteIse.v ../../../modules/uart/verilog/baudGenerator.v ../../../modules/uart/verilog/uartFifoMemory.v ../../../modules/uart/verilog/uartRx.v ../../../modules/uart/verilog/uartTx.v ../../../modules/uart/verilog/uartRxFifo.v ../../../modules/uart/verilog/uartTxFifo.v ../../../modules/uart/verilog/uartBus.v ../../../modules/or1420/verilog/adder.v ../../../modules/or1420/verilog/dCacheSpm.v ../../../modules/or1420/verilog/dCache.v ../../../modules/or1420/verilog/decodeStage.v ../../../modules/or1420/verilog/executeStage.v ../../../modules/or1420/verilog/fetchStage.v ../../../modules/or1420/verilog/logicUnit.v ../../../modules/or1420/verilog/lutram_32x1.v ../../../modules/or1420/verilog/memoryStage.v ../../../modules/or1420/verilog/multiplier.v ../../../modules/or1420/verilog/or1420Top.v ../../../modules/or1420/verilog/regiserFile.v ../../../modules/or1420/verilog/shifter.v ../../../modules/or1420/verilog/sprUnit.v ../../../modules/sdram/verilog/sdramFifo.v ../../../modules/sdram/verilog/sdram.v ../../../modules/support/verilog/decimalCounter.v ../../../modules/support/verilog/processorId.v ../../../modules/support/verilog/synchroFlop.v ../../../modules/support/verilog/sram_16x32_dp_ar.v ../../../modules/support/verilog/sram_32x32_dp_ar.v ../../../modules/support/verilog/sram_512x32_dp.v ../../../modules/support/verilog/sram_512x32.v ../../../modules/support/verilog/sram_1024x16_dp.v ../../../modules/support/verilog/sram2048x8Dp.v ../verilog/or1420SingleCore.v ../verilog/profileCi/verilog/profileCi.v ../verilog/profileCi/verilog/counter.v ../verilog/grayscaleCi/verilog/rgb565Grayscale.v ../verilog/grayscaleCi/verilog/rgb565ISE.v ../verilog/ramDmaCi/verilog/ramDmaCi.v ../verilog/ramDmaCi/verilog/dualPortSSram.v simpleMemSlave.v simplePrintSlave.v tb_harness.v
+# ../../../modules/bios/verilog/biosRom.v ../../../modules/bios/verilog/bios.v ../../../modules/bus_arbiter/verilog/busArbiter.v ../../../modules/bus_arbiter/verilog/queueMemory.v ../../../modules/hdmi_720p/font/ami386__8x8.v ../../../modules/hdmi_720p/verilog/graphicsController.v ../../../modules/hdmi_720p/verilog/hdmi_720p.v ../../../modules/hdmi_720p/verilog/ram2kdp.v ../../../modules/hdmi_720p/verilog/ram4kdp.v ../../../modules/hdmi_720p/verilog/textController.v ../../../modules/hdmi_720p/verilog/tmds_encoder.v ../../../modules/hdmi_720p/verilog/screens.v ../../../modules/spi/verilog/spiShiftSingle.v ../../../modules/spi/verilog/spiShiftQuad.v ../../../modules/spi/verilog/spiBus.v ../../../modules/i2c/verilog/i2cMaster.v ../../../modules/i2c/verilog/i2cCustomInstr.v ../../../modules/camera/verilog/camera.v ../../../modules/delay/verilog/delayIse.v ../../../modules/swapbyteIse/verilog/swapByteIse.v ../../../modules/uart/verilog/baudGenerator.v ../../../modules/uart/verilog/uartFifoMemory.v ../../../modules/uart/verilog/uartRx.v ../../../modules/uart/verilog/uartTx.v ../../../modules/uart/verilog/uartRxFifo.v ../../../modules/uart/verilog/uartTxFifo.v ../../../modules/uart/verilog/uartBus.v ../../../modules/or1420/verilog/adder.v ../../../modules/or1420/verilog/dCacheSpm.v ../../../modules/or1420/verilog/dCache.v ../../../modules/or1420/verilog/decodeStage.v ../../../modules/or1420/verilog/executeStage.v ../../../modules/or1420/verilog/fetchStage.v ../../../modules/or1420/verilog/logicUnit.v ../../../modules/or1420/verilog/lutram_32x1.v ../../../modules/or1420/verilog/memoryStage.v ../../../modules/or1420/verilog/multiplier.v ../../../modules/or1420/verilog/or1420Top.v ../../../modules/or1420/verilog/regiserFile.v ../../../modules/or1420/verilog/shifter.v ../../../modules/or1420/verilog/sprUnit.v ../../../modules/sdram/verilog/sdramFifo.v ../../../modules/sdram/verilog/sdram.v ../../../modules/support/verilog/decimalCounter.v ../../../modules/support/verilog/processorId.v ../../../modules/support/verilog/synchroFlop.v ../../../modules/support/verilog/sram_16x32_dp_ar.v ../../../modules/support/verilog/sram_32x32_dp_ar.v ../../../modules/support/verilog/sram_512x32_dp.v ../../../modules/support/verilog/sram_512x32.v ../../../modules/support/verilog/sram_1024x16_dp.v ../../../modules/support/verilog/sram2048x8Dp.v ../verilog/or1420SingleCore.v ../verilog/profileCi/verilog/profileCi.v ../verilog/profileCi/verilog/counter.v ../verilog/grayscaleCi/verilog/rgb565Grayscale.v ../verilog/grayscaleCi/verilog/rgb565ISE.v ../verilog/ramDmaCi/verilog/ramDmaCi.v ../verilog/ramDmaCi/verilog/dualPortSSram.v simpleMemSlave.v simplePrintSlave.v tb_harness.v vsim_top.v
+# ../../../modules/bios/verilog/biosRom.v ../../../modules/bios/verilog/bios.v ../../../modules/bus_arbiter/verilog/busArbiter.v ../../../modules/bus_arbiter/verilog/queueMemory.v ../../../modules/hdmi_720p/font/ami386__8x8.v ../../../modules/hdmi_720p/verilog/graphicsController.v ../../../modules/hdmi_720p/verilog/hdmi_720p.v ../../../modules/hdmi_720p/verilog/ram2kdp.v ../../../modules/hdmi_720p/verilog/ram4kdp.v ../../../modules/hdmi_720p/verilog/textController.v ../../../modules/hdmi_720p/verilog/tmds_encoder.v ../../../modules/hdmi_720p/verilog/screens.v ../../../modules/spi/verilog/spiShiftSingle.v ../../../modules/spi/verilog/spiShiftQuad.v ../../../modules/spi/verilog/spiBus.v ../../../modules/i2c/verilog/i2cMaster.v ../../../modules/i2c/verilog/i2cCustomInstr.v ../../../modules/camera/verilog/camera.v ../../../modules/delay/verilog/delayIse.v ../../../modules/swapbyteIse/verilog/swapByteIse.v ../../../modules/uart/verilog/baudGenerator.v ../../../modules/uart/verilog/uartFifoMemory.v ../../../modules/uart/verilog/uartRx.v ../../../modules/uart/verilog/uartTx.v ../../../modules/uart/verilog/uartRxFifo.v ../../../modules/uart/verilog/uartTxFifo.v ../../../modules/uart/verilog/uartBus.v ../../../modules/or1420/verilog/adder.v ../../../modules/or1420/verilog/dCacheSpm.v ../../../modules/or1420/verilog/dCache.v ../../../modules/or1420/verilog/decodeStage.v ../../../modules/or1420/verilog/executeStage.v ../../../modules/or1420/verilog/fetchStage.v ../../../modules/or1420/verilog/logicUnit.v ../../../modules/or1420/verilog/lutram_32x1.v ../../../modules/or1420/verilog/memoryStage.v ../../../modules/or1420/verilog/multiplier.v ../../../modules/or1420/verilog/or1420Top.v ../../../modules/or1420/verilog/regiserFile.v ../../../modules/or1420/verilog/shifter.v ../../../modules/or1420/verilog/sprUnit.v ../../../modules/sdram/verilog/sdramFifo.v ../../../modules/sdram/verilog/sdram.v ../../../modules/support/verilog/decimalCounter.v ../../../modules/support/verilog/processorId.v ../../../modules/support/verilog/synchroFlop.v ../../../modules/support/verilog/sram_16x32_dp_ar.v ../../../modules/support/verilog/sram_32x32_dp_ar.v ../../../modules/support/verilog/sram_512x32_dp.v ../../../modules/support/verilog/sram_512x32.v ../../../modules/support/verilog/sram_1024x16_dp.v ../../../modules/support/verilog/sram2048x8Dp.v ../verilog/or1420SingleCore.v ../verilog/profileCi/verilog/profileCi.v ../verilog/profileCi/verilog/counter.v ../verilog/grayscaleCi/verilog/rgb565Grayscale.v ../verilog/grayscaleCi/verilog/rgb565ISE.v ../verilog/ramDmaCi/verilog/ramDmaCi.v ../verilog/ramDmaCi/verilog/dualPortSSram.v simpleMemSlave.v simplePrintSlave.v tb_harness.v vsim_top.v uartprint.sv
+# reading modelsim.ini
+# Loading project .
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/modules/bios/verilog/biosRom.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module biosRom
+# 
+# Top level modules:
+# 	biosRom
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/modules/bios/verilog/bios.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module bios
+# 
+# Top level modules:
+# 	bios
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/modules/bus_arbiter/verilog/busArbiter.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module busArbiter
+# 
+# Top level modules:
+# 	busArbiter
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/modules/bus_arbiter/verilog/queueMemory.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module queueMemory
+# 
+# Top level modules:
+# 	queueMemory
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/modules/hdmi_720p/font/ami386__8x8.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module charRom
+# 
+# Top level modules:
+# 	charRom
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/modules/hdmi_720p/verilog/graphicsController.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module graphicsController
+# 
+# Top level modules:
+# 	graphicsController
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/modules/hdmi_720p/verilog/hdmi_720p.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module hdmi_720p
+# 
+# Top level modules:
+# 	hdmi_720p
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/modules/hdmi_720p/verilog/ram2kdp.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module dualPortRam2k
+# 
+# Top level modules:
+# 	dualPortRam2k
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/modules/hdmi_720p/verilog/ram4kdp.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module dualPortRam4k
+# 
+# Top level modules:
+# 	dualPortRam4k
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/modules/hdmi_720p/verilog/textController.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module textController
+# 
+# Top level modules:
+# 	textController
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/modules/hdmi_720p/verilog/tmds_encoder.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module tmdsEncoder
+# 
+# Top level modules:
+# 	tmdsEncoder
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/modules/hdmi_720p/verilog/screens.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module screens
+# 
+# Top level modules:
+# 	screens
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/modules/spi/verilog/spiShiftSingle.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module spiShiftSingle
+# 
+# Top level modules:
+# 	spiShiftSingle
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/modules/spi/verilog/spiShiftQuad.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module spiShiftQuad
+# 
+# Top level modules:
+# 	spiShiftQuad
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/modules/spi/verilog/spiBus.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module spiBus
+# 
+# Top level modules:
+# 	spiBus
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/modules/i2c/verilog/i2cMaster.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module i2cMaster
+# 
+# Top level modules:
+# 	i2cMaster
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/modules/i2c/verilog/i2cCustomInstr.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module i2cCustomInstr
+# 
+# Top level modules:
+# 	i2cCustomInstr
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/modules/camera/verilog/camera.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module camera
+# 
+# Top level modules:
+# 	camera
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/modules/delay/verilog/delayIse.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module delayIse
+# 
+# Top level modules:
+# 	delayIse
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/modules/swapbyteIse/verilog/swapByteIse.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module swapByte
+# 
+# Top level modules:
+# 	swapByte
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/modules/uart/verilog/baudGenerator.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module baudGenerator
+# 
+# Top level modules:
+# 	baudGenerator
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/modules/uart/verilog/uartFifoMemory.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module uartFifoMemory
+# 
+# Top level modules:
+# 	uartFifoMemory
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/modules/uart/verilog/uartRx.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module uartRx
+# 
+# Top level modules:
+# 	uartRx
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/modules/uart/verilog/uartTx.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module uartTx
+# 
+# Top level modules:
+# 	uartTx
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/modules/uart/verilog/uartRxFifo.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module uartRxFifo
+# 
+# Top level modules:
+# 	uartRxFifo
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/modules/uart/verilog/uartTxFifo.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module uartTxFifo
+# 
+# Top level modules:
+# 	uartTxFifo
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/modules/uart/verilog/uartBus.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module uartBus
+# 
+# Top level modules:
+# 	uartBus
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/modules/or1420/verilog/adder.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module adder
+# 
+# Top level modules:
+# 	adder
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/modules/or1420/verilog/dCacheSpm.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module dCacheSpm
+# 
+# Top level modules:
+# 	dCacheSpm
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/modules/or1420/verilog/dCache.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module dCache
+# 
+# Top level modules:
+# 	dCache
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/modules/or1420/verilog/decodeStage.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module decodeStage
+# 
+# Top level modules:
+# 	decodeStage
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/modules/or1420/verilog/executeStage.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module executeStage
+# 
+# Top level modules:
+# 	executeStage
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/modules/or1420/verilog/fetchStage.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module fetchStage
+# 
+# Top level modules:
+# 	fetchStage
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/modules/or1420/verilog/logicUnit.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module logicUnit
+# 
+# Top level modules:
+# 	logicUnit
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/modules/or1420/verilog/lutram_32x1.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module lutRam32x1
+# 
+# Top level modules:
+# 	lutRam32x1
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/modules/or1420/verilog/memoryStage.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module memoryStage
+# 
+# Top level modules:
+# 	memoryStage
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/modules/or1420/verilog/multiplier.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module multiplier
+# 
+# Top level modules:
+# 	multiplier
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/modules/or1420/verilog/or1420Top.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module or1420Top
+# 
+# Top level modules:
+# 	or1420Top
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/modules/or1420/verilog/regiserFile.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module registerFile
+# 
+# Top level modules:
+# 	registerFile
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/modules/or1420/verilog/shifter.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module shifter
+# 
+# Top level modules:
+# 	shifter
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/modules/or1420/verilog/sprUnit.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module sprUnit
+# 
+# Top level modules:
+# 	sprUnit
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/modules/sdram/verilog/sdramFifo.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module sdramFifo
+# 
+# Top level modules:
+# 	sdramFifo
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/modules/sdram/verilog/sdram.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module sdramController
+# 
+# Top level modules:
+# 	sdramController
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/modules/support/verilog/decimalCounter.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module decimalCounter
+# 
+# Top level modules:
+# 	decimalCounter
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/modules/support/verilog/processorId.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module processorId
+# 
+# Top level modules:
+# 	processorId
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/modules/support/verilog/synchroFlop.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module synchroFlop
+# 
+# Top level modules:
+# 	synchroFlop
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/modules/support/verilog/sram_16x32_dp_ar.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module sram16x32DpAr
+# 
+# Top level modules:
+# 	sram16x32DpAr
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/modules/support/verilog/sram_32x32_dp_ar.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module sram32x32DpAr
+# 
+# Top level modules:
+# 	sram32x32DpAr
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/modules/support/verilog/sram_512x32_dp.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module sram512X32Dp
+# 
+# Top level modules:
+# 	sram512X32Dp
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/modules/support/verilog/sram_512x32.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module sram512X32
+# 
+# Top level modules:
+# 	sram512X32
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/modules/support/verilog/sram_1024x16_dp.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module sram1024X16Dp
+# 
+# Top level modules:
+# 	sram1024X16Dp
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/modules/support/verilog/sram2048x8Dp.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module sram2048X8Dp
+# 
+# Top level modules:
+# 	sram2048X8Dp
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/systems/singleCore/verilog/or1420SingleCore.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module or1420SingleCore
+# 
+# Top level modules:
+# 	or1420SingleCore
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/systems/singleCore/verilog/profileCi/verilog/profileCi.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module profileCi
+# 
+# Top level modules:
+# 	profileCi
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/systems/singleCore/verilog/profileCi/verilog/counter.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module counter
+# 
+# Top level modules:
+# 	counter
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/systems/singleCore/verilog/grayscaleCi/verilog/rgb565Grayscale.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module rgb565Grayscale
+# 
+# Top level modules:
+# 	rgb565Grayscale
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/systems/singleCore/verilog/grayscaleCi/verilog/rgb565ISE.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module rgb565GrayscaleIse
+# 
+# Top level modules:
+# 	rgb565GrayscaleIse
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/systems/singleCore/verilog/ramDmaCi/verilog/ramDmaCi.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module ramDmaCi
+# 
+# Top level modules:
+# 	ramDmaCi
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/systems/singleCore/verilog/ramDmaCi/verilog/dualPortSSram.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module dualPortSSRAM
+# 
+# Top level modules:
+# 	dualPortSSRAM
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/systems/singleCore/tb/simpleMemSlave.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module simpleMemSlave
+# 
+# Top level modules:
+# 	simpleMemSlave
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/systems/singleCore/tb/simplePrintSlave.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module simplePrintSlave
+# 
+# Top level modules:
+# 	simplePrintSlave
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/systems/singleCore/tb/tb_harness.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module tb_harness
+# 
+# Top level modules:
+# 	tb_harness
+# vlog -work work -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/systems/singleCore/tb/vsim_top.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module vsim_top
+# 
+# Top level modules:
+# 	vsim_top
+# vlog -work work -sv -stats=none /home/julien/EPFL/CS476/cs476_project/virtualPrototype/systems/singleCore/tb/uartprint.sv
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# -- Compiling module uartprint
+# 
+# Top level modules:
+# 	uartprint
+# 64 compiles, 0 failed with no errors.
+# vsim -voptargs="+acc" -c -do "vcd file dump.vcd; vcd add -r vsim_top/*; run -all; quit" vsim_top 
+# Start time: 10:54:18 on Jun 03,2024
+# Loading work.vsim_top
+# Loading work.tb_harness
+# Loading work.simpleMemSlave
+# Loading work.simplePrintSlave
+# Loading sv_std.std
+# Loading work.uartprint
+# Loading work.or1420SingleCore
+# Loading work.uartBus
+# Loading work.baudGenerator
+# Loading work.uartTxFifo
+# Loading work.uartFifoMemory
+# Loading work.uartTx
+# Loading work.uartRxFifo
+# Loading work.uartRx
+# Loading work.or1420Top
+# Loading work.fetchStage
+# Loading work.decodeStage
+# Loading work.executeStage
+# Loading work.adder
+# Loading work.logicUnit
+# Loading work.multiplier
+# Loading work.shifter
+# Loading work.sprUnit
+# Loading work.memoryStage
+# Loading work.registerFile
+# Loading work.dCache
+# Loading work.dCacheSpm
+# Loading work.processorId
+# Loading work.synchroFlop
+# Loading work.swapByte
+# Loading work.i2cCustomInstr
+# Loading work.i2cMaster
+# Loading work.delayIse
+# Loading work.profileCi
+# Loading work.counter
+# Loading work.rgb565GrayscaleIse
+# Loading work.rgb565Grayscale
+# Loading work.ramDmaCi
+# Loading work.dualPortSSRAM
+# Loading work.camera
+# Loading work.dualPortRam2k
+# Loading work.screens
+# Loading work.hdmi_720p
+# Loading work.textController
+# Loading work.dualPortRam4k
+# Loading work.charRom
+# Loading work.graphicsController
+# Loading work.spiBus
+# Loading work.spiShiftQuad
+# Loading work.spiShiftSingle
+# Loading work.bios
+# Loading work.biosRom
+# Loading work.busArbiter
+# Loading work.queueMemory
+# Loading work.lutRam32x1
+# Loading work.decimalCounter
+# ** Warning: (vsim-3015) [PCDPC] - Port size (1) does not match connection size (32) for port 'spiSiIo0In'. The port definition is at: /home/julien/EPFL/CS476/cs476_project/virtualPrototype/systems/singleCore/verilog/or1420SingleCore.v(44).
+#    Time: 0 ns  Iteration: 0  Instance: /vsim_top/iDUT/iSingleCore File: /home/julien/EPFL/CS476/cs476_project/virtualPrototype/systems/singleCore/tb/tb_harness.v Line: 85
+# ** Warning: (vsim-3015) [PCDPC] - Port size (1) does not match connection size (32) for port 'spiSoIo1In'. The port definition is at: /home/julien/EPFL/CS476/cs476_project/virtualPrototype/systems/singleCore/verilog/or1420SingleCore.v(45).
+#    Time: 0 ns  Iteration: 0  Instance: /vsim_top/iDUT/iSingleCore File: /home/julien/EPFL/CS476/cs476_project/virtualPrototype/systems/singleCore/tb/tb_harness.v Line: 85
+# ** Warning: (vsim-3015) [PCDPC] - Port size (1) does not match connection size (32) for port 'spiIo2In'. The port definition is at: /home/julien/EPFL/CS476/cs476_project/virtualPrototype/systems/singleCore/verilog/or1420SingleCore.v(46).
+#    Time: 0 ns  Iteration: 0  Instance: /vsim_top/iDUT/iSingleCore File: /home/julien/EPFL/CS476/cs476_project/virtualPrototype/systems/singleCore/tb/tb_harness.v Line: 85
+# ** Warning: (vsim-3015) [PCDPC] - Port size (1) does not match connection size (32) for port 'spiIo3In'. The port definition is at: /home/julien/EPFL/CS476/cs476_project/virtualPrototype/systems/singleCore/verilog/or1420SingleCore.v(47).
+#    Time: 0 ns  Iteration: 0  Instance: /vsim_top/iDUT/iSingleCore File: /home/julien/EPFL/CS476/cs476_project/virtualPrototype/systems/singleCore/tb/tb_harness.v Line: 85
+# ** Warning: (vsim-3015) [PCDPC] - Port size (8) does not match connection size (32) for port 'dipSwitch'. The port definition is at: /home/julien/EPFL/CS476/cs476_project/virtualPrototype/systems/singleCore/verilog/or1420SingleCore.v(54).
+#    Time: 0 ns  Iteration: 0  Instance: /vsim_top/iDUT/iSingleCore File: /home/julien/EPFL/CS476/cs476_project/virtualPrototype/systems/singleCore/tb/tb_harness.v Line: 85
+# ** Warning: (vsim-3015) [PCDPC] - Port size (1) does not match connection size (32) for port 'camPclk'. The port definition is at: /home/julien/EPFL/CS476/cs476_project/virtualPrototype/systems/singleCore/verilog/or1420SingleCore.v(68).
+#    Time: 0 ns  Iteration: 0  Instance: /vsim_top/iDUT/iSingleCore File: /home/julien/EPFL/CS476/cs476_project/virtualPrototype/systems/singleCore/tb/tb_harness.v Line: 85
+# ** Warning: (vsim-3015) [PCDPC] - Port size (1) does not match connection size (32) for port 'camHsync'. The port definition is at: /home/julien/EPFL/CS476/cs476_project/virtualPrototype/systems/singleCore/verilog/or1420SingleCore.v(69).
+#    Time: 0 ns  Iteration: 0  Instance: /vsim_top/iDUT/iSingleCore File: /home/julien/EPFL/CS476/cs476_project/virtualPrototype/systems/singleCore/tb/tb_harness.v Line: 85
+# ** Warning: (vsim-3015) [PCDPC] - Port size (1) does not match connection size (32) for port 'camVsync'. The port definition is at: /home/julien/EPFL/CS476/cs476_project/virtualPrototype/systems/singleCore/verilog/or1420SingleCore.v(70).
+#    Time: 0 ns  Iteration: 0  Instance: /vsim_top/iDUT/iSingleCore File: /home/julien/EPFL/CS476/cs476_project/virtualPrototype/systems/singleCore/tb/tb_harness.v Line: 85
+# ** Warning: (vsim-3015) [PCDPC] - Port size (1) does not match connection size (32) for port 'biosBypass'. The port definition is at: /home/julien/EPFL/CS476/cs476_project/virtualPrototype/systems/singleCore/verilog/or1420SingleCore.v(71).
+#    Time: 0 ns  Iteration: 0  Instance: /vsim_top/iDUT/iSingleCore File: /home/julien/EPFL/CS476/cs476_project/virtualPrototype/systems/singleCore/tb/tb_harness.v Line: 85
+# ** Warning: (vsim-3015) [PCDPC] - Port size (8) does not match connection size (32) for port 'camData'. The port definition is at: /home/julien/EPFL/CS476/cs476_project/virtualPrototype/systems/singleCore/verilog/or1420SingleCore.v(72).
+#    Time: 0 ns  Iteration: 0  Instance: /vsim_top/iDUT/iSingleCore File: /home/julien/EPFL/CS476/cs476_project/virtualPrototype/systems/singleCore/tb/tb_harness.v Line: 85
+# ** Warning: (vsim-3015) [PCDPC] - Port size (9) does not match connection size (8) for port 'address1'. The port definition is at: /home/julien/EPFL/CS476/cs476_project/virtualPrototype/modules/hdmi_720p/verilog/ram2kdp.v(2).
+#    Time: 0 ns  Iteration: 0  Instance: /vsim_top/iDUT/iSingleCore/camIf/lineBuffer File: /home/julien/EPFL/CS476/cs476_project/virtualPrototype/modules/camera/verilog/camera.v Line: 202
+# ** Warning: (vsim-3015) [PCDPC] - Port size (1) does not match connection size (16) for port 'backGroundColor'. The port definition is at: /home/julien/EPFL/CS476/cs476_project/virtualPrototype/modules/hdmi_720p/verilog/textController.v(29).
+#    Time: 0 ns  Iteration: 0  Instance: /vsim_top/iDUT/iSingleCore/hdmi/textC1 File: /home/julien/EPFL/CS476/cs476_project/virtualPrototype/modules/hdmi_720p/verilog/screens.v Line: 168
+# ** Warning: (vsim-3015) [PCDPC] - Port size (1) does not match connection size (16) for port 'backGroundColor'. The port definition is at: /home/julien/EPFL/CS476/cs476_project/virtualPrototype/modules/hdmi_720p/verilog/textController.v(29).
+#    Time: 0 ns  Iteration: 0  Instance: /vsim_top/iDUT/iSingleCore/hdmi/textC2 File: /home/julien/EPFL/CS476/cs476_project/virtualPrototype/modules/hdmi_720p/verilog/screens.v Line: 198
+# ** Warning: (vsim-7032) The 32-bit glibc RPM does not appear to be installed on this machine.  Calls to gcc may fail.
+# 
+# vcd file dump.vcd
+#  vcd add -r vsim_top/*
+#  run -all
+# CS-476 Embedde** Note: $finish    : /home/julien/EPFL/CS476/cs476_project/virtualPrototype/systems/singleCore/tb/vsim_top.v(16)
+#    Time: 1000105 ns  Iteration: 1  Instance: /vsim_top
+# End time: 10:54:42 on Jun 03,2024, Elapsed time: 0:00:24
+# Errors: 0, Warnings: 14

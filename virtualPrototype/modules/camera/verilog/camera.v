@@ -87,6 +87,8 @@ module camera #(parameter [7:0] customInstructionId = 8'd0,
    * Here we define the frame buffer parameters
    *
    */
+
+  reg [1:0] s_singleShotActionReg;
   reg[31:0] s_frameBufferBaseReg;
   reg s_grabberActiveReg,s_grabberSingleShotReg;
   
@@ -212,7 +214,6 @@ module camera #(parameter [7:0] customInstructionId = 8'd0,
    */
   reg [31:0] s_busAddressReg, s_addressDataOutReg;
   reg [8:0] s_nrOfPixelsPerLineReg;
-  reg [1:0] s_singleShotActionReg;
   reg s_dataValidReg;
   reg [8:0] s_burstCountReg;
   reg  s_grabberRunningReg;
