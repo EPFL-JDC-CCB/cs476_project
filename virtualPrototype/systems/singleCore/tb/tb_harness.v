@@ -1,9 +1,10 @@
 // 74.25MHz clock
 module tb_harness #(
-    parameter integer runcnt_p = 0
+    parameter integer runcnt_p = 1000
 )( input wire clk);
     reg rst;
     reg started;
+    integer runcnt_arg = runcnt_p;
 
     ////////////////////////
     // wire declarations //
@@ -72,7 +73,7 @@ module tb_harness #(
     /////////////////////////////
     // instantiate uart model //
     ///////////////////////////
-    uartdpi #(
+    uartprint #(
         .BAUD(115200),
         .FREQ(74_250_000)
     ) iUART (
@@ -150,21 +151,23 @@ module tb_harness #(
 initial begin
     rst = 0;
     started = 0;
+    $value$plusargs("limit=%d", runcnt_arg);
+    if ($test$plusargs("trace") != 0) begin
+        $display("[%0t] Tracing to logs/vlt_dump.vcd...\n", $time);
+        $dumpfile("logs/vlt_dump.vcd");
+        $dumpvars();
+    end
 end
 
 integer runcnt = 0;
 always @(negedge clk) begin
     runcnt <= runcnt + 1;
     if (runcnt <= 10) rst <= 1;
-    else if (runcnt_p != 0 && runcnt == runcnt_p) $finish;
+    else if (runcnt_arg != 0 && runcnt == runcnt_arg) $finish;
     else begin 
         rst <= 0; 
         started <= 1;
-        if (!started && ($test$plusargs("trace") != 0)) begin
-            $display("[%0t] Tracing to logs/vlt_dump.vcd...\n", $time);
-            $dumpfile("logs/vlt_dump.vcd");
-            $dumpvars();
-        end
+        // to only trace after the started, move testplusargs stuff here
     end
 end
 

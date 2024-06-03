@@ -1,5 +1,5 @@
 module simplePrintSlave #(
-    parameter [31: 0] baseAddr = 32'h50000000
+    parameter [31: 0] baseAddr = 32'h60000000
 ) (
     input clk_i,
     input rst_i,

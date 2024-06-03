@@ -40,8 +40,17 @@ VERILATOR_FLAGS += -x-assign fast
 # Warn abount lint issues; may not want this on less solid designs
 # -Wall
 VERILATOR_FLAGS += -Wno-style -Wno-TIMESCALEMOD   -Wno-lint  -Wno-MULTIDRIVEN
+
+VTOP_FLAGS=
 # Make waveforms
+ifneq ($(TRACE),)
 VERILATOR_FLAGS += --trace
+VTOP_FLAGS += +trace
+endif
+
+ifneq ($(LIMIT),)
+VTOP_FLAGS += +limit=$(LIMIT)
+endif
 # Check SystemVerilog assertions
 # VERILATOR_FLAGS += --assert
 # Generate coverage analysis
@@ -78,11 +87,13 @@ run:
 	@echo "-- RUN ---------------------"
 	@rm -rf logs
 	@mkdir -p logs
-	obj_dir/V$(TOP) +trace
+	obj_dir/V$(TOP) $(VTOP_FLAGS)
 
 	@echo
 	@echo "-- DONE --------------------"
+ifneq ($(TRACE),)
 	@echo "To see waveforms, open vlt_dump.vcd in a waveform viewer"
+endif
 	@echo
 
 

@@ -6,7 +6,7 @@ Note: For now I have copied our source from PW6 part 3 so that we can test the g
 ## Random notes
 
 automation things
-- quick way to turn on/off tracing in the verilator makefile
+- ~~quick way to turn on/off tracing in the verilator makefile~~ done
 
 UART/printing strategy
 - keep the uart as-is, it's already reasonably fast in verilator with tracing completely off 
