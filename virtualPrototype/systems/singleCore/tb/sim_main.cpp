@@ -27,7 +27,8 @@ double sc_time_stamp() { return 0; }
 void set_pixel(Uint32 *buffer, int pos, Uint32 color)
 {
     int x, y;
-    if (pos < SCREEN_WIDTH*SCREEN_HEIGHT) {
+    if (pos < SCREEN_WIDTH * SCREEN_HEIGHT)
+    {
         x = pos % (SCREEN_WIDTH);
         y = pos / (SCREEN_WIDTH);
         buffer[x + y * SCREEN_WIDTH] = color;
@@ -151,6 +152,11 @@ int main(int argc, char **argv)
     top->clk = 0;
     top->clkX2 = 0;
 
+    top->camData = 0xFF;
+    top->camHsync = 1;
+    top->camVsync = 0;
+    bool vsync = true;
+
     // Simulate until $finish
     while (!contextp->gotFinish())
     {
@@ -187,6 +193,7 @@ int main(int argc, char **argv)
         //                  contextp->time(), top->clk, top->reset_l, top->in_quad, top->out_quad,
         //                  top->out_wide[2], top->out_wide[1], top->out_wide[0]);
 
+        // HD Am I?
         if (top->pixelClock && !pixelClock_1d)
         {
             if (!top->horizontalSync && top->activePixel && !top->verticalSync)
@@ -199,8 +206,33 @@ int main(int argc, char **argv)
                 hdmi_p = (hdmi_p + 1) % (SCREEN_WIDTH * SCREEN_HEIGHT);
             }
         }
-
         pixelClock_1d = top->pixelClock;
+
+        // Cam
+        if (vsync)
+        {
+            int cam_counter = ((clock_counter / 2) / 784) % 510;
+            if (cam_counter < 3)
+                top->camVsync = 1;
+            else if (cam_counter < 20)
+                top->camVsync = 0;
+            else
+                vsync = false;
+        }
+        else
+        {
+            int cam_counter = (clock_counter / 2) % 784;
+
+            top->camHsync = (cam_counter >= 80);
+
+            if (cam_counter >= (80 + 45))
+                top->camData = 0xFFFF;
+            else
+                top->camData = 0;
+
+            if (((clock_counter / 2) / 784) % 510 == 509)
+                vsync = true;
+        }
     }
 
     thread_hdmi.join();

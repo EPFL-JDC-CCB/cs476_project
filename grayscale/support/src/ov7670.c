@@ -374,7 +374,7 @@ camParameters initOv7670(resolution res) {
   }
   writeRegisterList(rgb565_ov7670);
   writeOv7670Register(0x11, 0); // 1<<6 for 30FPS, 0 for 15 FPS
-  asm volatile ("l.nios_rrc r0,%[in1],r0,0x6"::[in1]"r"(2000000)); // wait 2s
+  //asm volatile ("l.nios_rrc r0,%[in1],r0,0x6"::[in1]"r"(2000000)); // wait 2s
   asm volatile ("l.nios_rrc %[out1],%[in1],r0,0x7":[out1]"=r"(value):[in1]"r"(0));
   result.nrOfPixelsPerLine = (value >> 1);
   asm volatile ("l.nios_rrc %[out1],%[in1],r0,0x7":[out1]"=r"(result.nrOfLinesPerImage):[in1]"r"(1));

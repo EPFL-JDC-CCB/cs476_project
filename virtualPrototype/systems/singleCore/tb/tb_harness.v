@@ -11,8 +11,15 @@ module tb_harness #(
     output wire activePixel,
     output wire [3:0] red,
     output wire [3:0] green,
-    output wire [3:0] blue
+    output wire [3:0] blue,
+
+    input wire [7:0] camData,
+    input wire camHsync,
+    input wire camVsync
 );
+    wire camPclk = clk;
+
+
     reg rst;
     reg started;
     integer runcnt_arg = runcnt_p;
@@ -77,7 +84,7 @@ module tb_harness #(
         .baseAddr(32'h04000000),
         // 1MB just for testing
         // real system has 32MB
-        .memSize(1024*256)
+        .memSize(1024*1024*32)
     ) iFLASH (
     .clk_i(clk),
     .rst_i(rst),
@@ -189,11 +196,11 @@ module tb_harness #(
         .SCL(),
         .sdaDriven(),
         .sdaIn(),
-        .camPclk(0),
-        .camHsync(0),
-        .camVsync(0),
+        .camPclk(camPclk),
+        .camHsync(camHsync),
+        .camVsync(camVsync),
         .biosBypass(1'b1),
-        .camData(0)
+        .camData(camData)
     );
     
 initial begin
