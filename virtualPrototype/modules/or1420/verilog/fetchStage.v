@@ -209,5 +209,9 @@ module fetchStage #(parameter [31:0] NOP_INSTRUCTION = 32'h1500FFFF)
       s_busErrorReg           <= (cpuReset == 1'b1 || s_busStateReg == INIT_TRANSACTION) ? 1'b0 :
                                  (s_busStateReg == BUS_ERROR) ? 1'b1 : s_busErrorReg;
       s_busStateReg           <= (cpuReset == 1'b1) ? NOP : s_nextBusState;
+
+      `ifdef CPU_DEBUG
+      if (!s_stall) $display("pc = %x", {programCounter,2'b0});
+      `endif
     end
 endmodule

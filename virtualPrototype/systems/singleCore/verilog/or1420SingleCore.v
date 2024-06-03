@@ -3,11 +3,14 @@
 
 // TODO: definitely rename ALL of the signals in this module
 // refactoring the ram interface out has made it a disaster
-module or1420SingleCore ( input wire         systemClock,     // 74.25MHz
+module or1420SingleCore #(
+  parameter PidReferenceClockFrequencyInHz = 50000000,
+  parameter DelayReferenceClockFrequencyInHz = 12000000
+)( input wire         systemClock,     // 74.25MHz
                                              pixelClockIn,    // 74.25MHz
                                              pixelClockInX2,  // 148.5MHz 
-                                             clock12MHz,
-                                             clock50MHz,
+                                             pidRefClockIn,
+                                             delayRefClockIn,
                                              systemReset,
                           input wire         RxD,
                           output wire        TxD,
@@ -171,10 +174,10 @@ module or1420SingleCore ( input wire         systemClock,     // 74.25MHz
   
   processorId #( .processorId(1),
                  .NumberOfProcessors(1),
-                 .ReferenceClockFrequencyInHz(50000000) ) cpuFreq
+                 .ReferenceClockFrequencyInHz(PidReferenceClockFrequencyInHz) ) cpuFreq
                ( .clock(systemClock),
                  .reset(s_cpuReset),
-                 .referenceClock(clock50MHz),
+                 .referenceClock(pidRefClockIn),
                  .biosBypass(biosBypass),
                  .procFreqId(s_cpuFreqValue) );
 
@@ -216,10 +219,10 @@ module or1420SingleCore ( input wire         systemClock,     // 74.25MHz
    * Here we define a custom instruction that implements a blocking micro-second(s) delay element
    *
    */
-  delayIse #(.referenceClockFrequencyInHz(12000000),
+  delayIse #(.referenceClockFrequencyInHz(DelayReferenceClockFrequencyInHz),
              .customInstructionId(8'd6) ) delayMicro
             (.clock(systemClock),
-             .referenceClock(clock12MHz),
+             .referenceClock(delayRefClockIn),
              .reset(s_cpuReset),
              .ciStart(s_cpu1CiStart),
              .ciCke(s_cpu1CiCke),

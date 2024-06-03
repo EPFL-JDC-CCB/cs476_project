@@ -16,6 +16,7 @@ module tb_harness #(
     reg rst;
     reg started;
     integer runcnt_arg = runcnt_p;
+    string mem_file = "";
 
     ////////////////////////
     // wire declarations //
@@ -48,6 +49,7 @@ module tb_harness #(
     ) iMEM (
     .clk_i(clk),
     .rst_i(rst),
+    .hexFile(""),
     .bus_addrData_i(s_addressData),
     .bus_byteEnables_i(s_byteEnables),
     .bus_burstSize_i(s_burstSize),
@@ -60,6 +62,38 @@ module tb_harness #(
     .bus_dataValid_o(mem_out_dataValid),
     .bus_busy_o(mem_out_busy),
     .bus_error_o(mem_out_error)
+    );
+
+    ////////////////////////////
+    // instantiate flash slave //
+    //////////////////////////
+    wire [31:0] flash_out_addrData;
+    wire flash_out_endTransaction;
+    wire flash_out_dataValid;
+    wire flash_out_busy;
+    wire flash_out_error;
+
+    simpleMemSlave #(
+        .baseAddr(32'h04000000),
+        // 1MB just for testing
+        // real system has 32MB
+        .memSize(1024*256)
+    ) iFLASH (
+    .clk_i(clk),
+    .rst_i(rst),
+    .hexFile(mem_file),
+    .bus_addrData_i(s_addressData),
+    .bus_byteEnables_i(s_byteEnables),
+    .bus_burstSize_i(s_burstSize),
+    .bus_readNWrite_i(s_readNotWrite),
+    .bus_beginTransaction_i(s_beginTransaction),
+    .bus_endTransaction_i(s_endTransaction),
+    .bus_dataValid_i(s_dataValid),
+    .bus_addrData_o(flash_out_addrData),
+    .bus_endTransaction_o(flash_out_endTransaction),
+    .bus_dataValid_o(flash_out_dataValid),
+    .bus_busy_o(flash_out_busy),
+    .bus_error_o(flash_out_error)
     );
 
     //////////////////////////////
@@ -98,13 +132,15 @@ module tb_harness #(
     ////////////////////////
     // instantatiate SoC //
     //////////////////////
-    or1420SingleCore iSingleCore (
+    or1420SingleCore  #( 
+        .PidReferenceClockFrequencyInHz(74_250_000),
+        .DelayReferenceClockFrequencyInHz(74_250_000)
+    ) iSingleCore (
         .systemClock(clk),
-        // none of the other clocks are running for now
         .pixelClockIn(clk),    
         .pixelClockInX2(clkX2),
-        .clock12MHz(clk), 
-        .clock50MHz(clk),
+        .pidRefClockIn(clk), 
+        .delayRefClockIn(clk),
         .systemReset(rst),
         .RxD(RxD),
         .TxD(TxD),
@@ -132,11 +168,11 @@ module tb_harness #(
         .ciStart(),
         .ciCke(),
 
-        .flashEndTransaction(0),
-        .flashDataValid(0),
-        .flashBusy(0),
-        .flashBusError(0),
-        .flashAddressData(0),
+        .flashEndTransaction(flash_out_endTransaction),
+        .flashDataValid(flash_out_dataValid),
+        .flashBusy(flash_out_busy),
+        .flashBusError(flash_out_error),
+        .flashAddressData(flash_out_addrData),
 
         .flashDone(0),
         .flashResult(0),
@@ -156,7 +192,7 @@ module tb_harness #(
         .camPclk(0),
         .camHsync(0),
         .camVsync(0),
-        .biosBypass(0),
+        .biosBypass(1'b1),
         .camData(0)
     );
     
@@ -164,6 +200,7 @@ initial begin
     rst = 0;
     started = 0;
     $value$plusargs("limit=%d", runcnt_arg);
+    $value$plusargs("memfile=%s", mem_file);
     if ($test$plusargs("trace") != 0) begin
         $display("[%0t] Tracing to logs/vlt_dump.vcd...\n", $time);
         $dumpfile("logs/vlt_dump.vcd");
