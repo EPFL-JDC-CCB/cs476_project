@@ -123,12 +123,13 @@ char uartdpi_read(void *ctx_void) {
   return ctx->tmp_read;
 }
 
-void uartdpi_write(void *ctx_void, char c) {
+void uartdpi_write(void *ctx_void, int data) {
   int rv;
   struct uartdpi_ctx *ctx = (struct uartdpi_ctx *)ctx_void;
   if (ctx == NULL) {
     return;
   }
+  char c = (char) data;
 
   rv = write(ctx->host, &c, 1);
   assert(rv == 1 && "Write to pseudo-terminal failed.");

@@ -54,7 +54,7 @@ VERILATOR_FLAGS += --trace
 TOP = tb_harness
 
 # Input files for Verilator
-VERILATOR_INPUT = $(TOP).v uartdpi.c sim_main.cpp -f input.vc
+VERILATOR_INPUT = uartdpi.c $(TOP).v sim_main.cpp -f input.vc
 
 ######################################################################
 default: run
