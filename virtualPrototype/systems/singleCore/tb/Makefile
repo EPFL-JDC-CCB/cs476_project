@@ -31,6 +31,9 @@ VERILATOR = $(VERILATOR_ROOT)/bin/verilator
 VERILATOR_COVERAGE = $(VERILATOR_ROOT)/bin/verilator_coverage
 endif
 
+CFLAGS += -I/usr/include/SDL2 -D_REENTRANT
+LDFLAGS += -L/usr/lib -lSDL2
+
 # Generate C++ in executable form
 VERILATOR_FLAGS += -cc --exe
 # Generate makefile dependencies (not shown as complicates the Makefile)
@@ -39,7 +42,8 @@ VERILATOR_FLAGS += -cc --exe
 VERILATOR_FLAGS += -x-assign fast
 # Warn abount lint issues; may not want this on less solid designs
 # -Wall
-VERILATOR_FLAGS += -Wno-style -Wno-TIMESCALEMOD   -Wno-lint  -Wno-MULTIDRIVEN
+VERILATOR_FLAGS += -Wno-style -Wno-TIMESCALEMOD  -Wno-lint -Wno-MULTIDRIVEN
+VERILATOR_FLAGS += -CFLAGS "${CFLAGS}" -LDFLAGS "${LDFLAGS}"
 
 VTOP_FLAGS=
 # Make waveforms

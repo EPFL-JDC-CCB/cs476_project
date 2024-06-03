@@ -1,7 +1,18 @@
 // 74.25MHz clock
 module tb_harness #(
     parameter integer runcnt_p = 0
-)( input wire clk);
+)(
+    input wire clk,
+    input wire clkX2,
+
+    output wire pixelClock,
+    output wire horizontalSync,
+    output wire verticalSync,
+    output wire activePixel,
+    output wire [3:0] red,
+    output wire [3:0] green,
+    output wire [3:0] blue
+);
     reg rst;
     reg started;
     integer runcnt_arg = runcnt_p;
@@ -58,15 +69,15 @@ module tb_harness #(
     simplePrintSlave #(
         .baseAddr(32'h60000000)
     ) iPRINTSLV (
-    .clk_i(clk),
-    .rst_i(rst),
-    .bus_addrData_i(s_addressData),
-    .bus_byteEnables_i(s_byteEnables),
-    .bus_burstSize_i(s_burstSize),
-    .bus_readNWrite_i(s_readNotWrite),
-    .bus_beginTransaction_i(s_beginTransaction),
-    .bus_endTransaction_i(s_endTransaction),
-    .bus_dataValid_i(s_dataValid)
+        .clk_i(clk),
+        .rst_i(rst),
+        .bus_addrData_i(s_addressData),
+        .bus_byteEnables_i(s_byteEnables),
+        .bus_burstSize_i(s_burstSize),
+        .bus_readNWrite_i(s_readNotWrite),
+        .bus_beginTransaction_i(s_beginTransaction),
+        .bus_endTransaction_i(s_endTransaction),
+        .bus_dataValid_i(s_dataValid)
     );
 
 
@@ -90,10 +101,10 @@ module tb_harness #(
     or1420SingleCore iSingleCore (
         .systemClock(clk),
         // none of the other clocks are running for now
-        .pixelClockIn(1'b0),    
-        .pixelClockInX2(1'b0),
-        .clock12MHz(1'b0), 
-        .clock50MHz(1'b0),
+        .pixelClockIn(clk),    
+        .pixelClockInX2(clkX2),
+        .clock12MHz(clk), 
+        .clock50MHz(clk),
         .systemReset(rst),
         .RxD(RxD),
         .TxD(TxD),
@@ -130,15 +141,15 @@ module tb_harness #(
         .flashDone(0),
         .flashResult(0),
         
-        .pixelClock(),
-        .horizontalSync(),
-        .verticalSync(),
-        .activePixel(),
+        .pixelClock(pixelClock),
+        .horizontalSync(horizontalSync),
+        .verticalSync(verticalSync),
+        .activePixel(activePixel),
         .dipSwitch(0),
         .sevenSegments(),
-        .hdmiRed(),
-        .hdmiGreen(),
-        .hdmiBlue(),
+        .hdmiRed(red),
+        .hdmiGreen(green),
+        .hdmiBlue(blue),
         .SCL(),
         .sdaDriven(),
         .sdaIn(),
