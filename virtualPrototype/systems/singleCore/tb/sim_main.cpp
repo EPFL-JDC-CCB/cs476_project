@@ -109,12 +109,22 @@ void camera_i2c(Vtb_harness *top, int clock_counter)
             state = 1;
         }
         // positive edge of scl
-    } else if (state > 4) {
-        if (top->sdaMaster) { state = 0; }
-    } else if (!scl_1d && top->scl) {
-        if (state == 4) {
+    }
+    else if (state > 4)
+    {
+        if (top->sdaMaster)
+        {
+            state = 0;
+        }
+    }
+    else if (!scl_1d && top->scl)
+    {
+        if (state == 4)
+        {
             state = 5;
-        } else {
+        }
+        else
+        {
             reg_data = (top->sdaMaster & 0x1) | (reg_data << 1);
             sclCounter++;
             // 8 bits + ACK
@@ -125,19 +135,21 @@ void camera_i2c(Vtb_harness *top, int clock_counter)
                 if (state == 1)
                 {
                     device_address = reg_data >> 2;
-                    //printf("%d dev addr: %x\n", clock_counter, device_address);
+                    // printf("%d dev addr: %x\n", clock_counter, device_address);
                     state = 2;
                 }
                 // Register address
                 else if (state == 2)
                 {
                     reg_address = reg_data >> 1;
-                    //printf("%d reg addr: %x\n", clock_counter, reg_address);
+                    // printf("%d reg addr: %x\n", clock_counter, reg_address);
                     state = 3;
-                // Data
-                } else if (state == 3) {
+                    // Data
+                }
+                else if (state == 3)
+                {
                     camera_registers[reg_address] = reg_data >> 1;
-                    //printf("%d cam[%x]=%x\n", clock_counter, reg_address, reg_data>>1);
+                    // printf("%d cam[%x]=%x\n", clock_counter, reg_address, reg_data>>1);
                     state = 4;
                 }
                 reg_data = 0;
@@ -147,7 +159,8 @@ void camera_i2c(Vtb_harness *top, int clock_counter)
     scl_1d = top->scl;
 }
 
-int main(int argc, char **argv) {
+int main(int argc, char **argv)
+{
     // This is a more complicated example, please also see the simpler examples/make_hello_c.
 
     // Prevent unused variable warnings
@@ -191,13 +204,15 @@ int main(int argc, char **argv) {
     // Construct the Verilated model, from Vtop.h generated from Verilating "top.v".
     // Using unique_ptr is similar to "Vtop* top = new Vtop" then deleting at end.
     // "TOP" will be the hierarchical name of the module.
-    Vtb_harness* top = new Vtb_harness{contextp.get(), "tb_top"};
+    Vtb_harness *top = new Vtb_harness{contextp.get(), "tb_top"};
 
-    // Handling the HDMI
+// Handling the HDMI
+#if 1
     hdmi_screen = new Uint32[SCREEN_WIDTH * SCREEN_HEIGHT];
     int hdmi_p = 0;
     bool pixelClock_1d = false;
     std::thread thread_hdmi(game_loop);
+#endif
 
     // Set Vtop's input signals
     int clock_counter = 0;
@@ -247,7 +262,8 @@ int main(int argc, char **argv) {
         //                  contextp->time(), top->clk, top->reset_l, top->in_quad, top->out_quad,
         //                  top->out_wide[2], top->out_wide[1], top->out_wide[0]);
 
-        // HD Am I?
+// HD Am I?
+#if 1
         if (top->pixelClock && !pixelClock_1d)
         {
             if (!top->horizontalSync && top->activePixel && !top->verticalSync)
@@ -262,7 +278,7 @@ int main(int argc, char **argv) {
             }
         }
         pixelClock_1d = top->pixelClock;
-
+#endif
 // Cam
 #if 1
         if (vsync)
@@ -286,7 +302,7 @@ int main(int argc, char **argv) {
             else
                 top->camData = 0;
 
-            //printf("%d\n", ((clock_counter / 2) / 784) % 510);
+            // printf("%d\n", ((clock_counter / 2) / 784) % 510);
             if ((((clock_counter) / 2) / 784) % 510 == 0)
                 vsync = true;
         }
@@ -294,7 +310,9 @@ int main(int argc, char **argv) {
         camera_i2c(top, clock_counter);
     }
 
+#if 1
     thread_hdmi.join();
+#endif
     // Final model cleanup
     top->final();
 

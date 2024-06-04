@@ -17,6 +17,6 @@ typedef uint16_t rgb565;
 #define FRAC_WIDTH 0x30000000 //!< default fractal width (3.0 in Q4.28)
 #define CX_0 0xe0000000       //!< default start x-coordinate (-2.0 in Q4.28)
 #define CY_0 0xe8000000       //!< default start y-coordinate (-1.5 in Q4.28)
-#define N_MAX 8              //!< maximum number of iterations
+#define N_MAX 32              //!< maximum number of iterations
 
 #endif // MAIN_H
