@@ -26,10 +26,12 @@ double sc_time_stamp() { return 0; }
 
 void set_pixel(Uint32 *buffer, int pos, SDL_Color color)
 {
-    buffer[pos] = *(Uint32*)&color;
+    buffer[pos] = *(Uint32 *)&color;
 }
 
 Uint32 *hdmi_screen;
+
+uint8_t camera_registers[202] = {0};
 
 void game_loop()
 {
@@ -87,8 +89,65 @@ void game_loop()
     SDL_Quit();
 }
 
-int main(int argc, char **argv)
+void camera_i2c(Vtb_harness *top, int clock_counter)
 {
+    static int state = 0;
+    static bool scl_1d = true;
+    static int sclCounter = 0;
+
+    static uint8_t device_address = 0;
+    static uint8_t reg_address = 0;
+    static int reg_data = 0;
+
+    // IDLE
+
+    if (state == 0)
+    {
+        //  && scl_1d && !top->scl
+        if (!top->sdaMaster)
+        {
+            state = 1;
+        }
+        // positive edge of scl
+    } else if (state > 4) {
+        if (top->sdaMaster) { state = 0; }
+    } else if (!scl_1d && top->scl) {
+        if (state == 4) {
+            state = 5;
+        } else {
+            reg_data = (top->sdaMaster & 0x1) | (reg_data << 1);
+            sclCounter++;
+            // 8 bits + ACK
+            if (sclCounter == 9)
+            {
+                sclCounter = 0;
+                // Device address
+                if (state == 1)
+                {
+                    device_address = reg_data >> 2;
+                    //printf("%d dev addr: %x\n", clock_counter, device_address);
+                    state = 2;
+                }
+                // Register address
+                else if (state == 2)
+                {
+                    reg_address = reg_data >> 1;
+                    //printf("%d reg addr: %x\n", clock_counter, reg_address);
+                    state = 3;
+                // Data
+                } else if (state == 3) {
+                    camera_registers[reg_address] = reg_data >> 1;
+                    //printf("%d cam[%x]=%x\n", clock_counter, reg_address, reg_data>>1);
+                    state = 4;
+                }
+                reg_data = 0;
+            }
+        }
+    }
+    scl_1d = top->scl;
+}
+
+int main(int argc, char **argv) {
     // This is a more complicated example, please also see the simpler examples/make_hello_c.
 
     // Prevent unused variable warnings
@@ -96,8 +155,10 @@ int main(int argc, char **argv)
     {
     }
 
+#ifdef TRACE
     // Create logs/ directory in case we have traces to put under it
     Verilated::mkdir("logs");
+#endif
 
     // Construct a VerilatedContext to hold simulation time, etc.
     // Multiple modules (made later below with Vtop) may share the same
@@ -118,8 +179,10 @@ int main(int argc, char **argv)
     // May be overridden by commandArgs argument parsing
     contextp->randReset(2);
 
+#ifdef TRACE
     // Verilator must compute traced signals
     contextp->traceEverOn(true);
+#endif
 
     // Pass arguments so Verilated code can see them, e.g. $value$plusargs
     // This needs to be called before you create any model
@@ -128,7 +191,7 @@ int main(int argc, char **argv)
     // Construct the Verilated model, from Vtop.h generated from Verilating "top.v".
     // Using unique_ptr is similar to "Vtop* top = new Vtop" then deleting at end.
     // "TOP" will be the hierarchical name of the module.
-    const std::unique_ptr<Vtb_harness> top{new Vtb_harness{contextp.get(), "tb_top"}};
+    Vtb_harness* top = new Vtb_harness{contextp.get(), "tb_top"};
 
     // Handling the HDMI
     hdmi_screen = new Uint32[SCREEN_WIDTH * SCREEN_HEIGHT];
@@ -140,6 +203,8 @@ int main(int argc, char **argv)
     int clock_counter = 0;
     top->clk = 0;
     top->clkX2 = 0;
+
+    top->sdaDrivenSlave = 1;
 
     top->camData = 0xFF;
     top->camHsync = 1;
@@ -198,8 +263,8 @@ int main(int argc, char **argv)
         }
         pixelClock_1d = top->pixelClock;
 
-        // Cam
-        #if 1
+// Cam
+#if 1
         if (vsync)
         {
             int cam_counter = ((clock_counter / 2) / 784) % 510;
@@ -217,19 +282,23 @@ int main(int argc, char **argv)
             top->camHsync = (cam_counter >= 80);
 
             if (cam_counter >= (80 + 45))
-                top->camData = 0xFFFF;
+                top->camData = 0x5555;
             else
                 top->camData = 0;
 
-            if (((clock_counter / 2) / 784) % 510 == 509)
+            //printf("%d\n", ((clock_counter / 2) / 784) % 510);
+            if ((((clock_counter) / 2) / 784) % 510 == 0)
                 vsync = true;
         }
-        #endif
+#endif
+        camera_i2c(top, clock_counter);
     }
 
     thread_hdmi.join();
     // Final model cleanup
     top->final();
+
+    delete top;
 
     // Return good completion status
     // Don't use exit() or destructor won't get called

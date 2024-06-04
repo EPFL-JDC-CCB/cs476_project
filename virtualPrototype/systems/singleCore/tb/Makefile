@@ -34,23 +34,24 @@ endif
 CFLAGS += -I/usr/include/SDL2 -D_REENTRANT
 LDFLAGS += -L/usr/lib -lSDL2
 
+# Make waveforms
+ifneq ($(TRACE),)
+VERILATOR_FLAGS += --trace
+VTOP_FLAGS += +trace
+CFLAGS += -DTRACE
+endif
+
 # Generate C++ in executable form
 VERILATOR_FLAGS += -cc --exe
 # Generate makefile dependencies (not shown as complicates the Makefile)
 #VERILATOR_FLAGS += -MMD
 # Optimize
-VERILATOR_FLAGS += -x-assign fast
+VERILATOR_FLAGS += -x-assign 0
 # Warn abount lint issues; may not want this on less solid designs
 # -Wall
 VERILATOR_FLAGS += -Wno-style -Wno-TIMESCALEMOD  -Wno-lint -Wno-MULTIDRIVEN
 VERILATOR_FLAGS += -CFLAGS "${CFLAGS}" -LDFLAGS "${LDFLAGS}"
 
-VTOP_FLAGS=
-# Make waveforms
-ifneq ($(TRACE),)
-VERILATOR_FLAGS += --trace
-VTOP_FLAGS += +trace
-endif
 
 ifneq ($(LIMIT),)
 VTOP_FLAGS += +limit=$(LIMIT)

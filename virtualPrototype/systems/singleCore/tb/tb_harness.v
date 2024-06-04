@@ -15,7 +15,11 @@ module tb_harness #(
 
     input wire [7:0] camData,
     input wire camHsync,
-    input wire camVsync
+    input wire camVsync,
+
+    input wire sdaDrivenSlave,
+    output wire sdaMaster,
+    output wire scl
 );
     wire camPclk = clk;
 
@@ -139,6 +143,7 @@ module tb_harness #(
     ////////////////////////
     // instantatiate SoC //
     //////////////////////
+    wire sdaDriven;
     or1420SingleCore  #( 
         .PidReferenceClockFrequencyInHz(74_250_000),
         .DelayReferenceClockFrequencyInHz(74_250_000)
@@ -193,15 +198,17 @@ module tb_harness #(
         .hdmiRed(red),
         .hdmiGreen(green),
         .hdmiBlue(blue),
-        .SCL(),
-        .sdaDriven(),
-        .sdaIn(),
+        .SCL(scl),
+        .sdaDriven(sdaDriven),
+        .sdaIn(~sdaDrivenSlave),
         .camPclk(camPclk),
         .camHsync(camHsync),
         .camVsync(camVsync),
         .biosBypass(1'b1),
         .camData(camData)
     );
+
+    assign sdaMaster = ~sdaDriven;
     
 initial begin
     rst = 0;
