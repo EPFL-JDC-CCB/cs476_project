@@ -74,7 +74,7 @@ We chose to implement an RX-only UART for simplicity, using a simple Verilog mod
 
 ### HDMI
 
-We used the SDL2 graphics library to implement a screen inside our C++ Verilator simulation. To avoid coupling the hardware simulation speed to the display update logic, we the display code in another thread and set the pixels to a framebuffer in shared memory. The simulation thread reads directly from the video signals which would normally go to the breakout board (RGB, vsync, hsync); thus the display peripheral is exactly as it is on hardware.
+We used the SDL2 graphics library to implement a screen inside our C++ Verilator simulation. To avoid coupling the hardware simulation speed to the display update logic, we put the display code in another thread and set the pixels to a framebuffer in shared memory. The simulation thread reads directly from the video signals which would normally go to the breakout board (RGB, vsync, hsync); thus the display peripheral is exactly as it is on hardware.
 
 ![HDMI simulation](img/hdmi.png)
 
